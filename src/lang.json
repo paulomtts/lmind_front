@@ -1,0 +1,32 @@
+{
+    "sidebar": {
+        "item_1": {
+            "en": "Home",
+            "pt-br": "Início",
+            "subItem_1": {
+                "en": "Reports",
+                "pt-br": "Relatórios"
+            }
+        },
+        "item_2": {
+            "en": "Operations",
+            "pt-br": "Operação",
+            "subItem_1": {
+                "en": "Routes",
+                "pt-br": "Rotas"
+            },
+            "subItem_2": {
+                "en": "Products",
+                "pt-br": "Produtos"
+            },
+            "subItem_3": {
+                "en": "Orders",
+                "pt-br": "Pedidos"
+            },
+            "subItem_4": {
+                "en": "Registry",
+                "pt-br": "Cadastros"
+            }
+        }
+    }
+}

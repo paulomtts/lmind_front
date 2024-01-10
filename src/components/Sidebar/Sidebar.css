@@ -1,0 +1,50 @@
+.Sidebar {
+    @apply
+    flex flex-col justify-normal items-center
+    w-fit h-screen p-2 gap-4
+    bg-slate-50
+    transition-all duration-200 ease-in-out delay-900
+}
+
+.Sidebar-shadow {
+    box-shadow: 1px 0 6px 1px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+}
+
+.SidebarItem {
+    @apply
+    px-3 py-2 m-0
+    rounded-full
+    text-slate-500
+    shadow-md
+    select-none cursor-pointer
+    transition duration-200 ease-in-out
+
+    hover:text-slate-800 
+    hover:border-slate-800
+    hover:bg-slate-300
+    
+    active:text-slate-400
+    active:shadow-none
+}
+
+.SidebarCard {
+    @apply
+    fixed
+    text-base
+    p-2 w-56 h-fit
+    bg-white border 
+    border-gray-300 border-solid rounded-lg
+    shadow-lg 
+}
+
+.SidebarSubItem {
+    @apply
+    flex items-center
+    mx-auto p-0.5 pl-4
+    rounded-full
+    text-slate-500
+    
+    hover:bg-slate-300
+    hover:text-slate-800 
+}
