@@ -6,6 +6,9 @@ import BasicForm from '../../components/BasicForm/BasicForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
 import ConfirmationPopover from '../../components/ConfirmationPopover/ConfirmationPopover';
 import { FormField } from '../../components/BasicForm/models';
+import { useData } from '../../providers/DataProvider';
+
+import { useOverlay } from '../../providers/OverlayProvider';
 
 
 export default function TasksTab() {
@@ -26,6 +29,7 @@ export default function TasksTab() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [currState, setCurrState] = useState(taskModel);
+    const overlay = useOverlay();
 
 
     /* Handlers */

@@ -1,19 +1,24 @@
 import React, { useState } from "react";
-import { faHome, faIndustry } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faIndustry, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 import Sidebar from "./components/Sidebar/Sidebar";
 import SidebarItem from "./components/Sidebar/SidebarItem";
 import SidebarSubItem from "./components/Sidebar/SidebarSubItem";
-import Production from "./pages/production/Production";
+import ProductionPage from "./pages/Production/ProductionPage";
+import { useAuth } from "./providers/AuthProvider";
 
 
 
 function App() {
+
+    const auth = useAuth();
+
     const [content, setContent] = useState("home");
 
     const handleSidebarItemClick = (title: string) => {
         setContent(title);
     }
+
 
     return (<div className="flex">
         <Sidebar>
@@ -26,14 +31,15 @@ function App() {
                 <SidebarSubItem title="Products" onClick={() => handleSidebarItemClick("products")} />
                 <SidebarSubItem title="Orders" onClick={() => handleSidebarItemClick("orders")} />
             </SidebarItem>
+            <SidebarItem icon={faRightFromBracket} title="Logout" onClick={auth.logout} />
         </Sidebar>
 
         {content === "home" ? 
-            <Production selectedTab="tasks" />
+            <ProductionPage selectedTab="tasks" />
         : null}
 
         {['overview', 'tasks', 'resources', 'routes', 'products', 'orders'].includes(content) ?
-            <Production selectedTab={content} />
+            <ProductionPage selectedTab={content} />
         : null}
     </div>);
 }

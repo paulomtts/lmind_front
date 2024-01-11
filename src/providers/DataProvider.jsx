@@ -16,23 +16,19 @@ const addresses = {
             logout: `${baseURL}/auth/logout`,
         },
         crud: {
-            select: `${baseURL}/custom/crud/select`,
-            insert: `${baseURL}/custom/crud/insert`,
-            update: `${baseURL}/custom/crud/update`,
-            delete: `${baseURL}/custom/crud/delete`,
+            select: `${baseURL}/crud/select`,
+            insert: `${baseURL}/crud/insert`,
+            update: `${baseURL}/crud/update`,
+            delete: `${baseURL}/crud/delete`,
         },
         custom: {
             maps: `${baseURL}/custom/configs/maps`,
             user: `${baseURL}/custom/configs/user`,
-            recipes: {
-                upsert: `${baseURL}/custom/recipes/upsert_recipe`,
-                delete: `${baseURL}/custom/recipes/delete_recipe`,
-            }
         }
     }
 };
 
-export const api = addresses.local;
+export const url = addresses.local;
 
 
 const DataContext = createContext();
@@ -129,7 +125,7 @@ export function DataProvider({ children }) {
     }
 
     const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true) => {
-        const url = api.crud.select + '?table_name=' + tableName;
+        const url = url.crud.select + '?table_name=' + tableName;
         const payload = generatePayload({ 
             method: 'POST'
             , body: JSON.stringify({
@@ -154,7 +150,7 @@ export function DataProvider({ children }) {
     };
 
     const updateData = async (tableName, id, data, notification = true, overlay = true) => {        
-        const url = api.crud.update + '?table_name=' + tableName;
+        const url = url.crud.update + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({...data, id: id}) }); 
         const response = await _makeRequest(url, payload, notification, overlay);
         
@@ -162,7 +158,7 @@ export function DataProvider({ children }) {
     };
 
     const deleteData = async (tableName, filters, notification = true, overlay = true) => {
-        const url = api.crud.delete + '?table_name=' + tableName;
+        const url = url.crud.delete + '?table_name=' + tableName;
         const payload = generatePayload({ 
             method: 'DELETE'
             , body: JSON.stringify({
@@ -176,7 +172,7 @@ export function DataProvider({ children }) {
     }
 
     const submitData = async (tableName, data, notification = true, overlay = true) => {
-        const url = api.crud.insert + '?table_name=' + tableName;
+        const url = url.crud.insert + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({
             data: [data]
             , table_name: tableName

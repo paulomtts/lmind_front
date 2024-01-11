@@ -6,19 +6,25 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { MouseProvider } from './providers/MouseProvider'
 import { NotificationProvider } from './providers/NotificationProvider'
 import { OverlayProvider } from './providers/OverlayProvider'
+import { DataProvider } from './providers/DataProvider'
+import { AuthProvider } from './providers/AuthProvider'
 
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ChakraProvider>
       <MouseProvider>
         <NotificationProvider>
           <OverlayProvider>
-            <App />
+            <DataProvider>
+              <AuthProvider>
+                <App />
+              </AuthProvider>
+            </DataProvider>
           </OverlayProvider>
         </NotificationProvider>
       </MouseProvider>
     </ChakraProvider>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )

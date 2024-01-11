@@ -31,7 +31,14 @@ export default function TableToolbar({
 
     return (<Box display={'flex'} gap={'0.5rem'}>
         <BasicPopover content={filterPopoverContent}>
-            <Button size="md" display={'flex'} gap={'0.5rem'} alignItems={'center'} border={'1px solid rgba(107, 114, 128, 0.6)'}>
+            <Button 
+                size="md"
+                display={'flex'}
+                gap={'0.5rem'}
+                alignItems={'center'}
+                border={'1px solid rgba(107, 114, 128, 0.6)'}
+                title="Show/hide table filters"
+            >
                 <FontAwesomeIcon className="text-gray-500" icon={faFilter}/>
             </Button>
         </BasicPopover>
@@ -53,9 +60,13 @@ export default function TableToolbar({
 
         <Input type="text" placeholder="Start typing to search..." value={searchFor} onChange={onSearchForChange} border={'1px solid rgba(107, 114, 128, 0.6)'}/>
 
-        <Button size="md" onClick={onRefreshClick} padding={'0 1.25rem'} display={'flex'} gap={'0.5rem'} alignItems={'center'} border={'1px solid rgba(107, 114, 128, 0.6)'}>
+        <Button 
+            size="md" 
+            border={'1px solid rgba(107, 114, 128, 0.6)'}
+            title="Reset table and refresh data"
+            onClick={onRefreshClick}
+        >
             <FontAwesomeIcon className="text-gray-500" icon={faRefresh}/>
-            Refresh
         </Button>
 
     </Box>);
