@@ -71,7 +71,7 @@ export default function SidebarItem ({
                         top: Math.min(position.y, window.innerHeight - dimensions.height - offsetY)
                         , left: parentDimensions.width + 5
                     }}>
-                        <p className='p-2'>{text}</p>
+                        {text && <p className='p-2'>{text}</p>}
                         {children}
                     </div>
                 </div>}
