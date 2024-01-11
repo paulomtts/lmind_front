@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
 
     const [inProcess, setInProcess] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState({});
 
     useEffect(() => {
         const validateSession = async () => {
@@ -45,7 +46,7 @@ export function AuthProvider({ children }) {
         } catch (error) {
             console.log(error);
         } finally {
-            overlay.hide();
+            overlay.hide(200);
         }
     }, []);
 
@@ -59,7 +60,7 @@ export function AuthProvider({ children }) {
         const { response, content } = await api.customRoute(
             url.auth.login
             , {method: 'GET', credentials: 'include'}
-            , true
+            , false
             , false
         );
 
@@ -68,7 +69,6 @@ export function AuthProvider({ children }) {
         overlay.hide(2000);
         setInProcess(false);
     }
-
 
     const logout = async () => {
         if (inProcess) return;
@@ -91,9 +91,18 @@ export function AuthProvider({ children }) {
         setInProcess(false);
     }
 
+    const getUserInfo = async () => {
+        const response = await fetch(url.custom.user, {method: 'GET', credentials: 'include'})
+        const content = await response.json();
+        const data = JSON.parse(content.data);
+
+        if (response.ok) {
+            setUser(data);
+        }
+    }
 
     return (
-        <Provider value={{ isAuthenticated, login, logout }}>
+        <Provider value={{ isAuthenticated, login, logout, getUserInfo, user }}>
             {isAuthenticated ? children : <LoginPage />}
         </Provider>
     );

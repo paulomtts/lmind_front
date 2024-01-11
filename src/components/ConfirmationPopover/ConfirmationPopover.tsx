@@ -10,7 +10,6 @@ import {
     Box,
 } from "@chakra-ui/react";
 
-
 export default function ConfirmationPopover({
     text = 'Are you sure?',
     onYes = ()=> {},

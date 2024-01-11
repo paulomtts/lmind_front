@@ -84,6 +84,11 @@ export function DataProvider({ children }) {
         let model;
 
         switch (response.status) {
+            case 200:
+                model = successModel;
+                model.title = 'Success';
+                model.description = content.message;
+                break;
             case 204:
                 model = warningModel;
                 model.title = 'No Content';
@@ -94,11 +99,6 @@ export function DataProvider({ children }) {
                 model.title = 'Not Modified';
                 model.description = 'You made no changes to the resource.';
                 break;
-            case 200:
-                model = successModel;
-                model.title = 'Success';
-                model.description = content.message;
-                break;
             case 422:
                 model = errorModel;
                 model.title = 'Unprocessable Entity';
@@ -106,7 +106,7 @@ export function DataProvider({ children }) {
             default:
                 model = errorModel;
                 model.title = 'Error';
-                model.description = 'An error occurred while processing the request.';
+                model.description = content.message;
                 break;
         }
 

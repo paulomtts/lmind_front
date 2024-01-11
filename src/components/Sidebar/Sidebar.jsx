@@ -1,4 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
+import SidebarContainer from "./SidebarContainer";
+import SidebarItem from "./SidebarItem";
+import SidebarSubItem from "./SidebarSubItem";
 
 import "./Sidebar.css";
 
@@ -15,7 +18,7 @@ function Sidebar(props) {
     }, []);
 
     return (
-        <div className="Sidebar Sidebar-shadow" ref={selfRef}>
+        <div className={`Sidebar Sidebar-shadow ${props.className}`} ref={selfRef}>
             {React.Children.map(props.children, (child) => {
                 return React.cloneElement(child, { parentDimensions: dimensions });
             })}
@@ -23,4 +26,5 @@ function Sidebar(props) {
     );
 }
 
+export { SidebarContainer, SidebarItem, SidebarSubItem };
 export default Sidebar;

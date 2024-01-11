@@ -2,11 +2,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
-function SidebarItem(props) {   
+export default function SidebarItem ({ 
+    title
+    , text
+    , offsetY = 45
+    , icon
+    , children
+    , parentDimensions
+    , onClick 
+}) {
     const selfRef = useRef(null);
 
     const [position, setPosition] = useState({ x: 0, y: 0 });
-
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     const [isOpen, setIsOpen] = useState(false);
   
     useEffect(() => {
@@ -14,6 +22,7 @@ function SidebarItem(props) {
             const rect = selfRef.current.getBoundingClientRect();
 
             setPosition({ x: rect.left, y: rect.top });
+            setDimensions({ width: rect.width, height: rect.height });           
         }
     }, []);
 
@@ -35,7 +44,7 @@ function SidebarItem(props) {
     }, []);
 
     const handleSidebarItemClick = () => {
-        if (props.onClick) props.onClick();
+        if (onClick) onClick();
         setIsOpen(!isOpen);
     }
 
@@ -52,21 +61,23 @@ function SidebarItem(props) {
                 text-xl
                 SidebarItem
             `}>
-                <FontAwesomeIcon icon={props.icon} title={props.title} />               
+                <FontAwesomeIcon icon={icon} title={title} />               
 
-                {props.children &&
+                {children &&
                 <div className={`transition-all duration-300 ease-in-out
                     ${isOpen ? `opacity-100 h-auto` : "opacity-0 h-0 pointer-events-none"}
                 `}>
-                    <div className="SidebarCard" style={{ top: position.y, left: props.parentDimensions.width + 5}}>
-                        {props.children}
+                    <div className="SidebarCard" style={{ 
+                        top: Math.min(position.y, window.innerHeight - dimensions.height - offsetY)
+                        , left: parentDimensions.width + 5
+                    }}>
+                        <p className='p-2'>{text}</p>
+                        {children}
                     </div>
                 </div>}
             </div>
 
-            {props.title}
+            {title}
         </div>
     );
 }
-
-export default SidebarItem;
