@@ -4,6 +4,7 @@ import React, { useState, useContext, createContext, useEffect } from 'react';
 /* Local dependencies */
 import { useData, url } from './DataProvider';
 import { useOverlay } from './OverlayProvider';
+import { useNotification } from './NotificationProvider';
 import LoginPage from '../pages/Login/LoginPage';
 
 
@@ -12,13 +13,15 @@ const { Provider } = AuthContext;
 
 export function AuthProvider({ children }) {
 
+    const { spawnToast, warningModel } = useNotification();
     const overlay = useOverlay();
     const api = useData();
-
+    
     const [inProcess, setInProcess] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState({});
-
+    
+    
     useEffect(() => {
         const validateSession = async () => {
             const payload = {
@@ -26,7 +29,7 @@ export function AuthProvider({ children }) {
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include'
             }
-
+            
             await fetch(url.auth.validate, payload)
             .then((response) => {
                 if (response.ok) {
@@ -39,7 +42,6 @@ export function AuthProvider({ children }) {
             .catch(() => {});
         }
 
-
         try {
             overlay.show();
             validateSession();
@@ -49,6 +51,16 @@ export function AuthProvider({ children }) {
             overlay.hide(200);
         }
     }, []);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+    
+        if(params.get('login') === 'false' && !isAuthenticated) {
+            const model = warningModel;
+            model.description = 'Login failed';
+            spawnToast(model);
+        }
+    }, [isAuthenticated]);
 
 
     const login = async () => {
