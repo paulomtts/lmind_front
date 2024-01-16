@@ -5,10 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 export default function SidebarItem ({ 
     title
     , text
-    , offsetY = 45
     , icon
-    , children
+    , offsetY = 45
+    , currentItem
     , parentDimensions
+    , children
     , onClick 
 }) {
     const selfRef = useRef(null);
@@ -60,6 +61,7 @@ export default function SidebarItem ({
             <div className={`
                 text-xl
                 SidebarItem
+                ${currentItem === title ? "text-red-500" : ""}
             `}>
                 <FontAwesomeIcon icon={icon} title={title} />               
 

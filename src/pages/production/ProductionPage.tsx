@@ -14,7 +14,7 @@ export default function ProductionPage({
     selectedTab = 'tasks',
 }) {
 
-    const tabs = ['overview', 'tasks', 'resources', 'routes', 'products', 'orders'];
+    const tabs = ['Overview', 'Tasks', 'Resources', 'Routes', 'Products', 'Orders'];
     const [index, setIndex] = useState(tabs.indexOf(selectedTab));
     
     useEffect(() => {

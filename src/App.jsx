@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { faHome, faIndustry, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faIndustry, faRightFromBracket, faFolderClosed } from '@fortawesome/free-solid-svg-icons';
 import { Avatar } from '@chakra-ui/react'
 
+import { useAuth } from "./providers/AuthProvider";
 import Sidebar, {SidebarItem, SidebarSubItem, SidebarContainer} from "./components/Sidebar/Sidebar";
 import ProductionPage from "./pages/Production/ProductionPage";
-import { useAuth } from "./providers/AuthProvider";
+import RegistryPage from "./pages/Registry/RegistryPage";
 
 
 function App() {
 
     const auth = useAuth();
 
-    const [content, setContent] = useState("home");
+    const [content, setContent] = useState("Home");
+    const [currentItem, setCurrentItem] = useState("Home");
 
     useEffect(() => {
         if (auth.isAuthenticated) {
@@ -21,20 +23,26 @@ function App() {
 
     const handleSidebarItemClick = (title) => {
         setContent(title);
+        setCurrentItem(title);
     }
 
     return (<div className="flex">
         <Sidebar className="flex justify-between">
             <SidebarContainer className="flex flex-col gap-4">
-                <SidebarItem icon={faHome} title="Home" onClick={() => handleSidebarItemClick("home")} />
+                <SidebarItem icon={faHome} title="Home" onClick={() => handleSidebarItemClick("Home")} />
 
                 <SidebarItem icon={faIndustry} title="Production">
-                    <SidebarSubItem title="Overview" onClick={() => handleSidebarItemClick("overview")} />
-                    <SidebarSubItem title="Tasks" onClick={() => handleSidebarItemClick("tasks")} />
-                    <SidebarSubItem title="Resources" onClick={() => handleSidebarItemClick("resources")} />
-                    <SidebarSubItem title="Routes" onClick={() => handleSidebarItemClick("routes")} />
-                    <SidebarSubItem title="Products" onClick={() => handleSidebarItemClick("products")} />
-                    <SidebarSubItem title="Orders" onClick={() => handleSidebarItemClick("orders")} />
+                    <SidebarSubItem title="Overview" onClick={() => handleSidebarItemClick("Overview")} />
+                    <SidebarSubItem title="Tasks" onClick={() => handleSidebarItemClick("Tasks")} />
+                    <SidebarSubItem title="Resources" onClick={() => handleSidebarItemClick("Resources")} />
+                    <SidebarSubItem title="Routes" onClick={() => handleSidebarItemClick("Routes")} />
+                    <SidebarSubItem title="Products" onClick={() => handleSidebarItemClick("Products")} />
+                    <SidebarSubItem title="Orders" onClick={() => handleSidebarItemClick("Orders")} />
+                </SidebarItem>
+
+                <SidebarItem icon={faFolderClosed} title="Registry">
+                    <SidebarSubItem title="Symbols" onClick={() => handleSidebarItemClick("Symbols")} />
+                    <SidebarSubItem title="Tags" onClick={() => handleSidebarItemClick("Tags")} />
                 </SidebarItem>
             </SidebarContainer>
         
@@ -47,13 +55,19 @@ function App() {
             </SidebarContainer>
         </Sidebar>
 
-        {content === "home" ? 
-            <ProductionPage selectedTab="tasks" />
-        : null}
-
-        {['overview', 'tasks', 'resources', 'routes', 'products', 'orders'].includes(content) ?
-            <ProductionPage selectedTab={content} />
-        : null}
+        {(() => {
+            switch (content) {
+                case "Overview": return <ProductionPage selectedTab="Overview" />;
+                case "Tasks": return <ProductionPage selectedTab="Tasks" />;
+                case "Resources": return <ProductionPage selectedTab="Resources" />;
+                case "Routes": return <ProductionPage selectedTab="Routes" />;
+                case "Products": return <ProductionPage selectedTab="Products" />;
+                case "Orders": return <ProductionPage selectedTab="Orders" />;
+                case "Symbols": return <RegistryPage selectedTab="Symbols" />;
+                case "Tags": return <RegistryPage selectedTab="Tags" />;
+                default: return <></>;
+            }
+        })()}
     </div>);
 }
 

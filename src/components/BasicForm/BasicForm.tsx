@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 import {
     Input,
+    Switch,
 
     FormControl,
     FormLabel,
@@ -13,55 +14,50 @@ import {
 
 } from '@chakra-ui/react'
 
-import { FormField } from './models';
+import { DataField, DataRow } from '../../providers/data/dataModels';
 
 
 export default function BasicForm({
-    fields
+    row
     , onChange = () => {}
 }: { 
-    fields: FormField[] 
-    , onChange?: (state: FormField[]) => void
+    row: DataRow
+    , onChange?: (state: DataRow) => void
 }) {
 
-    const [formState, setFormState] = useState(fields);
+    const [formState, setFormState] = useState(row);
 
-    const handleFieldChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
-        const value = e.target.value;
-    
-        const newFormState = formState.map((field: FormField) => {
-            if (field.label === name) { 
+
+    /* Methods */
+    const _changeState = (name: string, value: any) => {
+        const newFormState = new DataRow(formState.tableName, formState.json);
+
+        newFormState.json[name] = value;
+        newFormState.fields.forEach((field) => {
+            if (field.name === name) {
                 field.value = value;
             }
-            return field;
         });
-
-        setFormState(newFormState);
-        onChange(newFormState);
-    };
-
-    const handleIncrement = (name: string) => {
-        const newFormState = formState.map((field: FormField) => {
-            if (field.label === name) { 
-                field.value = Number(field.value) + 1;
-            }
-            return field;
-        });
-    
+        console.log(newFormState)
         setFormState(newFormState);
         onChange(newFormState);
     }
 
+
+    /* Handlers */
+    const handleFieldChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
+        const value = e.target.value;
+        _changeState(name, value);
+    };
+
+    const handleIncrement = (name: string) => {   
+        const value = Number(formState.json[name]) + 1;
+        _changeState(name, value);
+    }
+
     const handleDecrement = (name: string) => {
-        const newFormState = formState.map((field: FormField) => {
-            if (field.label === name) { 
-                field.value = Number(field.value) - 1;
-            }
-            return field;
-        });
-    
-        setFormState(newFormState);
-        onChange(newFormState);
+        const value = Number(formState.json[name]) - 1;
+        _changeState(name, value);
     }
 
     const handleOnKeyDown = (e: React.KeyboardEvent, label: string) => {
@@ -74,9 +70,13 @@ export default function BasicForm({
     }
     
 
-    const fieldComponents = formState.map((field: FormField, index: number) => {
+    const fieldComponents = formState.fields.map((field: DataField, index: number) => {
         const identifier = `APIForm-field-${field.label}-${index}`;
         const value = String(field.value);
+
+        if (!field.visible) {
+            return null;
+        }
 
         switch (field.type) {
             case 'text' || 'password' || 'email':
@@ -87,7 +87,8 @@ export default function BasicForm({
                             type={field.type} 
                             value={value} 
                             placeholder='Type...' 
-                            onChange={(e) => handleFieldChange(e, field.label)} 
+                            isDisabled={!field.editable}
+                            onChange={(e) => handleFieldChange(e, field.name)}
                         />
                     </FormControl>
                 );
@@ -95,15 +96,37 @@ export default function BasicForm({
                 return (
                     <FormControl id={identifier} key={identifier} isRequired={field.required}>
                         <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
-                        <NumberInput value={value}>
-                            <NumberInputField onChange={(e) => handleFieldChange(e, field.label)} onKeyDown={(e) => handleOnKeyDown(e, field.label)}/>
+                        <NumberInput value={value} isDisabled={!field.editable}>
+                            <NumberInputField onChange={(e) => handleFieldChange(e, field.name)} onKeyDown={(e) => handleOnKeyDown(e, field.name)}/>
                             <NumberInputStepper>
-                                <NumberIncrementStepper onClick={() => handleIncrement(field.label)} />
-                                <NumberDecrementStepper onClick={() => handleDecrement(field.label)} />
+                                <NumberIncrementStepper onClick={() => handleIncrement(field.name)} />
+                                <NumberDecrementStepper onClick={() => handleDecrement(field.name)} />
                             </NumberInputStepper>
                         </NumberInput>
                     </FormControl>
                 );
+            case 'boolean':
+                return (
+                    <FormControl id={identifier} key={identifier} isRequired={field.required}>
+                        <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
+                        <Switch 
+                            isChecked={Boolean(value)} 
+                            onChange={(e) => handleFieldChange(e, field.name)}
+                        />
+                    </FormControl>
+                );
+            // case 'select':
+            //     return (
+            //         <FormControl id={identifier} key={identifier} isRequired={field.required}>
+            //             <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
+            //             <Input 
+            //                 type={field.type} 
+            //                 value={value} 
+            //                 placeholder='Type...' 
+            //                 onChange={(e) => handleFieldChange(e, field.name)} 
+            //             />
+            //         </FormControl>
+            //     );
         }
     });
 

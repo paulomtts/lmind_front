@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import BasicPopover from "../BasicPopover/BasicPopover";
 import FilterBox from "./FilterBox";
+import { Filter } from "./models";
 
 
 export default function TableToolbar({
@@ -25,12 +26,21 @@ export default function TableToolbar({
     onSearchForChange,
     onRefreshClick,
     onChangeFilters,
+}: {
+    columns: string[]
+    , filters: Filter[]
+    , searchIn: string
+    , searchFor: string
+    , onSearchInClick: (event: React.MouseEvent<HTMLElement>) => void
+    , onSearchForChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+    , onRefreshClick: (event: React.MouseEvent<HTMLElement>) => void
+    , onChangeFilters: (filters: Filter[]) => void
 }) {
 
     const filterPopoverContent = <FilterBox filters={filters} onChangeFilters={onChangeFilters}/>;
 
     return (<Box display={'flex'} gap={'0.5rem'}>
-        <BasicPopover content={filterPopoverContent}>
+        {/* <BasicPopover content={filterPopoverContent}>
             <Button 
                 size="md"
                 display={'flex'}
@@ -41,19 +51,19 @@ export default function TableToolbar({
             >
                 <FontAwesomeIcon className="text-gray-500" icon={faFilter}/>
             </Button>
-        </BasicPopover>
+        </BasicPopover> */}
 
         <Menu>
             <MenuButton minW={150} as={Button} border={'1px solid rgba(107, 114, 128, 0.6)'}>
                 <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={'0.5rem'}>
-                    {searchIn}
+                    {searchIn[0].toUpperCase() + searchIn.slice(1)}
                     <FontAwesomeIcon icon={faChevronDown}/>
                 </Box>
             </MenuButton>
             <MenuList shadow={'1px 0px 5px 2px lightgray'} borderRadius={'0.5rem'} border={'1px solid lightgray'} >
                 <MenuItem key={'All'} value={'All'} onClick={onSearchInClick}>All</MenuItem>
                 {columns.map((column) => {
-                    return <MenuItem key={column} value={column} onClick={onSearchInClick}>{column}</MenuItem>
+                    return <MenuItem key={column} value={column} onClick={onSearchInClick}>{column[0].toUpperCase() + column.slice(1)}</MenuItem>
                 })}
             </MenuList>
         </Menu>

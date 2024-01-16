@@ -6,7 +6,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { MouseProvider } from './providers/MouseProvider'
 import { NotificationProvider } from './providers/NotificationProvider'
 import { OverlayProvider } from './providers/OverlayProvider'
-import { DataProvider } from './providers/DataProvider'
+import { DataProvider } from './providers/data/DataProvider'
 import { AuthProvider } from './providers/AuthProvider'
 
 import './index.css'

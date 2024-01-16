@@ -9,25 +9,28 @@ const baseOpacity = 0.5;
 export function OverlayProvider({ children }) {
 
     const [enabled, setEnabled] = useState(false)
+    const [opacity, setOpacity] = useState(baseOpacity)
 
     const style = {
         position: 'fixed',
         top: '0',
         width: '100%',
         height: '100%',
-        backgroundColor: `rgba(0,0,0,${baseOpacity})`,
+        backgroundColor: `rgba(255,255,255,${opacity})`,
         display: enabled ? 'block' : 'none',
         backdropFilter: 'blur(2px)',
         zIndex: 4999,
     };
 
-    const show = () => {
+    const show = (opacity = baseOpacity) => {
         setEnabled(true);
+        setOpacity(opacity);
     };
 
     const hide = (delay = 250) => {
         setTimeout(() => {
             setEnabled(false);
+            setOpacity(baseOpacity);
         }, delay);
     };
 

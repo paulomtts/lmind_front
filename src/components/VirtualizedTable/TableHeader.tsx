@@ -15,7 +15,7 @@ export default function TableHeader({
     onSortClick,
 }: {
     sorters: Sorter[],
-    onSortClick: (label: string) => void,
+    onSortClick: (targetSorter: Sorter) => void,
 }) {
 
     const getIcon = (direction: string) => {
@@ -38,7 +38,7 @@ export default function TableHeader({
                             <FontAwesomeIcon 
                                 icon={icon}
                                 className='cursor-pointer'
-                                onClick={() => onSortClick(sort.label)}
+                                onClick={() => onSortClick(sort)}
                             />
                         </Box>
                     </Th>

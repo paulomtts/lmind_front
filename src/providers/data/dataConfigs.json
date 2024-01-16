@@ -1,0 +1,58 @@
+{
+    "tsys_symbols": {
+        "id": {
+            "name": "id"
+            , "label": "ID"
+            , "type": "number"
+            , "visible": false
+            , "required": false
+            , "editable": false
+            , "error": ""
+        },
+        "name" :{
+            "name": "name"
+            , "label": "Name"
+            , "type": "text"
+            , "visible": true
+            , "required": true
+            , "editable": true
+            , "error": "Name is required"
+        }
+        , "abbreviation" : {
+            "name": "abbreviation"
+            , "label": "Abbreviation"
+            , "type": "text"
+            , "visible": true
+            , "required": true
+            , "editable": true
+            , "error": "Please provide an abbreviation"
+        }
+        , "base" : {
+            "name": "base"
+            , "label": "Base"
+            , "type": "number"
+            , "visible": true
+            , "required": true
+            , "editable": true
+            , "error": "A base value is required to calculate conversions"
+        }
+        , "type": {
+            "name": "type"
+            , "label": "Type"
+            , "type": "select"
+            , "visible": true
+            , "required": true
+            , "editable": true
+            , "error": "Select a type of measurement for this symbol"
+        }
+        , "created_by": {
+            "name": "created_by"
+            , "label": "Created By"
+            , "type": "text"
+            , "visible": true
+            , "required": false
+            , "editable": false
+            , "error": ""
+        }
+    }
+}

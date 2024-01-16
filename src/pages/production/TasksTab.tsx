@@ -5,8 +5,8 @@ import BasicModal from '../../components/BasicModal/BasicModal';
 import BasicForm from '../../components/BasicForm/BasicForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
 import ConfirmationPopover from '../../components/ConfirmationPopover/ConfirmationPopover';
-import { FormField } from '../../components/BasicForm/models';
-import { useData } from '../../providers/DataProvider';
+// import { FormField } from '../../components/BasicForm/models';
+import { useData } from '../../providers/data/DataProvider';
 
 import { useOverlay } from '../../providers/OverlayProvider';
 
@@ -29,6 +29,7 @@ export default function TasksTab() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [currState, setCurrState] = useState(taskModel);
+    const api = useData();
     const overlay = useOverlay();
 
 
@@ -57,6 +58,11 @@ export default function TasksTab() {
         setCurrState(state);
     }
 
+    const testAPI = async () => {
+        const tsys_symbols = await api.fetchData('tsys_symbols');
+        console.log(tsys_symbols.data.rows[0].getVisible());
+    }
+
 
     /* Components */
     const modalFooterCreateMode = [
@@ -82,8 +88,13 @@ export default function TasksTab() {
                     New Task
                 </Button>
             </div>
+            <div className='flex justify-between'>
+                <Button colorScheme="green" onClick={testAPI}>
+                    API Test
+                </Button>
+            </div>
         </Box>
-
+{/* 
         <BasicModal 
             title="New Task" 
             width='85%'
@@ -93,7 +104,7 @@ export default function TasksTab() {
             onClose={() => setModalIsOpen(false)}
         >
             <BasicForm fields={currState} onChange={handleFormStateChange} />
-        </BasicModal>
+        </BasicModal> */}
 
         <VirtualizedTable columns={columns} initialData={initialData} onClickRow={handleEditClick}/>
     </Box>)

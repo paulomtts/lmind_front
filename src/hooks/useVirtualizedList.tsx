@@ -13,9 +13,9 @@ import { useState, useEffect } from "react";
  * @returns {[Array, number, number]} - An array containing the visible data, the height of the content before the visible area, and the height of the content after the visible area.
  */
 export const useVirtualizedList = (
-        data: Record<string, any>[] = []
-        , builderCallback: (row: Record<string, any>) => JSX.Element
-        , filtersCallback: (row: Record<string, any>) => boolean
+        data: any[] = []
+        , builderCallback: (row: any) => JSX.Element
+        , filtersCallback: (row: any) => boolean
         , containerRef: React.MutableRefObject<HTMLDivElement>
         , triggers: any[] = []
         , rowHeight: number = 36

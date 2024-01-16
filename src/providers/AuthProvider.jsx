@@ -2,7 +2,7 @@
 import React, { useState, useContext, createContext, useEffect } from 'react';
 
 /* Local dependencies */
-import { useData, url } from './DataProvider';
+import { useData, url } from './data/DataProvider';
 import { useOverlay } from './OverlayProvider';
 import { useNotification } from './NotificationProvider';
 import LoginPage from '../pages/Login/LoginPage';
@@ -22,6 +22,7 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState({});
     
     
+    /* Effects */
     useEffect(() => {
         const validateSession = async () => {
             const payload = {
@@ -43,12 +44,12 @@ export function AuthProvider({ children }) {
         }
 
         try {
-            overlay.show();
+            overlay.show(1);
             validateSession();
         } catch (error) {
             console.log(error);
         } finally {
-            overlay.hide(200);
+            overlay.hide(300);
         }
     }, []);
 
@@ -63,6 +64,7 @@ export function AuthProvider({ children }) {
     }, [isAuthenticated]);
 
 
+    /* Methods */
     const login = async () => {
         if (inProcess) return;
 

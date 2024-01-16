@@ -7,7 +7,7 @@ export default function SidebarContainer(props) {
         <div className={props.className} style={{ height: props.height }}>
             {React.Children.map(props.children, (child) => {
                 if (React.isValidElement(child) && child.type === SidebarItem) {
-                    return React.cloneElement(child, { parentDimensions: props.parentDimensions });
+                    return React.cloneElement(child, { parentDimensions: props.parentDimensions, currentItem: props.currentItem });
                 }
                 return child;
             })}

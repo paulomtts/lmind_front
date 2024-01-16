@@ -1,9 +1,8 @@
-/* Foreign dependencies */
 import React, { useState, useContext, createContext } from 'react';
 
-/* Local dependencies */
-import { useNotification } from './NotificationProvider';
-import { useOverlay } from './OverlayProvider';
+import { useNotification } from '../NotificationProvider';
+import { useOverlay } from '../OverlayProvider';
+import { DataObject, DataRow, DataField } from './dataModels';
 
 
 const baseURL = false ? 'some.address' : 'http://localhost:8000';
@@ -40,14 +39,11 @@ export function DataProvider({ children }) {
     const { spawnToast, successModel, infoModel, warningModel, errorModel} = useNotification();
 
     const [unitData, setUnitData] = useState([]);
-    const [categoryData, setCategoryData] = useState([]);
 
     const getState = (objectName) => {
         switch (objectName) {
-            case 'units':
+            case 'tsys_symbols':
                 return unitData;
-            case 'categories':
-                return categoryData;
             default:
                 return null;
         }
@@ -55,10 +51,8 @@ export function DataProvider({ children }) {
 
     const _getStateSetter = (objectName) => {
         switch (objectName) {
-            case 'units':
+            case 'tsys_symbols':
                 return setUnitData;
-            case 'categories':
-                return setCategoryData;
             default:
                 return null;
         }    
@@ -119,13 +113,15 @@ export function DataProvider({ children }) {
         return { response, content };
     };
 
+    
     const customRoute = async (url, payload = {}, notification = true, overlay = true) => {
         const { response, content } = await _makeRequest(url, payload, notification, overlay);
         return { response, content };
     }
 
+
     const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true) => {
-        const url = url.crud.select + '?table_name=' + tableName;
+        const address = url.crud.select + '?table_name=' + tableName;
         const payload = generatePayload({ 
             method: 'POST'
             , body: JSON.stringify({
@@ -135,30 +131,33 @@ export function DataProvider({ children }) {
             }) 
         });
             
-        const { response, content } = await _makeRequest(url, payload, notification, overlay);
+        const { response, content } = await _makeRequest(address, payload, notification, overlay);
 
         if(response.status === 200 && content.data !== undefined){
             const stateSetter = _getStateSetter(tableName);
             const json = await JSON.parse(content.data);
+            const data = new DataObject(tableName, json);
             
             if(stateSetter !== null) stateSetter(json); 
 
-            return { response, json }
+            return { response, data }
         }
         
-        return { response, json: [] }
+        return { response, data: [] }
     };
 
+
     const updateData = async (tableName, id, data, notification = true, overlay = true) => {        
-        const url = url.crud.update + '?table_name=' + tableName;
+        const address = url.crud.update + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({...data, id: id}) }); 
-        const response = await _makeRequest(url, payload, notification, overlay);
+        const response = await _makeRequest(address, payload, notification, overlay);
         
         return response
     };
 
+
     const deleteData = async (tableName, filters, notification = true, overlay = true) => {
-        const url = url.crud.delete + '?table_name=' + tableName;
+        const address = url.crud.delete + '?table_name=' + tableName;
         const payload = generatePayload({ 
             method: 'DELETE'
             , body: JSON.stringify({
@@ -166,18 +165,19 @@ export function DataProvider({ children }) {
                 filters: filters
             }) 
         });
-        const response = await _makeRequest(url, payload, notification, overlay);
+        const response = await _makeRequest(address, payload, notification, overlay);
 
         return response
     }
 
+
     const submitData = async (tableName, data, notification = true, overlay = true) => {
-        const url = url.crud.insert + '?table_name=' + tableName;
+        const address = url.crud.insert + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({
             data: [data]
             , table_name: tableName
         } )});
-        const response = await _makeRequest(url, payload, notification, overlay);
+        const response = await _makeRequest(address, payload, notification, overlay);
 
         return response
     }
@@ -190,6 +190,9 @@ export function DataProvider({ children }) {
     );
 }
 
+
 export const useData = () => {
     return useContext(DataContext);
 };
+
+export { DataObject, DataRow, DataField};

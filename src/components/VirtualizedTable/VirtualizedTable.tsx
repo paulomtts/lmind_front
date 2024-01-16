@@ -1,28 +1,29 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Box, Table } from "@chakra-ui/react";
 
 import TableToolbar from "./TableToolbar";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import { Sorter, Filter } from "./models";
-import { FormField } from "../BasicForm/models";
+import { DataObject, DataRow } from "../../providers/data/dataModels";
 
 
 export default function VirtualizedTable ({
-    columns,
     initialData, 
     onClickRow = () => {},
+    onRefreshClick = () => {}
 }: { 
-    columns: string[];
-    initialData: Record<string, any>[];
-    onClickRow?: (row: FormField[]) => void; 
+    columns: string[]
+    , initialData: DataObject
+    , onClickRow?: (row: DataRow) => void
+    , onRefreshClick?: () => void
 }) {
     
-    const [data, setData] = useState<Record<string, any>[]>([...initialData]);
+    const [data, setData] = useState<DataObject>(initialData);
     const [searchIn, setSearchIn] = useState<string>("All");
     const [searchFor, setSearchFor] = useState<string>("");
     const [sorters, setSorters] = useState<Sorter[]>(
-        columns.map((column) => {
+        initialData.getVisibleColumns().map((column) => {
             return new Sorter(column, 'none');
         })
     );
@@ -30,105 +31,131 @@ export default function VirtualizedTable ({
 
     const containerRef = useRef<HTMLDivElement>(null!);
 
+
+    /* Effects */
+    useEffect(() => {
+        setData(initialData);
+    }, [initialData]);
+
+
     /* Functions */
-    function multiColumnSort(data: Record<string, any>[], columns: string[], targetColumn: string, sorters: Sorter[]) {
-        return data.sort((a, b) => {
-            for (let i = 0; i < columns.length; i++) {
+    function filterRows(data: DataObject, searchFor: string) {
+        const visibleColumns = data.getVisibleColumns();
 
-                const sortCondition = sorters.find((sortObject) => {
-                    return sortObject.label === columns[i];
+        let newData: DataObject;
+
+        if (searchIn === "All") {
+            const newJson = initialData.json.filter((row) => {
+                return visibleColumns.some((column) => {
+                    return row[column].toString().includes(searchFor);
                 });
+            });
 
-                if (!sortCondition) continue;
+            newData = new DataObject(initialData.tableName, newJson);
 
-                const prop = columns[i];
-                const direction = sortCondition.direction;
-                if(direction === 'none') {
-                    if(columns[i] === targetColumn) {
-                        return initialData.indexOf(a) - initialData.indexOf(b);
-                    }
-                    continue;
+        } else {
+            const newJson = initialData.json.filter((row) => {
+                return row[searchIn].toString().includes(searchFor);
+            });
+
+            newData = new DataObject(initialData.tableName, newJson);
+        }
+
+        return newData;
+    }
+
+    function multiSort(data: DataObject, sorters: Sorter[]) {
+        const columns = initialData.getVisibleColumns();
+        const filteredRows = filterRows(data, searchFor);
+        
+        return filteredRows.json.sort((a, b) => {
+            return columns.reduce((result, col) => {
+                if (result !== 0) return result;
+        
+                const currSort = sorters.find((sortObject) => {
+                    return sortObject.label === col;
+                });
+        
+                if (!currSort) return 0;
+                
+                if(currSort.direction === 'none') {
+                    return 0;
                 }
                 
-                if(direction === 'asc') {
-                    if (a[prop] !== b[prop]) {
-                        return a[prop] > b[prop] ? 1 : -1;
+                if(currSort.direction === 'asc') {
+                    if (a[col] !== b[col]) {
+                        return a[col] > b[col] ? 1 : -1;
                     }
-                } else if(direction === 'desc') {
-                    if (a[prop] !== b[prop]) {
-                        return a[prop] < b[prop] ? 1 : -1;
+                } else if(currSort.direction === 'desc') {
+                    if (a[col] !== b[col]) {
+                        return a[col] < b[col] ? 1 : -1;
                     }
-                }
-            }
-            return 0;
+                } 
+                
+        
+                return 0;
+            }, 0);
         });
-    }
+    };
 
     
     /* Handlers */
-    const handleSearchInClick = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleSearchInClick = (e: any) => {
         setSearchIn(e.target.value);
     };
 
     const handleSearchForChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if(!data) return;
+
         const newSearchFor = e.target.value;
 
-        if (searchIn === "All") {
-            const newData = initialData.filter((row) => {
-                return Object.keys(row).some((key) => {
-                    return row[key].toString().includes(newSearchFor);
-                });
-            });
-
-            setData(newData);
-        } else {
-            const newData = initialData.filter((row) => {
-                return row[searchIn].toString().includes(newSearchFor);
-            });
-
-            setData(newData);
-        }
-
+        const newData = filterRows(data, newSearchFor);
+        
+        setData(newData);
         setSearchFor(newSearchFor);
     };
 
-    const handleSortClick = (label: string) => {
-        const newSort = sorters.map((sortObject) => {
-            if (sortObject.label === label) {
-                if (sortObject.direction === 'none') {
-                    sortObject.direction = 'asc';
-                } else if (sortObject.direction === 'asc') {
-                    sortObject.direction = 'desc';
-                } else if (sortObject.direction === 'desc') {
-                    sortObject.direction = 'none';
+    const handleSortClick = (targetSorter: Sorter) => {
+        if (!data) return;
+
+        const newSorters = sorters.map((srt) => {
+            if (srt.label === targetSorter.label) {
+                if (srt.direction === 'none') {
+                    srt.direction = 'asc';
+                } else if (srt.direction === 'asc') {
+                    srt.direction = 'desc';
+                } else if (srt.direction === 'desc') {
+                    srt.direction = 'none';
                 }
             }
-            return sortObject;
+            return srt;
         });
 
-        setSorters(newSort);
+        setSorters(newSorters);
 
-        const newData = multiColumnSort(data, columns, label, newSort);
+        const newJson = multiSort(data, newSorters);
+        const newData = new DataObject(initialData.tableName, newJson);
+        
         setData(newData);
     };
 
     const handleRefreshClick = () => {
-        setSearchIn("all");
+        setSearchIn("All");
         setSearchFor("");
-        setSorters(
-            columns.map((column) => {
+        setSorters(initialData.getVisibleColumns().map((column) => {
                 return {
                     label: column,
                     direction: "none",
                 };
-            })
-        );
-        setData([...initialData]);
+        }));
+        setData(initialData);
+
+        onRefreshClick();
     }
 
     return (<>
         <TableToolbar
-            columns={columns}
+            columns={data.getVisibleColumns()}
             filters={filters}
             searchIn={searchIn}
             searchFor={searchFor}

@@ -9,54 +9,50 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { v4 } from 'uuid';
 
-import { FormField } from "../BasicForm/models.js"
+import { DataObject, DataRow, configs } from '../../providers/data/dataModels.js';
 import { useVirtualizedList } from '../../hooks/useVirtualizedList.js';
 import { Sorter } from './models.js';
 
 
 export default function TableBody({
     data
-    , containerRef
     , sorters
+    , containerRef
     , displayCallback = () => true
     , onClickRow = () => {}
 }: {
-    data: Record<string, string | number | boolean>[]
-    , containerRef: React.MutableRefObject<HTMLDivElement>
+    data: DataObject
     , sorters: Sorter[]
+    , containerRef: React.MutableRefObject<HTMLDivElement>
     , displayCallback?: (row: Record<string, any>) => boolean
-    onClickRow?: (row: FormField[]) => void;
+    onClickRow?: (row: DataRow) => void;
 }) {
 
-    const handleClickRow = (row: Record<string, string | number | boolean>) => {
-        const newFields = Object.entries(row).map(([key, value]) => {
-            return new FormField(key, value, true);
-        });
-
-        onClickRow(newFields);
-    }
-
-    const rowBuilder = (row: Record<string, any>) => {
+    const rowBuilder = (json: Record<string, any>) => {
         const uuid = v4();
+
+        const row = new DataRow(data.tableName, json);
 
         return <Tr 
             key={uuid}
-            className="hover:bg-blue-100" 
-            style={{borderBottom: '1px solid lightgray'}}
+            className="hover:bg-blue-100 border-t border-solid border-gray-300" 
         >
             <Td padding={'0.25rem 0.25px'} textAlign={'center'}>
-                <Button 
+                <Button
                     size='xs' 
                     bg='gray.200' 
                     padding={'0px'} 
                     margin={'0px'} 
-                    className='border border-solid border-gray-400' 
-                    onClick={() => handleClickRow(row)}>
+                    className='border border-solid border-gray-400'
+                    isDisabled={row.json['created_by'] === 'system'}
+                    onClick={() => onClickRow(row)}
+                >
                     <FontAwesomeIcon icon={faEdit} />
                 </Button>
             </Td>
-            {Object.keys(row).map((key) => {
-                return <Td  key={key}>{row[key]}</Td>
+
+            {row.getVisible().map((field) => {
+                return <Td key={field.label}>{String(field.value)}</Td>
             })}
         </Tr>
     }
@@ -65,7 +61,7 @@ export default function TableBody({
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(data, rowBuilder, displayCallback, containerRef, [data, sorters]);
+    ] = useVirtualizedList(data.json, rowBuilder, displayCallback, containerRef, [data, sorters]);
 
 
     return (<>

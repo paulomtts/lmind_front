@@ -5,7 +5,11 @@ import SidebarSubItem from "./SidebarSubItem";
 
 import "./Sidebar.css";
 
-function Sidebar(props) {
+function Sidebar({
+    className = "",
+    currentItem = "",
+    children,
+}) {
     const selfRef = useRef(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -18,9 +22,9 @@ function Sidebar(props) {
     }, []);
 
     return (
-        <div className={`Sidebar Sidebar-shadow ${props.className}`} ref={selfRef}>
-            {React.Children.map(props.children, (child) => {
-                return React.cloneElement(child, { parentDimensions: dimensions });
+        <div className={`Sidebar Sidebar-shadow ${className}`} ref={selfRef}>
+            {React.Children.map(children, (child) => {
+                return React.cloneElement(child, { parentDimensions: dimensions, currentItem: currentItem });
             })}
         </div>
     );
