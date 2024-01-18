@@ -1,30 +1,31 @@
 import React, { useRef } from "react";
 
-import { useMouse } from "../../providers/mouse.jsx";
+import { useMouse } from "../../providers/MouseProvider.jsx";
 
 
 export default function HoverCard({
     customX = null
     , customY = null
+    , children
 }) {
 
-    const { mousePosition } = useMouse();
+    const { position } = useMouse();
     const cardRef = useRef(null);
 
     function buildPosition() {
-        let left = mousePosition.x;
-        let top = mousePosition.y;
+        let left = position.x;
+        let top = position.y;
 
-        if(mousePosition.x > window.innerWidth / 2) {
-            left -= 515;
+        if (position.x + (cardRef.current ? (cardRef.current as HTMLElement).offsetWidth : 0) + 20 > window.innerWidth) {
+            left -= cardRef.current ? (cardRef.current as HTMLElement).offsetWidth + 15 : position.x;
         } else {
-            left += 30;
+            left += 15;
         }
 
-        if(mousePosition.y > window.innerHeight / 2) {
-            top -= cardRef.current ? cardRef.current.offsetHeight + 15 : mousePosition.y;
+        if (position.y + (cardRef.current ? (cardRef.current as HTMLElement).offsetHeight : 0) + 20 > window.innerHeight) {
+            top -= cardRef.current ? (cardRef.current as HTMLElement).offsetHeight + 15 : position.y;
         } else {
-            top += 30;
+            top += 15;
         }
 
         return {left: left, top: top};
@@ -32,12 +33,12 @@ export default function HoverCard({
 
     return (
         <div
-            className="bg-white border border-gray-300 shadow-lg p-5"
+            className="bg-white border border-gray-300 shadow-md p-2"
             ref={cardRef}
             style={
                 {
-                    width: '500px'
-                    , height: 'fit-content'
+                    // width: 'auto'
+                    height: 'fit-content'
                     , position: 'fixed'
                     , zIndex: 1001
                     , left: customX ?
@@ -52,7 +53,7 @@ export default function HoverCard({
                 }
             }
         >
-            This is a card
+            {children}
         </div>
     )
 }

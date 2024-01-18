@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 
+import Select from '../../components/Select/Select';
 import BasicModal from '../../components/BasicModal/BasicModal';
 import BasicForm from '../../components/BasicForm/BasicForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
@@ -77,7 +78,8 @@ export default function SymbolsTab() {
 
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <span>Create, edit and visualize measurement units.</span>
-            <div className='flex justify-between'>
+            <div className='flex justify-between gap-2'>
+                <Select />
                 <Button colorScheme="blue" onClick={handleCreateClick}>
                     New Unit
                 </Button>

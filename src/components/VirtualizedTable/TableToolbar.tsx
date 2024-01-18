@@ -12,6 +12,7 @@ import { Input } from "@chakra-ui/react";
 import { faChevronDown, faRefresh, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import BasicInput from "../BasicInput/BasicInput";
 import BasicPopover from "../BasicPopover/BasicPopover";
 import FilterBox from "./FilterBox";
 import { Filter } from "./models";
@@ -38,6 +39,10 @@ export default function TableToolbar({
 }) {
 
     const filterPopoverContent = <FilterBox filters={filters} onChangeFilters={onChangeFilters}/>;
+
+    const handleClearClick = () => {
+        onSearchForChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
+    }
 
     return (<Box display={'flex'} gap={'0.5rem'}>
         {/* <BasicPopover content={filterPopoverContent}>
@@ -68,7 +73,7 @@ export default function TableToolbar({
             </MenuList>
         </Menu>
 
-        <Input type="text" placeholder="Start typing to search..." value={searchFor} onChange={onSearchForChange} border={'1px solid rgba(107, 114, 128, 0.6)'}/>
+        <BasicInput placeholder="Start typing to search..." onChange={onSearchForChange} onClear={handleClearClick} />
 
         <Button 
             size="md" 
