@@ -8,21 +8,6 @@ import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable
 import { useData, DataObject, DataRow } from '../../providers/data/DataProvider';
 
 
-const tmpData = new DataObject('tsys_symbols', [
-    { id: 1, name: 'test' }
-    , { id: 2, name: 'test 2' }
-    , { id: 3, name: 'test 3' }
-    , { id: 4, name: 'test 4' }
-    , { id: 5, name: 'test 5' }
-    , { id: 6, name: 'test 6' }
-    , { id: 7, name: 'test 7' }
-    , { id: 8, name: 'test 8' }
-    , { id: 9, name: 'test 9' }
-    , { id: 10, name: 'test 10' }
-]);
-
-
-
 export default function SymbolsTab() {
 
     const { fetchData, updateData, insertData } = useData();
@@ -93,7 +78,7 @@ export default function SymbolsTab() {
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <span>Create, edit and visualize measurement units.</span>
             <div className='flex justify-between gap-2'>
-                <VirtualizedSelect data={tmpData} fieldName='name'/>
+                <VirtualizedSelect data={data} fieldName='name'/>
                 <Button colorScheme="blue" onClick={handleCreateClick}>
                     New Unit
                 </Button>

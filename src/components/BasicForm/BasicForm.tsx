@@ -17,8 +17,9 @@ import {
 
 } from '@chakra-ui/react'
 
-import { DataField, DataRow } from '../../providers/data/dataModels';
+import { DataField, DataObject, DataRow } from '../../providers/data/dataModels';
 import ConfirmationPopover from '../ConfirmationPopover/ConfirmationPopover';
+import VirtualizedSelect from '../Select/VirtualizedSelect';
 
 
 export default function BasicForm({
@@ -144,18 +145,23 @@ export default function BasicForm({
                         />
                     </FormControl>
                 );
-            // case 'select':
-            //     return (
-            //         <FormControl id={identifier} key={identifier} isRequired={field.required}>
-            //             <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
-            //             <Input 
-            //                 type={field.type} 
-            //                 value={value} 
-            //                 placeholder='Type...' 
-            //                 onChange={(e) => handleFieldChange(e, field.name)} 
-            //             />
-            //         </FormControl>
-            //     );
+            case 'select':
+                return (
+                    <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={newIsInvalid}>
+                        <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
+                        <VirtualizedSelect 
+                            data={
+                                new DataObject(
+                                    'tsys_symbols', 
+                                    [{id: 1, name: 'paulo'}
+                                    , {id: 2, name: 'paulo2'}]
+                                )
+                            }
+                            fieldName={'name'}
+                        />
+                        <FormErrorMessage>{field.message}</FormErrorMessage>
+                    </FormControl>
+                );
         }
 
         isInvalid.current = newIsInvalid;

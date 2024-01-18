@@ -7,22 +7,26 @@ import { DataObject, DataRow, DataField } from "../../providers/data/dataModels"
 
 export default function VirtualizedSelect({
     data
+    , initialRow
+    , initialField
     , fieldName
     , required
     , onOptionClick = () => { }
 }: {
     data: DataObject
+    initialRow?: DataRow
+    initialField?: DataField
     fieldName: string
     required?: boolean
     onOptionClick?: (data: DataRow | undefined, field: DataField | undefined) => void
 }) {
 
-    const parentRef = React.useRef(null);
+    const parentRef = React.useRef<HTMLDivElement>(null);
 
     const [compData, setCompData] = React.useState<DataObject>(data); // [data, setData
     const [isOpen, setIsOpen] = React.useState(false);
-    const [row, setRow] = React.useState<DataRow | undefined>(undefined);
-    const [field, setField] = React.useState<DataField | undefined>(undefined);
+    const [currRow, setCurrRow] = React.useState<DataRow | undefined>(initialRow);
+    const [currField, setCurrField] = React.useState<DataField | undefined>(initialField);
 
 
     /* Effects */
@@ -50,7 +54,6 @@ export default function VirtualizedSelect({
     }, [parentRef]);
 
 
-
     /* Methods */
     const filterData = (value: string) => {
         const newData = new DataObject(data.tableName, data.json());
@@ -70,7 +73,7 @@ export default function VirtualizedSelect({
 
     /* Handlers */
     const handleInputClick = () => {
-        if (field) {
+        if (currField) {
             setCompData(data);            
         }
         setIsOpen(!isOpen);
@@ -79,7 +82,7 @@ export default function VirtualizedSelect({
     const handleInputChange = (e: any) => {
         if (e.target.value === '') { 
             setCompData(data);
-            setField(undefined);
+            setCurrField(undefined);
         } else {
             filterData(e.target.value);
         }
@@ -89,8 +92,8 @@ export default function VirtualizedSelect({
     const handleInputClear = () => {
         setCompData(data);
 
-        setRow(undefined);
-        setField(undefined);
+        setCurrRow(undefined);
+        setCurrField(undefined);
 
         setIsOpen(false);
 
@@ -98,8 +101,8 @@ export default function VirtualizedSelect({
     }
 
     const handleOptionClick = (row: DataRow, field: DataField) => {
-        setRow(row);
-        setField(field);
+        setCurrRow(row);
+        setCurrField(field);
         setIsOpen(false);
 
         onOptionClick(row, field);
@@ -107,9 +110,14 @@ export default function VirtualizedSelect({
 
 
     return (<div className="flex flex-col" ref={parentRef}>
-        {parentRef.current && <>
-            <BasicInput field={field} onClick={handleInputClick} onChange={handleInputChange} onClear={handleInputClear} required={required}/>
-            {isOpen && <SelectBox data={compData} fieldName={fieldName} isOpen={isOpen} currRow={row} parentRef={parentRef} onClickOption={handleOptionClick} />}
-        </>}
+            <BasicInput field={currField} onClick={handleInputClick} onChange={handleInputChange} onClear={handleInputClear} required={required}/>
+            {isOpen && <SelectBox 
+                data={compData} 
+                fieldName={fieldName}
+                isOpen={isOpen}
+                currRow={currRow}
+                parentRef={parentRef}
+                handleOptionClick={handleOptionClick} 
+            />}
     </div>);
 }

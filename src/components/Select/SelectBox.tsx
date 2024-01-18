@@ -15,16 +15,19 @@ export default function SelectBox({
     , isOpen
     , currRow
     , parentRef
-    , onClickOption = () => {}
+    , handleOptionClick = () => {}
 }: {
     data: DataObject
     fieldName: string
     isOpen: boolean
     currRow: DataRow | undefined
     parentRef: React.RefObject<HTMLDivElement>
-    onClickOption?: (row: DataRow, field: DataField) => void
+    handleOptionClick?: (row: DataRow, field: DataField) => void
 }) {
 
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
+    /* Builders */
     const rowBuilder = (row: DataRow) => {
         const uuid = v4();
         
@@ -33,7 +36,7 @@ export default function SelectBox({
                 <SelectOption
                     data={row}
                     field={row.getField('name')}
-                    onClick={onClickOption}
+                    onClick={handleOptionClick}
                 >
                     <p className="text-sm font-normal text-slate-800">
                         {String(row.getField(fieldName)?.value ?? '')}
@@ -47,11 +50,13 @@ export default function SelectBox({
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(data.rows, rowBuilder, () => true, parentRef, [data, currRow]);
+    ] = useVirtualizedList(data.rows, rowBuilder, () => true, containerRef, [data, currRow], 32, 5, 5);
+
 
     return (
     <SlideFade in={isOpen} offsetY='-20px'>
         <div 
+            ref={containerRef}
             className="
                 max-h-32 
                 fixed z-10

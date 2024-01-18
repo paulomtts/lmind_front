@@ -62,7 +62,6 @@ export default function TableBody({
         , postHeight
     ] = useVirtualizedList(data.json(), rowBuilder, displayCallback, containerRef, [data, sorters]);
 
-
     return (<>
         <Tbody>
             <tr key={`option-prev`} style={{height: `${prevHeight}px`}} />
