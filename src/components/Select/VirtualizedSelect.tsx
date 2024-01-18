@@ -5,7 +5,7 @@ import SelectBox from "./SelectBox";
 import { DataObject, DataRow, DataField } from "../../providers/data/dataModels";
 
 
-export default function Select({
+export default function VirtualizedSelect({
     data
     , fieldName
     , required
