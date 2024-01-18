@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { v4 } from 'uuid';
 
-import { DataObject, DataRow, configs } from '../../providers/data/dataModels.js';
+import { DataObject, DataRow } from '../../providers/data/dataModels.js';
 import { useVirtualizedList } from '../../hooks/useVirtualizedList.js';
 import { Sorter } from './models.js';
 
@@ -23,14 +23,13 @@ export default function TableBody({
 }: {
     data: DataObject
     , sorters: Sorter[]
-    , containerRef: React.MutableRefObject<HTMLDivElement>
+    , containerRef: React.RefObject<HTMLDivElement>
     , displayCallback?: (row: Record<string, any>) => boolean
     onClickRow?: (row: DataRow) => void;
 }) {
 
     const rowBuilder = (json: Record<string, any>) => {
         const uuid = v4();
-
         const row = new DataRow(data.tableName, json);
 
         return <Tr 
@@ -51,7 +50,7 @@ export default function TableBody({
                 </Button>
             </Td>
 
-            {row.getVisible().map((field) => {
+            {row.getVisibleFields().map((field) => {
                 return <Td key={field.label}>{String(field.value)}</Td>
             })}
         </Tr>
@@ -61,7 +60,7 @@ export default function TableBody({
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(data.json, rowBuilder, displayCallback, containerRef, [data, sorters]);
+    ] = useVirtualizedList(data.json(), rowBuilder, displayCallback, containerRef, [data, sorters]);
 
 
     return (<>

@@ -4,9 +4,17 @@ import { useMouse } from "../../providers/MouseProvider.jsx";
 
 
 export default function HoverCard({
-    customX = null
-    , customY = null
+    className = "rounded-md bg-white border border-gray-300 shadow-md p-2 fixed"
+    , zIndex = 1001
+    , customX = 0
+    , customY = 0
     , children
+}: {
+    className?: string
+    , zIndex?: number
+    , customX?: number
+    , customY?: number
+    , children: React.ReactNode
 }) {
 
     const { position } = useMouse();
@@ -33,25 +41,13 @@ export default function HoverCard({
 
     return (
         <div
-            className="bg-white border border-gray-300 shadow-md p-2"
+            className={`${className}`}
             ref={cardRef}
-            style={
-                {
-                    // width: 'auto'
-                    height: 'fit-content'
-                    , position: 'fixed'
-                    , zIndex: 1001
-                    , left: customX ?
-                        customX
-                        :
-                        buildPosition().left
-                    , top: customY ?
-                        customY
-                        : 
-                        buildPosition().top
-                    , display: cardRef.current ? 'block' : 'none'
-                }
-            }
+            style={{   
+                zIndex: zIndex
+                , left: customX ? customX : buildPosition().left
+                , top: customY ? customY : buildPosition().top
+            }}
         >
             {children}
         </div>

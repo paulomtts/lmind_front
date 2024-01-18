@@ -9,25 +9,19 @@ import { DataObject, DataRow } from "../../providers/data/dataModels";
 
 
 export default function VirtualizedTable ({
-    initialData, 
+    data, 
     onClickRow = () => {},
     onRefreshClick = () => {}
 }: { 
-    columns: string[]
-    , initialData: DataObject
+    data: DataObject
     , onClickRow?: (row: DataRow) => void
     , onRefreshClick?: () => void
 }) {
     
-    const [data, setData] = useState<DataObject>(initialData);
+    const [compData, setCompData] = useState<DataObject>(data);
     const [searchIn, setSearchIn] = useState<string>("All");
     const [searchFor, setSearchFor] = useState<string>("");
-    const [sorters, setSorters] = useState<Sorter[]>(
-        Object.keys(initialData.json).length === 0 ? [] :
-        initialData.rows[0].fields.map((field) => {
-            return new Sorter(field.name, field.label, 'none');
-        })
-    );
+    const [sorters, setSorters] = useState<Sorter[]>([]);
     const [filters, setFilters] = useState<Filter[]>([]);
 
     const containerRef = useRef<HTMLDivElement>(null!);
@@ -35,48 +29,54 @@ export default function VirtualizedTable ({
 
     /* Effects */
     useEffect(() => {
-        setData(initialData);
-    }, [initialData]);
+        if (Object.keys(data.json()).length === 0) return;
+
+        const newSorters = data.rows[0].getVisibleFields().map((field) => {
+            return new Sorter(field.name, field.label, 'none');
+        });
+
+        setCompData(data);
+        setSorters(newSorters);
+
+    }, [data]);
 
 
     /* Functions */
-    function filterRows(data: DataObject, searchFor: string) {
+    function filterRows(searchFor: string) {
         const visibleColumns = data.getVisibleColumns();
 
         let newData: DataObject;
 
         if (searchIn === "All") {
-            const newJson = initialData.json.filter((row) => {
+            const newJson = data.json().filter((row) => {
                 return visibleColumns.some((column) => {
                     return row[column].toString().includes(searchFor);
                 });
             });
 
-            newData = new DataObject(initialData.tableName, newJson);
+            newData = new DataObject(data.tableName, newJson);
 
         } else {
-            const newJson = initialData.json.filter((row) => {
+            const newJson = data.json().filter((row) => {
                 return row[searchIn].toString().includes(searchFor);
             });
 
-            newData = new DataObject(initialData.tableName, newJson);
+            newData = new DataObject(data.tableName, newJson);
         }
 
         return newData;
     }
 
-    function multiSort(data: DataObject, sorters: Sorter[]) {
-        const columns = initialData.getVisibleColumns();
-        const filteredRows = filterRows(data, searchFor);
+    function multiSort(sorters: Sorter[]) {
+        const columns = data.getVisibleColumns();
         
-        return filteredRows.json.sort((a, b) => {
+        return data.json().sort((a, b) => {
             return columns.reduce((result, col) => {
                 if (result !== 0) return result;
-        
                 const currSort = sorters.find((sortObject) => {
-                    return sortObject.label === col;
+                    return sortObject.name === col;
                 });
-        
+                
                 if (!currSort) return 0;
                 
                 if(currSort.direction === 'none') {
@@ -106,18 +106,18 @@ export default function VirtualizedTable ({
     };
 
     const handleSearchForChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(!data) return;
+        if(!compData) return;
 
         const newSearchFor = e.target.value;
 
-        const newData = filterRows(data, newSearchFor);
+        const newData = filterRows(newSearchFor);
         
-        setData(newData);
+        setCompData(newData);
         setSearchFor(newSearchFor);
     };
 
     const handleSortClick = (targetSorter: Sorter) => {
-        if (!data) return;
+        if (!compData) return;
 
         const newSorters = sorters.map((srt) => {
             if (srt.label === targetSorter.label) {
@@ -134,28 +134,28 @@ export default function VirtualizedTable ({
 
         setSorters(newSorters);
 
-        const newJson = multiSort(data, newSorters);
-        const newData = new DataObject(initialData.tableName, newJson);
+        const newJson = multiSort(newSorters);
+        const newData = new DataObject(data.tableName, newJson);
         
-        setData(newData);
+        setCompData(newData);
     };
 
     const handleRefreshClick = () => {
         setSearchIn("All");
         setSearchFor("");
         setSorters(
-            initialData.rows[0].fields.map((field) => {
+            data.rows[0].fields.map((field) => {
                 return new Sorter(field.name, field.label, 'none');
             })
         );
-        setData(initialData);
+        setCompData(data);
 
         onRefreshClick();
     }
 
     return (<>
         <TableToolbar
-            columns={data.getVisibleColumns()}
+            columns={compData.getVisibleColumns()}
             filters={filters}
             searchIn={searchIn}
             searchFor={searchFor}
@@ -168,7 +168,7 @@ export default function VirtualizedTable ({
         <Box height={'calc(100vh - 188px)'} overflowY={'auto'} ref={containerRef}>
             <Table size='sm' variant={'unstyled'}>
                 <TableHeader sorters={sorters} onSortClick={handleSortClick} />
-                <TableBody data={data} containerRef={containerRef} sorters={sorters} onClickRow={onClickRow} />
+                <TableBody data={compData} containerRef={containerRef} sorters={sorters} onClickRow={onClickRow} />
             </Table>
         </Box>
     </>);

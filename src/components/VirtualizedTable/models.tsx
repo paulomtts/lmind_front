@@ -8,6 +8,7 @@ export class Sorter {
     icon?: IconDefinition;
 
     constructor(name: string, label: string, direction: string, icon?: IconDefinition) {
+        this.name = name;
         this.label = label;
         this.direction = direction;
         this.icon = icon;

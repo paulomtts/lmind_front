@@ -123,7 +123,7 @@ export class DataRow {
      * Gets the visible fields of the data row.
      * @returns An array of visible fields.
      */
-    getVisible() {
+    getVisibleFields() {
         return this.fields.filter((field) => {
             return field.visible;
         });
@@ -133,7 +133,7 @@ export class DataRow {
      * Gets the required fields of the data row.
      * @returns An array of required fields.
      */
-    getRequired() {
+    getRequiredFields() {
         return this.fields.filter((field) => {
             return field.required;
         });
@@ -149,6 +149,12 @@ export class DataRow {
             return acc;
         }, {} as Record<string, string | number | boolean | Date>);
     }
+
+    getField(name: string) {
+        return this.fields.find((field) => {
+            return field.name === name;
+        });
+    }
 }
 
 
@@ -158,7 +164,7 @@ export class DataRow {
 export class DataObject {
     tableName: string;
     columns: string[] = [];
-    json: Record<string, string | number | boolean | Date>[] = [];
+    private _json: Record<string, string | number | boolean | Date>[] = [];
     rows: DataRow[];
 
     /**
@@ -169,7 +175,7 @@ export class DataObject {
     constructor(tableName: string, json: Array<Record<string, string | number | boolean | Date>> = []) {
         this.tableName = tableName;
         this.columns = Object.keys(configs[tableName]);
-        this.json = json;
+        this._json = json;
 
         this.rows = json.map((obj) => {
             return new DataRow(tableName, obj);
@@ -200,9 +206,9 @@ export class DataObject {
      * Gets the visible rows of the data object.
      * @returns An array of visible rows.
      */
-    getVisible() {
+    getVisibleFields() {
         return this.rows.map((row) => {
-            return row.getVisible();
+            return row.getVisibleFields();
         });
     }
 
@@ -210,9 +216,9 @@ export class DataObject {
      * Gets the required rows of the data object.
      * @returns An array of required rows.
      */
-    getRequired() {
+    getRequiredFields() {
         return this.rows.map((row) => {
-            return row.getRequired();
+            return row.getRequiredFields();
         });
     }
 
@@ -220,10 +226,8 @@ export class DataObject {
      * Gets the JSON data of the data object.
      * @returns An array of JSON data.
      */
-    getJson() {
-        return this.rows.map((row) => {
-            return row.getJson();
-        });
+    json() {
+        return this._json;
     }
 }
 

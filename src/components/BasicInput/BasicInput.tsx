@@ -1,28 +1,51 @@
 import React from "react";
 import { 
-    Button,
-    Input
+    Button
+    , Input
     , InputGroup
     , InputRightElement
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-export default function SelectInput({
-    placeholder = "Search..."
+import { DataField } from "../../providers/data/dataModels";
+
+
+export default function BasicInput({
+    field
+    , placeholder = "Search..."
+    , required
     , onClick = () => { }
     , onChange = () => { }
     , onClear = () => { }
     , onBlur = () => { }
 }: {
+    field?: DataField | undefined
     placeholder?: string
+    required?: boolean
     onClick?: (e: React.MouseEvent<HTMLInputElement>) => void
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     onClear?: () => void
     onBlur?: () => void
 }) {
 
+    const inputRef = React.useRef<HTMLInputElement>(null!);
     const [inputValue, setInputValue] = React.useState('');
+
+
+    /* Effects */
+    React.useEffect(() => {
+        if (!field) return;
+        setInputValue(String(field.value ?? ''));
+        onChange({ target: { value: field.value ?? '' } } as React.ChangeEvent<HTMLInputElement>);
+    }, [field]);
+
+
+    /* Handlers */
+    const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
+        onClick(e);
+        inputRef.current.select();
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -43,16 +66,16 @@ export default function SelectInput({
 
     return (<InputGroup>
         <Input 
+            ref={inputRef}
             placeholder={placeholder}
             value={inputValue}
-            onClick={onClick}
+            isRequired={required}
+            onClick={handleInputClick}
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onBlur={onBlur}
         />
-        <InputRightElement 
-            className="pr-1 m-0"
-            >
+        <InputRightElement className="pr-1 m-0">
             <Button
                 variant="ghost" 
                 size="sm" 

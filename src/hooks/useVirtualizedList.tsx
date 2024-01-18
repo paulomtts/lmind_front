@@ -16,7 +16,7 @@ export const useVirtualizedList = (
         data: any[] = []
         , builderCallback: (row: any) => JSX.Element
         , filtersCallback: (row: any) => boolean
-        , containerRef: React.MutableRefObject<HTMLDivElement>
+        , containerRef: React.RefObject<HTMLDivElement>
         , triggers: any[] = []
         , rowHeight: number = 36
         , numberOfRows: number = 10
@@ -35,6 +35,7 @@ export const useVirtualizedList = (
     }
 
     const updateVisibleItems = (filteredData) => {
+        if (!containerRef.current) return;
         const scrollTop = containerRef.current.scrollTop;
 
         const startVisible = Math.floor(scrollTop / rowHeight);
