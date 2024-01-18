@@ -41,8 +41,8 @@ function App() {
                 </SidebarItem>
 
                 <SidebarItem icon={faFolderClosed} title="Registry">
-                    <SidebarSubItem title="Symbols" onClick={() => handleSidebarItemClick("Symbols")} />
                     <SidebarSubItem title="Tags" onClick={() => handleSidebarItemClick("Tags")} />
+                    <SidebarSubItem title="Units" onClick={() => handleSidebarItemClick("Units")} />
                 </SidebarItem>
             </SidebarContainer>
         
@@ -63,7 +63,8 @@ function App() {
                 case "Routes": return <ProductionPage selectedTab="Routes" />;
                 case "Products": return <ProductionPage selectedTab="Products" />;
                 case "Orders": return <ProductionPage selectedTab="Orders" />;
-                case "Symbols": return <RegistryPage selectedTab="Symbols" />;
+                
+                case "Units": return <RegistryPage selectedTab="Units" />;
                 case "Tags": return <RegistryPage selectedTab="Tags" />;
                 default: return <></>;
             }

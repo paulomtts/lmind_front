@@ -7,46 +7,55 @@ import {
     TabPanel,
 } from "@chakra-ui/react";
 
-import { TabModel } from './models';
-
 
 export default function BasicTab({
-    tabs = [],
+    labels = [],
     initialTab,
+    children
+    , onTabClick = () => { }
 }: {
-    tabs: TabModel[],
-    initialTab: TabModel
+    labels: string[],
+    initialTab: string,
+    children: React.ReactNode
+    onTabClick?: (index: number) => void
 }) {
 
-    const [index, setIndex] = useState(tabs.indexOf(initialTab));
+    if (labels.length !== React.Children.count(children)) {
+        throw new Error('Labels length must match children length');
+    }
+
+    const [index, setIndex] = useState(labels.indexOf(initialTab));
     
     useEffect(() => {
-        const newIndex = tabs.indexOf(initialTab);
+        const newIndex = labels.indexOf(initialTab);
         setIndex(newIndex);
     }, [initialTab]);
-    
+
+
+
     const handleTabClick = (index: number) => {
         setIndex(index);
+        onTabClick(index);
     }
 
     return (<div style={{width: '100%'}}>
         <Tabs index={index} onChange={handleTabClick}>
 
-            <TabList>
-                {tabs.map((tab) => (
-                    <Tab key={tab.name}>{tab.name[0].toUpperCase() + tab.name.slice(1)}</Tab>
+            <TabList className="bg-slate-200 shadow-sm">
+                {labels.map((label) => (
+                    <Tab key={label}>{label[0].toUpperCase() + label.slice(1)}</Tab>
                 ))}
             </TabList>
 
             <TabPanels>
-                {tabs.map((tab) => (
-                    <TabPanel key={tab.name}>
-                        {tab.content}
-                    </TabPanel>
-                ))}
+                {React.Children.map(children, (child, index) => {
+                    return (
+                        <TabPanel key={index}>
+                            {child}
+                        </TabPanel>
+                    )
+                })}
             </TabPanels>
         </Tabs>
     </div>);
 }
-
-export { TabModel }

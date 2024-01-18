@@ -61,7 +61,6 @@ export default function SidebarItem ({
             <div className={`
                 text-xl
                 SidebarItem
-                ${currentItem === title ? "text-red-500" : ""}
             `}>
                 <FontAwesomeIcon icon={icon} title={title} />               
 

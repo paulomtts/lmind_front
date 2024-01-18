@@ -23,8 +23,9 @@ export default function VirtualizedTable ({
     const [searchIn, setSearchIn] = useState<string>("All");
     const [searchFor, setSearchFor] = useState<string>("");
     const [sorters, setSorters] = useState<Sorter[]>(
-        initialData.getVisibleColumns().map((column) => {
-            return new Sorter(column, 'none');
+        Object.keys(initialData.json).length === 0 ? [] :
+        initialData.rows[0].fields.map((field) => {
+            return new Sorter(field.name, field.label, 'none');
         })
     );
     const [filters, setFilters] = useState<Filter[]>([]);
@@ -142,12 +143,11 @@ export default function VirtualizedTable ({
     const handleRefreshClick = () => {
         setSearchIn("All");
         setSearchFor("");
-        setSorters(initialData.getVisibleColumns().map((column) => {
-                return {
-                    label: column,
-                    direction: "none",
-                };
-        }));
+        setSorters(
+            initialData.rows[0].fields.map((field) => {
+                return new Sorter(field.name, field.label, 'none');
+            })
+        );
         setData(initialData);
 
         onRefreshClick();

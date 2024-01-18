@@ -7,7 +7,7 @@
             , "visible": false
             , "required": false
             , "editable": false
-            , "error": ""
+            , "message": ""
         },
         "name" :{
             "name": "name"
@@ -16,7 +16,11 @@
             , "visible": true
             , "required": true
             , "editable": true
-            , "error": "Name is required"
+            , "message": "Provide a name to your unit"
+            , "props": {
+                "minLength": 3,
+                "maxLength": 20
+            }
         }
         , "abbreviation" : {
             "name": "abbreviation"
@@ -25,7 +29,11 @@
             , "visible": true
             , "required": true
             , "editable": true
-            , "error": "Please provide an abbreviation"
+            , "message": "Type an abbreviation of the name"
+            , "props": {
+                "minLength": 1,
+                "maxLength": 5
+            }
         }
         , "base" : {
             "name": "base"
@@ -34,7 +42,10 @@
             , "visible": true
             , "required": true
             , "editable": true
-            , "error": "A base value is required to calculate conversions"
+            , "message": "A base value is required to calculate conversions"
+            , "props": {
+                "min": 1
+            }
         }
         , "type": {
             "name": "type"
@@ -43,7 +54,7 @@
             , "visible": true
             , "required": true
             , "editable": true
-            , "error": "Select a type of measurement for this symbol"
+            , "message": "Select a category for this unit"
         }
         , "created_by": {
             "name": "created_by"
@@ -52,7 +63,16 @@
             , "visible": true
             , "required": false
             , "editable": false
-            , "error": ""
+            , "message": ""
+            , "props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": true
+                        , "read": true
+                    }
+                }
+            }
         }
     }
 }

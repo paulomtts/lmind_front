@@ -2,11 +2,12 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 
 export class Sorter {
+    name: string;
     label: string;
     direction: string;
     icon?: IconDefinition;
 
-    constructor(label: string, direction: string, icon?: IconDefinition) {
+    constructor(name: string, label: string, direction: string, icon?: IconDefinition) {
         this.label = label;
         this.direction = direction;
         this.icon = icon;

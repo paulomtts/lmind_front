@@ -9,6 +9,8 @@ import {
     , ModalBody
 } from '@chakra-ui/react'
 
+import BasicModalFooter from './BasicModalFooter';
+
 
 export default function BasicModal({
     title
@@ -16,7 +18,6 @@ export default function BasicModal({
     , width
     , blur = false
     , children
-    , footer
     , isOpen = false
     , onClose = () => {}
 }: {
@@ -25,7 +26,6 @@ export default function BasicModal({
     , width?: string
     , blur?: boolean
     , children: React.ReactNode
-    , footer?: React.ReactNode
     , isOpen?: boolean
     , onClose?: () => void
 }) {
@@ -45,13 +45,22 @@ export default function BasicModal({
                 </ModalHeader>
 
                 <ModalBody>
-                    {children}
+                    {React.Children.toArray(children).filter((child) => {
+                        return (child as React.ReactElement).type !== BasicModalFooter;
+                    })}
+                    
                 </ModalBody>
 
                 <ModalFooter justifyContent={'space-between'}>
-                    {footer}
+                    {React.Children.toArray(children).filter((child) => {
+                        return (child as React.ReactElement).type === BasicModalFooter;
+                    })}
                 </ModalFooter>
             </ModalContent>
         </Modal>
     </>);
+}
+
+export {
+    BasicModalFooter
 }

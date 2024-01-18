@@ -7,7 +7,8 @@ interface FieldConfig {
     visible: boolean;
     required: boolean;
     editable: boolean;
-    error?: string;
+    message?: string;
+    props?: Record<string, any>;
 }
 
 
@@ -18,7 +19,7 @@ interface FieldConfig {
  * @property type - The type of the field, used for parsing.
  * @property visible - Whether the field should be visible in the UI.
  * @property required - Whether the field is required when performing input on the database.
- * @property error - The error message to be displayed when the field does not pass validation.
+ * @property message - The message message to be displayed when the field does not pass validation.
  */
 export class DataField {
     name: string;
@@ -27,8 +28,9 @@ export class DataField {
     visible: boolean;
     required: boolean;
     editable: boolean;
-    error?: string;
+    message?: string;
     value: string | number | boolean | Date;
+    props: Record<string, any>;
 
     /**
      * Creates a new instance of DataField.
@@ -38,6 +40,10 @@ export class DataField {
     constructor(config: FieldConfig, value: string | number | boolean | Date) {
         Object.assign(this, config);
         this.value = DataField.parse(config.type, value);
+
+        if(!config.props) {
+            this.props = {};
+        }
     }
 
     /**
@@ -60,6 +66,14 @@ export class DataField {
                 return value;
         }
     }
+
+    /**
+     * Sets the value of the field.
+     * @param value - The value to be set.
+     */
+    setValue(value: string | number | boolean | Date) {
+        this.value = DataField.parse(this.type, value);
+    }
 }
 
 
@@ -81,13 +95,27 @@ export class DataRow {
 
         if (Object.keys(json).length === 0) {
             Object.keys(configs[tableName]).forEach((key) => {
-                json[key] = configs[tableName][key].type === 'number' ? 0 : '';
+                json[key] = configs[tableName][key].type === 'number' ? (0 || configs[tableName][key].props?.min) : '';
             });
         }
         this.json = json;
 
         this.fields = Object.keys(json).map((key) => {
             return new DataField(configs[tableName][key], json[key]);
+        });
+    }
+
+    /**
+     * Sets the value of a field.
+     * @param name - The name of the field.
+     * @param value - The value to be set.
+     */
+    setFieldValue(name: string, value: string | number | boolean | Date) {
+        this.json[name] = value;
+        this.fields.forEach((field) => {
+            if (field.name === name) {
+                field.setValue(value);
+            }
         });
     }
 
@@ -109,6 +137,17 @@ export class DataRow {
         return this.fields.filter((field) => {
             return field.required;
         });
+    }
+
+    /**
+     * Gets the JSON data of the data row.
+     * @returns The JSON data of the data row.
+     */
+    getJson() {
+        return this.fields.reduce((acc, field) => {
+            acc[field.name] = field.value;
+            return acc;
+        }, {} as Record<string, string | number | boolean | Date>);
     }
 }
 
@@ -176,6 +215,17 @@ export class DataObject {
             return row.getRequired();
         });
     }
+
+    /**
+     * Gets the JSON data of the data object.
+     * @returns An array of JSON data.
+     */
+    getJson() {
+        return this.rows.map((row) => {
+            return row.getJson();
+        });
+    }
 }
+
 
 export { configs }
