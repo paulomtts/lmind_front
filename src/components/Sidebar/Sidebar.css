@@ -17,7 +17,7 @@
     px-3 py-2 m-0
     rounded-full
     text-slate-500
-    shadow-md
+    shadow-md shadow-slate-400
     select-none cursor-pointer
     transition duration-200 ease-in-out
 

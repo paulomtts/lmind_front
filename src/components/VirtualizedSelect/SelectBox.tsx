@@ -1,6 +1,6 @@
 import React from "react";
 import { 
-    SlideFade
+    Collapse
 } from '@chakra-ui/react'
 import { v4 } from "uuid";
 
@@ -54,12 +54,12 @@ export default function SelectBox({
 
 
     return (
-    <SlideFade in={isOpen} offsetY='-20px'>
+    <Collapse in={isOpen}>
         <div 
             ref={containerRef}
             className="
                 max-h-32 
-                fixed z-10
+                absolute z-10
                 overflow-x-hidden
                 bg-white rounded border border-slate-300
             "
@@ -69,6 +69,6 @@ export default function SelectBox({
             {visibleData}
             <div key={`option-post`} style={{height: `${postHeight}px`}} />
         </div>
-    </SlideFade>
+    </Collapse>
     );
 }

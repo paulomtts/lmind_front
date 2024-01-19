@@ -19,7 +19,7 @@ import {
 
 import { DataField, DataObject, DataRow } from '../../providers/data/dataModels';
 import ConfirmationPopover from '../ConfirmationPopover/ConfirmationPopover';
-import VirtualizedSelect from '../Select/VirtualizedSelect';
+import VirtualizedSelect from '../VirtualizedSelect/VirtualizedSelect';
 
 
 export default function BasicForm({
@@ -158,6 +158,8 @@ export default function BasicForm({
                                 )
                             }
                             fieldName={'name'}
+                            required={field.required}
+                            errorMessage={field.message}
                         />
                         <FormErrorMessage>{field.message}</FormErrorMessage>
                     </FormControl>

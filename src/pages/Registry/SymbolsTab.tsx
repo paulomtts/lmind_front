@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 
-import VirtualizedSelect from '../../components/Select/VirtualizedSelect';
+import VirtualizedSelect from '../../components/VirtualizedSelect/VirtualizedSelect';
 import BasicModal from '../../components/BasicModal/BasicModal';
 import BasicForm from '../../components/BasicForm/BasicForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';

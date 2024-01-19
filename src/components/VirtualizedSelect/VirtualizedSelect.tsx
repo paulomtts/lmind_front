@@ -11,6 +11,7 @@ export default function VirtualizedSelect({
     , initialField
     , fieldName
     , required
+    , errorMessage
     , onOptionClick = () => { }
 }: {
     data: DataObject
@@ -18,6 +19,7 @@ export default function VirtualizedSelect({
     initialField?: DataField
     fieldName: string
     required?: boolean
+    errorMessage?: string
     onOptionClick?: (data: DataRow | undefined, field: DataField | undefined) => void
 }) {
 
@@ -33,6 +35,7 @@ export default function VirtualizedSelect({
     React.useEffect(() => {
         setCompData(data);
     }, [data]);
+
 
     React.useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -86,7 +89,6 @@ export default function VirtualizedSelect({
         } else {
             filterData(e.target.value);
         }
-        setIsOpen(true);
     }
     
     const handleInputClear = () => {
@@ -110,7 +112,8 @@ export default function VirtualizedSelect({
 
 
     return (<div className="flex flex-col" ref={parentRef}>
-            <BasicInput field={currField} onClick={handleInputClick} onChange={handleInputChange} onClear={handleInputClear} required={required}/>
+            <BasicInput field={currField} onClick={handleInputClick} onChange={handleInputChange} onClear={handleInputClear} required={required} errorMessage={errorMessage} />
+            
             {isOpen && <SelectBox 
                 data={compData} 
                 fieldName={fieldName}

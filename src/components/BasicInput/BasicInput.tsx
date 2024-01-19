@@ -14,7 +14,8 @@ import { DataField } from "../../providers/data/dataModels";
 export default function BasicInput({
     field
     , placeholder = "Search..."
-    , required
+    , required = false
+    , errorMessage
     , onClick = () => { }
     , onChange = () => { }
     , onClear = () => { }
@@ -23,6 +24,7 @@ export default function BasicInput({
     field?: DataField | undefined
     placeholder?: string
     required?: boolean
+    errorMessage?: string
     onClick?: (e: React.MouseEvent<HTMLInputElement>) => void
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     onClear?: () => void
@@ -69,7 +71,7 @@ export default function BasicInput({
             ref={inputRef}
             placeholder={placeholder}
             value={inputValue}
-            isRequired={required}
+            required={required}
             onClick={handleInputClick}
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}

@@ -5,13 +5,11 @@ import { DataField, DataRow } from "../../providers/data/dataModels";
 export default function SelectOption({
     data
     , field
-    , className = "text-sm font-normal text-slate-800"
     , children
     , onClick = () => { }
 }: {
     data: DataRow
     , field: DataField | undefined
-    , className?: string
     , children?: React.ReactNode
     , onClick?: (data: DataRow, field: DataField) => void
 }) {
