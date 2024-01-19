@@ -147,22 +147,20 @@ export default function BasicForm({
                 );
             case 'select':
                 return (
-                    <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={newIsInvalid}>
-                        <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
-                        <VirtualizedSelect 
-                            data={
-                                new DataObject(
-                                    'tsys_symbols', 
-                                    [{id: 1, name: 'paulo'}
-                                    , {id: 2, name: 'paulo2'}]
-                                )
-                            }
-                            fieldName={'name'}
-                            required={field.required}
-                            errorMessage={field.message}
-                        />
-                        <FormErrorMessage>{field.message}</FormErrorMessage>
-                    </FormControl>
+                    <VirtualizedSelect 
+                        key={identifier}
+                        data={
+                            new DataObject(
+                                'tsys_symbols', 
+                                [{id: 1, type: 'paulo',}
+                                , {id: 2, type: 'paulo2'}]
+                            )
+                        }
+                        fieldName={field.name}
+                        label={field.label}
+                        required={field.required}
+                        errorMessage={field.message}
+                    />
                 );
         }
 

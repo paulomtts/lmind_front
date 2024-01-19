@@ -1,6 +1,7 @@
 import React from "react";
 
 import BasicTab from "../../components/BasicTab/BasicTab";
+import TagsTab from "./TagsTab";
 import SymbolsTab from "./SymbolsTab";
 
 
@@ -10,7 +11,7 @@ export default function RegistryPage({
 
     return (<div className="flex flex-grow">
         <BasicTab labels={['Tags', 'Units']} initialTab={selectedTab}>
-            <div>test</div>
+            <TagsTab />
             <SymbolsTab />
         </BasicTab>
     </div>);

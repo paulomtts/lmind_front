@@ -4,6 +4,10 @@ import {
     , Input
     , InputGroup
     , InputRightElement
+
+    , FormControl
+    , FormLabel
+    , FormErrorMessage
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -13,6 +17,7 @@ import { DataField } from "../../providers/data/dataModels";
 
 export default function BasicInput({
     field
+    , label = ''
     , placeholder = "Search..."
     , required = false
     , errorMessage
@@ -22,6 +27,7 @@ export default function BasicInput({
     , onBlur = () => { }
 }: {
     field?: DataField | undefined
+    label?: string
     placeholder?: string
     required?: boolean
     errorMessage?: string
@@ -33,14 +39,24 @@ export default function BasicInput({
 
     const inputRef = React.useRef<HTMLInputElement>(null!);
     const [inputValue, setInputValue] = React.useState('');
+    const [isInvalid, setIsInvalid] = React.useState(true);
 
 
     /* Effects */
     React.useEffect(() => {
         if (!field) return;
+
         setInputValue(String(field.value ?? ''));
         onChange({ target: { value: field.value ?? '' } } as React.ChangeEvent<HTMLInputElement>);
     }, [field]);
+
+    React.useEffect(() => {
+        if (inputValue === '') {
+            setIsInvalid(true);
+        } else {
+            setIsInvalid(false);
+        }
+    }, [inputValue]);
 
 
     /* Handlers */
@@ -66,26 +82,32 @@ export default function BasicInput({
         }
     }
 
-    return (<InputGroup>
-        <Input 
-            ref={inputRef}
-            placeholder={placeholder}
-            value={inputValue}
-            required={required}
-            onClick={handleInputClick}
-            onChange={handleInputChange}
-            onKeyDown={handleInputKeyDown}
-            onBlur={onBlur}
-        />
-        <InputRightElement className="pr-1 m-0">
-            <Button
-                variant="ghost" 
-                size="sm" 
-                tabIndex={0}
-                onClick={handleClearClick}
-            >
-                <FontAwesomeIcon icon={faXmark} />
-            </Button>
-        </InputRightElement>
-    </InputGroup>);
+    return (<>
+        <FormControl isInvalid={!!errorMessage && isInvalid}>
+            {!!label && <FormLabel>{label}</FormLabel>}
+            <InputGroup>
+                <Input 
+                    ref={inputRef}
+                    placeholder={placeholder}
+                    value={inputValue}
+                    required={required}
+                    onClick={handleInputClick}
+                    onChange={handleInputChange}
+                    onKeyDown={handleInputKeyDown}
+                    onBlur={onBlur}
+                />
+                <InputRightElement className="pr-1 m-0">
+                    <Button
+                        variant="ghost" 
+                        size="sm" 
+                        tabIndex={0}
+                        onClick={handleClearClick}
+                    >
+                        <FontAwesomeIcon icon={faXmark} />
+                    </Button>
+                </InputRightElement>
+            </InputGroup>
+            <FormErrorMessage>{errorMessage}</FormErrorMessage>
+        </FormControl>
+    </>);
 }

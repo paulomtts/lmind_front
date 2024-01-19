@@ -10,6 +10,7 @@ export default function VirtualizedSelect({
     , initialRow
     , initialField
     , fieldName
+    , label = ''
     , required
     , errorMessage
     , onOptionClick = () => { }
@@ -18,6 +19,7 @@ export default function VirtualizedSelect({
     initialRow?: DataRow
     initialField?: DataField
     fieldName: string
+    label?: string
     required?: boolean
     errorMessage?: string
     onOptionClick?: (data: DataRow | undefined, field: DataField | undefined) => void
@@ -112,7 +114,7 @@ export default function VirtualizedSelect({
 
 
     return (<div className="flex flex-col" ref={parentRef}>
-            <BasicInput field={currField} onClick={handleInputClick} onChange={handleInputChange} onClear={handleInputClear} required={required} errorMessage={errorMessage} />
+            <BasicInput field={currField} onClick={handleInputClick} onChange={handleInputChange} onClear={handleInputClear} label={label} required={required} errorMessage={errorMessage} />
             
             {isOpen && <SelectBox 
                 data={compData} 
@@ -120,6 +122,7 @@ export default function VirtualizedSelect({
                 isOpen={isOpen}
                 currRow={currRow}
                 parentRef={parentRef}
+                hasLabel={!!label}
                 handleOptionClick={handleOptionClick} 
             />}
     </div>);

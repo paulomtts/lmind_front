@@ -22,10 +22,12 @@ function Sidebar({
     }, []);
 
     return (
-        <div className={`Sidebar Sidebar-shadow ${className}`} ref={selfRef}>
-            {React.Children.map(children, (child) => {
-                return React.cloneElement(child, { parentDimensions: dimensions, currentItem: currentItem });
-            })}
+        <div className="w-20">
+            <div className={`Sidebar Sidebar-shadow ${className}`} ref={selfRef}>
+                {React.Children.map(children, (child) => {
+                    return React.cloneElement(child, { parentDimensions: dimensions, currentItem: currentItem });
+                })}
+            </div>
         </div>
     );
 }

@@ -78,7 +78,7 @@ export default function SymbolsTab() {
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <span>Create, edit and visualize measurement units.</span>
             <div className='flex justify-between gap-2'>
-                <VirtualizedSelect data={data} fieldName='name'/>
+                <VirtualizedSelect data={data} fieldName='name' errorMessage='Fill this field'/>
                 <Button colorScheme="blue" onClick={handleCreateClick}>
                     New Unit
                 </Button>

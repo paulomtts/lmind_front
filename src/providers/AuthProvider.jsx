@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
         } catch (error) {
             console.log(error);
         } finally {
-            overlay.hide(300);
+            overlay.hide(500);
         }
     }, []);
 

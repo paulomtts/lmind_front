@@ -15,6 +15,7 @@ export default function SelectBox({
     , isOpen
     , currRow
     , parentRef
+    , hasLabel = false
     , handleOptionClick = () => {}
 }: {
     data: DataObject
@@ -22,6 +23,7 @@ export default function SelectBox({
     isOpen: boolean
     currRow: DataRow | undefined
     parentRef: React.RefObject<HTMLDivElement>
+    hasLabel?: boolean
     handleOptionClick?: (row: DataRow, field: DataField) => void
 }) {
 
@@ -35,7 +37,7 @@ export default function SelectBox({
             <div key={uuid} className={`${row === currRow ? 'bg-slate-300' : ''}`}>
                 <SelectOption
                     data={row}
-                    field={row.getField('name')}
+                    field={row.getField(fieldName)}
                     onClick={handleOptionClick}
                 >
                     <p className="text-sm font-normal text-slate-800">
@@ -54,15 +56,16 @@ export default function SelectBox({
 
 
     return (
-    <Collapse in={isOpen}>
+    <Collapse in={isOpen}
+        className={`
+            fixed z-50 max-h-32
+            ${hasLabel ? 'translate-y-18' : 'translate-y-10'}
+            overflow-x-hidden
+            bg-white rounded border border-slate-300
+        `}
+    >
         <div 
             ref={containerRef}
-            className="
-                max-h-32 
-                absolute z-10
-                overflow-x-hidden
-                bg-white rounded border border-slate-300
-            "
             style={{width: parentRef.current?.clientWidth}}
         >
             <div key={`option-prev`} style={{height: `${prevHeight}px`}} />

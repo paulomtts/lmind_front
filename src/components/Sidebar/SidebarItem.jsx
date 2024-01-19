@@ -52,33 +52,36 @@ export default function SidebarItem ({
     return (
         <div className='
                 flex flex-col items-center gap-2
-                select-none cursor-pointer
+                select-none
                 text-sm'
             onClick={handleSidebarItemClick}
             ref={selfRef}
         >
 
-            <div className={`
-                text-xl
-                SidebarItem
-            `}>
-                <FontAwesomeIcon icon={icon} title={title} />               
+            <div className={`text-xl SidebarItem`}>
+                <FontAwesomeIcon icon={icon} title={title} />             
+            </div>
+            {title}
 
-                {children &&
-                <div className={`transition-all duration-300 ease-in-out
+            {children &&
+                <div className={`
+                    transition-all duration-300 ease-in-out cursor-default
                     ${isOpen ? `opacity-100 h-auto` : "opacity-0 h-0 pointer-events-none"}
                 `}>
-                    <div className="SidebarCard" style={{ 
-                        top: Math.min(position.y, window.innerHeight - dimensions.height - offsetY)
-                        , left: parentDimensions.width + 5
-                    }}>
+                    <div 
+                        className="SidebarCard" 
+                        style={{ 
+                            top: Math.min(position.y, window.innerHeight - dimensions.height - offsetY)
+                            , left: parentDimensions.width + 5
+                        }}
+                    >
                         {text && <p className='p-2'>{text}</p>}
-                        {children}
+                        <div className='cursor-pointer'>
+                            {children}
+                        </div>
                     </div>
-                </div>}
-            </div>
-
-            {title}
+                </div>
+            }
         </div>
     );
 }

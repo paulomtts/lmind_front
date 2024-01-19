@@ -21,6 +21,9 @@ export default {
       },
       scale: {
         '99': '0.99',
+      },
+      translate: {
+        '18': '4.5rem',
       }
     },
   },
