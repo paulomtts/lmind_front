@@ -29,7 +29,7 @@ export default function VirtualizedTable ({
 
     /* Effects */
     useEffect(() => {
-        if (Object.keys(data.json()).length === 0) return;
+        if (Object.keys(data.json).length === 0) return;
 
         const newSorters = data.rows[0].getVisibleFields().map((field) => {
             return new Sorter(field.name, field.label, 'none');
@@ -48,7 +48,7 @@ export default function VirtualizedTable ({
         let newData: DataObject;
 
         if (searchIn === "All") {
-            const newJson = data.json().filter((row) => {
+            const newJson = data.json.filter((row) => {
                 return visibleColumns.some((column) => {
                     return row[column].toString().includes(searchFor);
                 });
@@ -57,7 +57,7 @@ export default function VirtualizedTable ({
             newData = new DataObject(data.tableName, newJson);
 
         } else {
-            const newJson = data.json().filter((row) => {
+            const newJson = data.json.filter((row) => {
                 return row[searchIn].toString().includes(searchFor);
             });
 
@@ -70,7 +70,7 @@ export default function VirtualizedTable ({
     function multiSort(sorters: Sorter[]) {
         const columns = data.getVisibleColumns();
         
-        return data.json().sort((a, b) => {
+        return data.json.sort((a, b) => {
             return columns.reduce((result, col) => {
                 if (result !== 0) return result;
                 const currSort = sorters.find((sortObject) => {

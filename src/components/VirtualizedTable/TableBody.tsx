@@ -60,7 +60,7 @@ export default function TableBody({
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(data.json(), rowBuilder, displayCallback, containerRef, [data, sorters]);
+    ] = useVirtualizedList(data.json, rowBuilder, displayCallback, containerRef, [data, sorters]);
 
     return (<>
         <Tbody>

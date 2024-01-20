@@ -29,22 +29,23 @@ export default function SelectBox({
 
     const containerRef = React.useRef<HTMLDivElement>(null);
 
+
     /* Builders */
     const rowBuilder = (row: DataRow) => {
         const uuid = v4();
         
         return (
-            <div key={uuid} className={`${row === currRow ? 'bg-slate-300' : ''}`}>
-                <SelectOption
-                    data={row}
-                    field={row.getField(fieldName)}
-                    onClick={handleOptionClick}
-                >
-                    <p className="text-sm font-normal text-slate-800">
-                        {String(row.getField(fieldName)?.value ?? '')}
-                    </p>
-                </SelectOption>
-            </div>
+            <SelectOption
+                key={`option-${uuid}`}
+                className={`${row === currRow ? 'bg-slate-300' : ''}`}
+                data={row}
+                field={row.getFieldObject(fieldName)}
+                onClick={handleOptionClick}
+            >
+                <p className="text-sm font-normal text-slate-800">
+                    {String(row.getFieldObject(fieldName)?.value ?? '')}
+                </p>
+            </SelectOption>
         );
     }
 
@@ -54,17 +55,16 @@ export default function SelectBox({
         , postHeight
     ] = useVirtualizedList(data.rows, rowBuilder, () => true, containerRef, [data, currRow], 32, 5, 5);
 
-
     return (
-    <Collapse in={isOpen}
-        className={`
-            fixed z-50 max-h-32
-            ${hasLabel ? 'translate-y-18' : 'translate-y-10'}
-            overflow-x-hidden
-            bg-white rounded border border-slate-300
-        `}
-    >
+    <Collapse in={isOpen}>
         <div 
+            className={`
+                fixed z-50 max-h-32
+                ${hasLabel && !currRow? '-translate-y-6' : ''}
+                overflow-x-hidden overflow-auto
+                bg-white rounded border border-slate-300
+                select-none
+            `}
             ref={containerRef}
             style={{width: parentRef.current?.clientWidth}}
         >

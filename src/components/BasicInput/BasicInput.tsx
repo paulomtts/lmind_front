@@ -25,6 +25,7 @@ export default function BasicInput({
     , onChange = () => { }
     , onClear = () => { }
     , onBlur = () => { }
+    , onFocus = () => { }
 }: {
     field?: DataField | undefined
     label?: string
@@ -35,6 +36,7 @@ export default function BasicInput({
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     onClear?: () => void
     onBlur?: () => void
+    onFocus?: () => void
 }) {
 
     const inputRef = React.useRef<HTMLInputElement>(null!);
@@ -95,6 +97,7 @@ export default function BasicInput({
                     onChange={handleInputChange}
                     onKeyDown={handleInputKeyDown}
                     onBlur={onBlur}
+                    onFocus={onFocus}
                 />
                 <InputRightElement className="pr-1 m-0">
                     <Button

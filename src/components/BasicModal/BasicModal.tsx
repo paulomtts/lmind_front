@@ -33,6 +33,16 @@ export default function BasicModal({
     if (size && width) {
         throw new Error('cannot set both size and width. Use either one or the other.');
     }
+
+    const [footerChildren, setFooterChildren] = React.useState<React.ReactNode[]>([]);
+
+    React.useEffect(() => {
+        const footerChildren = React.Children.toArray(children).filter((child) => {
+            return (child as React.ReactElement).type === BasicModalFooter;
+        });
+
+        setFooterChildren(footerChildren);
+    }, [children]);
     
     return (<>
         <Modal isOpen={isOpen} isCentered size={size ? size : 'xl'} onClose={() => {}}> {/* reason: prevent close when clicking outside Modal */}
@@ -44,18 +54,16 @@ export default function BasicModal({
                     {title}
                 </ModalHeader>
 
-                <ModalBody>
+                <ModalBody className='mb-2'>
                     {React.Children.toArray(children).filter((child) => {
                         return (child as React.ReactElement).type !== BasicModalFooter;
                     })}
                     
                 </ModalBody>
 
-                <ModalFooter justifyContent={'space-between'}>
-                    {React.Children.toArray(children).filter((child) => {
-                        return (child as React.ReactElement).type === BasicModalFooter;
-                    })}
-                </ModalFooter>
+                {footerChildren.length > 0 && <ModalFooter className='flex justify-between mb-2'>
+                    {footerChildren}
+                </ModalFooter>}
             </ModalContent>
         </Modal>
     </>);

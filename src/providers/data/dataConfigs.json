@@ -1,70 +1,70 @@
 {
     "tsys_symbols": {
         "id": {
-            "name": "id"
-            , "label": "ID"
-            , "type": "number"
-            , "visible": false
-            , "required": false
-            , "editable": false
-            , "message": ""
+            "_name": "id"
+            , "_label": "ID"
+            , "_type": "number"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_message": ""
         },
         "name" :{
-            "name": "name"
-            , "label": "Name"
-            , "type": "text"
-            , "visible": true
-            , "required": true
-            , "editable": true
-            , "message": "Provide a name to your unit"
-            , "props": {
+            "_name": "name"
+            , "_label": "Name"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_message": "Provide a name to your unit"
+            , "_props": {
                 "minLength": 3,
                 "maxLength": 20
             }
         }
         , "abbreviation" : {
-            "name": "abbreviation"
-            , "label": "Abbreviation"
-            , "type": "text"
-            , "visible": true
-            , "required": true
-            , "editable": true
-            , "message": "Type an abbreviation of the name"
-            , "props": {
+            "_name": "abbreviation"
+            , "_label": "Abbreviation"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_message": "Type an abbreviation of the name"
+            , "_props": {
                 "minLength": 1,
                 "maxLength": 5
             }
         }
         , "base" : {
-            "name": "base"
-            , "label": "Base"
-            , "type": "number"
-            , "visible": true
-            , "required": true
-            , "editable": true
-            , "message": "A base value is required to calculate conversions"
-            , "props": {
+            "_name": "base"
+            , "_label": "Base"
+            , "_type": "number"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_message": "A base value is required to calculate conversions"
+            , "_props": {
                 "min": 1
             }
         }
         , "type": {
-            "name": "type"
-            , "label": "Type"
-            , "type": "select"
-            , "visible": true
-            , "required": true
-            , "editable": true
-            , "message": "Select a category for this unit"
+            "_name": "type"
+            , "_label": "Type"
+            , "_type": "select"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_message": "Select a category for this unit"
         }
         , "created_by": {
-            "name": "created_by"
-            , "label": "Created By"
-            , "type": "text"
-            , "visible": true
-            , "required": false
-            , "editable": false
-            , "message": ""
-            , "props": {
+            "_name": "created_by"
+            , "_label": "Created By"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_message": ""
+            , "_props": {
                 "crud": {
                     "visible": {
                         "create": false

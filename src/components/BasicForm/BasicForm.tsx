@@ -80,6 +80,12 @@ export default function BasicForm({
             handleStep(field, 'sub');
         } 
     }
+
+    const handleOptionClick = (data: DataRow | undefined, field: DataField | undefined) => {
+        if (data && field) {
+            _changeState(field.name, field.value);
+        }
+    }
     
 
     const fieldComponents = formState.fields.map((field: DataField, index: number) => {
@@ -160,6 +166,7 @@ export default function BasicForm({
                         label={field.label}
                         required={field.required}
                         errorMessage={field.message}
+                        onOptionClick={handleOptionClick}
                     />
                 );
         }
