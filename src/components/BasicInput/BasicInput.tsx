@@ -7,8 +7,7 @@ import {
 
     , FormControl
     , FormLabel
-    , FormErrorMessage,
-    InputLeftElement
+    , FormErrorMessage
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
