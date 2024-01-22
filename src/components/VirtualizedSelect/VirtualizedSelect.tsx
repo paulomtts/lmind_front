@@ -1,6 +1,9 @@
 import React from "react";
+import { Collapse } from '@chakra-ui/react'
 
-import BasicInput from "../BasicInput/BasicInput";
+import FormFieldWrapper from "../FormFieldWrapper/FormFieldWrapper";
+import SelectDropdown from "./SelectDropdown";
+import SelectSearch from "./SelectSearch";
 import SelectBox from "./SelectBox";
 import { DataObject, DataRow, DataField } from "../../providers/data/dataModels";
 
@@ -11,26 +14,28 @@ export default function VirtualizedSelect({
     , label = ''
     , required
     , errorMessage
+    , helperMessage = ''
     , initialRow
     , initialField
     , onOptionClick = () => { }
-    , onClearClick = () => { }
 }: {
     data: DataObject
     fieldName: string
     label?: string
     required?: boolean
     errorMessage?: string
+    helperMessage?: string
     initialRow?: DataRow
     initialField?: DataField
     onOptionClick?: (data: DataRow | undefined, field: DataField | undefined) => void
-    onClearClick?: () => void
 }) {
 
-    const parentRef = React.useRef<HTMLDivElement>(null);
+    const componentRef = React.useRef<HTMLDivElement>(null);
+    const dropdownRef = React.useRef<HTMLDivElement>(null);
 
     const [compData, setCompData] = React.useState<DataObject>(data);
     const [isOpen, setIsOpen] = React.useState(false);
+    const [inputValue, setInputValue] = React.useState('');
     const [currRow, setCurrRow] = React.useState<DataRow | undefined>(initialRow);
     const [currField, setCurrField] = React.useState<DataField | undefined>(initialField);
 
@@ -40,13 +45,12 @@ export default function VirtualizedSelect({
         setCompData(data);
     }, [data, isOpen]);
 
-
     React.useEffect(() => {
         const handleClick = (e: MouseEvent) => {
             
-            if (!parentRef.current) return;
+            if (!componentRef.current) return;
 
-            const { left, top, right, bottom } = (parentRef.current as HTMLElement).getBoundingClientRect();            
+            const { left, top, right, bottom } = (componentRef.current as HTMLElement).getBoundingClientRect();            
 
             if (e.clientX < left || e.clientX > right || e.clientY < top || e.clientY > bottom) {
                 setIsOpen(false);
@@ -58,7 +62,7 @@ export default function VirtualizedSelect({
         return () => {
             document.removeEventListener('click', handleClick);
         }
-    }, [parentRef]);
+    }, [componentRef]);
 
 
     /* Methods */
@@ -77,31 +81,22 @@ export default function VirtualizedSelect({
 
 
     /* Handlers */
-    const handleInputFocus = () => {
-        setIsOpen(true);
+    const handleButtonClick = () => {
+        setIsOpen(!isOpen);
+
+        if (!isOpen) {
+            setInputValue('');
+            setCompData(data);
+        }
     }
 
     const handleInputChange = (e: any) => {
-        if (e.target.value === '') { 
-            setCompData(data);
-            setCurrRow(undefined);
-            setCurrField(undefined);
-        } else {
-            filterData(e.target.value);
-        }
+        setInputValue(e.target.value);
+        filterData(e.target.value);
     }
     
-    const handleInputClear = () => {
-        setCompData(data);
-        setCurrRow(undefined);
-        setCurrField(undefined);
-
-        setIsOpen(false);
-
-        onClearClick();
-    }
-
     const handleOptionClick = (row: DataRow, field: DataField) => {
+        setInputValue('');
         setCurrRow(row);
         setCurrField(field);
         
@@ -112,25 +107,49 @@ export default function VirtualizedSelect({
     }
 
 
-    return (<div className="flex flex-col" ref={parentRef}>
-            <BasicInput 
-                field={currField}
-                label={label} 
-                required={required} 
-                errorMessage={errorMessage} 
-                onChange={handleInputChange} 
-                onClear={handleInputClear} 
-                onFocus={handleInputFocus}
-            />
+    return (<div ref={componentRef}>
+    <FormFieldWrapper
+        label={label}
+        required={required}
+        errorMessage={errorMessage}
+        helperMessage={helperMessage}
+        currField={currField}
+    >
+        <SelectDropdown
+            value={currField ? String(currField.value) : ''}
+            isInvalid={!currField?.required && !currField?.value}
+            onClick={handleButtonClick}
+        >
+            {<div 
+                className={`
+                    flex flex-col
+                    absolute z-50 
+                    rounded-md
+                `}
+                style={{
+                    width: `${componentRef.current && componentRef.current.getBoundingClientRect().width}px`
+                }}
             
-            {isOpen && <SelectBox 
-                data={compData} 
-                fieldName={fieldName}
-                isOpen={isOpen}
-                currRow={currRow}
-                parentRef={parentRef}
-                hasLabel={!!label}
-                handleOptionClick={handleOptionClick} 
-            />}
+            >
+                {isOpen &&
+                <div>
+
+                    <SelectBox
+                        data={compData} 
+                        currRow={currRow}
+                        fieldName={fieldName}
+                        handleOptionClick={handleOptionClick} 
+                    >
+                        <SelectSearch
+                            inputValue={inputValue}
+                            handleInputChange={handleInputChange}
+                        />
+                    </SelectBox>
+                </div>}
+            </div>}
+        </SelectDropdown>
+
+
+    </FormFieldWrapper>
     </div>);
 }

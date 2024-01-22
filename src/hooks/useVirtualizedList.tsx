@@ -58,7 +58,6 @@ export const useVirtualizedList = (
     
     useEffect(() => {
         if (!containerRef.current) return;
-        if (!data.length) return;
 
         const filteredData = buildList();
         

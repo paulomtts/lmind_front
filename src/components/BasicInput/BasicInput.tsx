@@ -7,7 +7,8 @@ import {
 
     , FormControl
     , FormLabel
-    , FormErrorMessage
+    , FormErrorMessage,
+    InputLeftElement
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -21,6 +22,7 @@ export default function BasicInput({
     , placeholder = "Search..."
     , required = false
     , errorMessage
+    , children
     , onClick = () => { }
     , onChange = () => { }
     , onClear = () => { }
@@ -32,6 +34,7 @@ export default function BasicInput({
     placeholder?: string
     required?: boolean
     errorMessage?: string
+    children?: React.ReactNode
     onClick?: (e: React.MouseEvent<HTMLInputElement>) => void
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     onClear?: () => void
@@ -49,7 +52,6 @@ export default function BasicInput({
         if (!field) return;
 
         setInputValue(String(field.value ?? ''));
-        onChange({ target: { value: field.value ?? '' } } as React.ChangeEvent<HTMLInputElement>);
     }, [field]);
 
     React.useEffect(() => {
@@ -63,8 +65,8 @@ export default function BasicInput({
 
     /* Handlers */
     const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
-        onClick(e);
         inputRef.current.select();
+        onClick(e);
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +91,9 @@ export default function BasicInput({
             {!!label && <FormLabel>{label}</FormLabel>}
             <InputGroup>
                 <Input 
+                    className={`
+                        cursor-pointer
+                    `}
                     ref={inputRef}
                     placeholder={placeholder}
                     value={inputValue}
@@ -110,6 +115,9 @@ export default function BasicInput({
                     </Button>
                 </InputRightElement>
             </InputGroup>
+
+            {children}
+
             <FormErrorMessage>{errorMessage}</FormErrorMessage>
         </FormControl>
     </>);

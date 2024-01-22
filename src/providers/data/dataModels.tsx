@@ -28,7 +28,7 @@ export class DataField {
     private _required: boolean;
     private _editable: boolean;
     private _message?: string;
-    private _props: Record<string, string | number | boolean>;
+    private _props: Record<string, any>;
     private _value: string | number | boolean | Date;;
 
     /**

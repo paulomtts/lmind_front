@@ -63,8 +63,8 @@ export default function BasicForm({
 
     const handleStep = (field: DataField, operation: string, stepVal: number = 1) => {
         const step = operation === 'sum' ? stepVal : -stepVal;
-        if(field.props.max && Number(field.value) + step > field.props.max) return;
-        if(field.props.min && Number(field.value) + step < field.props.min) return;
+        if(field.props.max && Number(field.value) + step > Number(field.props.max)) return;
+        if(field.props.min && Number(field.value) + step < Number(field.props.min)) return;
         const value = Number(formState.json[field.name]) + step
         _changeState(field.name, value);
     }
@@ -158,8 +158,16 @@ export default function BasicForm({
                         data={
                             new DataObject(
                                 'tsys_symbols', 
-                                [{id: 1, type: 'paulo',}
-                                , {id: 2, type: 'paulo2'}]
+                                [
+                                    {id: 1, type: 'paulo',}
+                                    , {id: 2, type: 'paulo2'}
+                                    , {id: 3, type: 'paulo3'}
+                                    , {id: 4, type: 'paulo4'}
+                                    , {id: 5, type: 'paulo5'}
+                                    , {id: 6, type: 'paulo6'}
+                                    , {id: 7, type: 'paulo7'}
+                                    , {id: 8, type: 'paulo8'}
+                                ]
                             )
                         }
                         fieldName={field.name}
