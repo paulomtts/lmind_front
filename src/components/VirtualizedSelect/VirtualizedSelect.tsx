@@ -29,7 +29,7 @@ export default function VirtualizedSelect({
 
     const parentRef = React.useRef<HTMLDivElement>(null);
 
-    const [compData, setCompData] = React.useState<DataObject>(data); // [data, setData
+    const [compData, setCompData] = React.useState<DataObject>(data);
     const [isOpen, setIsOpen] = React.useState(false);
     const [currRow, setCurrRow] = React.useState<DataRow | undefined>(initialRow);
     const [currField, setCurrField] = React.useState<DataField | undefined>(initialField);
@@ -38,7 +38,7 @@ export default function VirtualizedSelect({
     /* Effects */
     React.useEffect(() => {
         setCompData(data);
-    }, [data, currField]);
+    }, [data, isOpen]);
 
 
     React.useEffect(() => {
@@ -64,10 +64,10 @@ export default function VirtualizedSelect({
     /* Methods */
     const filterData = (value: string) => {
         const newJson = data.json.filter(row => {
-            const field = row[fieldName];
+            const fieldValue = row[fieldName];
             
-            if (!field) return false;
-            if (!String(field).includes(value)) return false;
+            if (!fieldValue) return false;
+            if (!String(fieldValue).includes(value)) return false;
 
             return true
         });
@@ -81,10 +81,6 @@ export default function VirtualizedSelect({
         setIsOpen(true);
     }
 
-    const handleInputBlur = () => {
-        setCompData(data);
-    }
-
     const handleInputChange = (e: any) => {
         if (e.target.value === '') { 
             setCompData(data);
@@ -96,6 +92,7 @@ export default function VirtualizedSelect({
     }
     
     const handleInputClear = () => {
+        setCompData(data);
         setCurrRow(undefined);
         setCurrField(undefined);
 
@@ -109,6 +106,7 @@ export default function VirtualizedSelect({
         setCurrField(field);
         
         setIsOpen(false);
+        setCompData(data);
 
         onOptionClick(row, field);
     }
@@ -123,7 +121,6 @@ export default function VirtualizedSelect({
                 onChange={handleInputChange} 
                 onClear={handleInputClear} 
                 onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
             />
             
             {isOpen && <SelectBox 

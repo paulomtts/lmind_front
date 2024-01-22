@@ -20,7 +20,6 @@ export default function SymbolsTab() {
     const [mode, setMode] = useState<'create' | 'update'>('create');
     const [isOpen, setIsOpen] = useState(false);
 
-
     async function retrieveData() {
         const { response, data } = await fetchData('tsys_symbols');
         

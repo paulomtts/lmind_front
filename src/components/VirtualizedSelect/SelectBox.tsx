@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
     Collapse
 } from '@chakra-ui/react'
@@ -37,7 +37,7 @@ export default function SelectBox({
         return (
             <SelectOption
                 key={`option-${uuid}`}
-                className={`${row === currRow ? 'bg-slate-300' : ''}`}
+                className={`${row.getFieldObject(fieldName)?.value === currRow?.getFieldObject(fieldName)?.value ? 'bg-slate-300' : ''}`}
                 data={row}
                 field={row.getFieldObject(fieldName)}
                 onClick={handleOptionClick}
@@ -53,7 +53,7 @@ export default function SelectBox({
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(data.rows, rowBuilder, () => true, containerRef, [data, currRow], 32, 5, 5);
+    ] = useVirtualizedList(data.rows, rowBuilder, () => true, containerRef, [currRow], 32, 10,);
 
     return (
     <Collapse in={isOpen}>

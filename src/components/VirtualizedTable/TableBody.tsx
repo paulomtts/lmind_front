@@ -28,9 +28,8 @@ export default function TableBody({
     onClickRow?: (row: DataRow) => void;
 }) {
 
-    const rowBuilder = (json: Record<string, any>) => {
+    const rowBuilder = (row: DataRow) => {
         const uuid = v4();
-        const row = new DataRow(data.tableName, json);
 
         return <Tr 
             key={uuid}
@@ -60,7 +59,7 @@ export default function TableBody({
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(data.json, rowBuilder, displayCallback, containerRef, [data, sorters]);
+    ] = useVirtualizedList(data.rows, rowBuilder, displayCallback, containerRef, [sorters], 32, 10, 5);
 
     return (<>
         <Tbody>

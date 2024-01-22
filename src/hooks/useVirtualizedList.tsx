@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 /**
  * A custom hook that returns a virtualized list of data based on the given parameters.
@@ -23,9 +23,10 @@ export const useVirtualizedList = (
         , lookFactor: number = 5
     ) => {
 
-    const [visibleData, setVisibleData] = useState([]);
-    const [prevHeight, setPrevDivHeight] = useState(0);
-    const [postHeight, setPostDivHeight] = useState(0);
+    const [visibleData, setVisibleData] = React.useState(null);
+
+    const prevHeightRef = React.useRef(0);
+    const postHeightRef = React.useRef(0);
 
     const buildList = () => {
         return data.reduce((acc, row) => {
@@ -47,16 +48,18 @@ export const useVirtualizedList = (
         const newPrevDivHeight = lookBehind * rowHeight;
         const newPostDivHeight = (data.length - lookAhead) * rowHeight;
 
-        setPrevDivHeight(newPrevDivHeight);
-        setPostDivHeight(newPostDivHeight);
+        prevHeightRef.current = newPrevDivHeight;
+        postHeightRef.current = newPostDivHeight;
+        
         const slicedData = filteredData.slice(lookBehind, lookAhead);
 
         setVisibleData(slicedData);
-    }   
+    } 
     
     useEffect(() => {
         if (!containerRef.current) return;
-        
+        if (!data.length) return;
+
         const filteredData = buildList();
         
         updateVisibleItems(filteredData);
@@ -68,7 +71,7 @@ export const useVirtualizedList = (
             if (!containerRef.current) return;
             containerRef.current.removeEventListener("scroll", handleScroll);
         }
-    }, [data, ...triggers]);
+    }, [data.length, ...triggers]);
 
-    return [visibleData, prevHeight, postHeight];
+    return [visibleData, prevHeightRef.current, postHeightRef.current];
 }

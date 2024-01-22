@@ -37,7 +37,6 @@ export default function VirtualizedTable ({
 
         setCompData(data);
         setSorters(newSorters);
-
     }, [data]);
 
 
@@ -53,7 +52,6 @@ export default function VirtualizedTable ({
                     return row[column].toString().includes(searchFor);
                 });
             });
-
             newData = new DataObject(data.tableName, newJson);
 
         } else {
