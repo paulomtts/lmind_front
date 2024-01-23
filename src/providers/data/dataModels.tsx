@@ -55,7 +55,7 @@ export class DataField {
             case 'text':
             case 'password':
             case 'email':
-                return value.toString();
+                return String(value);
             case 'number':
                 return Number(value);
             case 'key':
@@ -251,8 +251,8 @@ export class DataObject {
      * @returns {string[]} An array of visible columns based on the configuration for the current table.
      */
     getVisibleColumns() {
-        return this._columns.filter((column) => {
-            return configs[this._tableName][column].visible;
+        return this.columns.filter((column) => {
+            return configs[this.tableName][column]._visible;
         });
     }
 }

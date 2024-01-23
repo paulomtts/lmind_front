@@ -112,6 +112,7 @@ export default function VirtualizedTable ({
         
         setCompData(newData);
         setSearchFor(newSearchFor);
+        console.log(newData)
     };
 
     const handleSortClick = (targetSorter: Sorter) => {

@@ -90,9 +90,6 @@ export default function BasicInput({
             {!!label && <FormLabel>{label}</FormLabel>}
             <InputGroup>
                 <Input 
-                    className={`
-                        cursor-pointer
-                    `}
                     ref={inputRef}
                     placeholder={placeholder}
                     value={inputValue}

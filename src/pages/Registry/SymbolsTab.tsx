@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 
-import VirtualizedSelect from '../../components/VirtualizedSelect/VirtualizedSelect';
 import BasicModal from '../../components/BasicModal/BasicModal';
 import BasicForm from '../../components/BasicForm/BasicForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
-import { useData, DataObject, DataRow } from '../../providers/data/DataProvider';
+import { url, useData, DataObject, DataRow } from '../../providers/data/DataProvider';
 
 
 export default function SymbolsTab() {
 
-    const { fetchData, updateData, insertData } = useData();
+    const { fetchData, customRoute, generatePayload } = useData();
 
     const initialData = new DataObject('tsys_symbols');
     const initialState = new DataRow('tsys_symbols');
 
     const [data, setData] = useState<DataObject>(initialData);
-    const [state, setState] = useState<DataRow>(initialState);
-    const [mode, setMode] = useState<'create' | 'update'>('create');
+    const [formState, setFormState] = useState<DataRow>(initialState);
+    const [formMode, setFormMode] = useState<'create' | 'update'>('create');
     const [isOpen, setIsOpen] = useState(false);
 
     async function retrieveData() {
         const { response, data } = await fetchData('tsys_symbols');
-        
+        console.log(data)
         if (response.ok) {
             setData(data);
         }
@@ -41,29 +40,30 @@ export default function SymbolsTab() {
     }
 
     const handleCreateClick = () => {
-        setState(initialState);
-        setMode('create');
+        setFormState(initialState);
+        setFormMode('create');
 
         setIsOpen(true);
     }
     
     const handleEditClick = (newState: DataRow) => {
-        setState(newState);
-        setMode('update');
+        setFormState(newState);
+        setFormMode('update');
 
         setIsOpen(true);
     }
 
     const handleFormOnChange = (newState: DataRow) => {
-        setState(newState);
+        setFormState(newState);
     }
 
-    const handleFormSaveClick = () => {
-        if (mode === 'create') {
-            // call api INSERT
-        } else if (mode === 'update') {
-            // call api UPDATE
-        }
+    const handleFormSaveClick = async () => {
+        console.log(formState.json)
+        const payload = generatePayload({
+            method: 'POST'
+            , body: JSON.stringify(formState.json)
+        });
+        await customRoute(url.custom.symbols.upsert, payload);
         setIsOpen(false);
     }
 
@@ -91,8 +91,8 @@ export default function SymbolsTab() {
             onClose={() => setIsOpen(false)}
         >
             <BasicForm 
-                state={state} 
-                mode={mode} 
+                state={formState} 
+                mode={formMode} 
                 onChange={handleFormOnChange}
                 onSaveClick={handleFormSaveClick}
                 onDeleteClick={handleFormDeleteClick}

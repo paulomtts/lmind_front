@@ -171,6 +171,8 @@ export default function BasicForm({
                             )
                         }
                         fieldName={field.name}
+                        initialRow={state}
+                        initialField={field}
                         label={field.label}
                         required={field.required}
                         errorMessage={field.message}

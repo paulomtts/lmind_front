@@ -21,8 +21,11 @@ const addresses = {
             delete: `${baseURL}/crud/delete`,
         },
         custom: {
-            maps: `${baseURL}/custom/configs/maps`,
-            user: `${baseURL}/custom/configs/user`,
+            user: `${baseURL}/tsys/users/me`,
+            symbols: {
+                upsert: `${baseURL}/tsys/symbols/upsert`,
+                delete: `${baseURL}/tsys/symbols/delete`,
+            }
         }
     }
 };
@@ -147,9 +150,10 @@ export function DataProvider({ children }) {
     };
 
 
-    const updateData = async (tableName, id, data, notification = true, overlay = true) => {        
+    const updateData = async (tableName, id, data, notification = true, overlay = true) => {    
+        
         const address = url.crud.update + '?table_name=' + tableName;
-        const payload = generatePayload({ method: 'POST', body: JSON.stringify({...data, id: id}) }); 
+        const payload = generatePayload({ method: 'POST', body: JSON.stringify({...data.json, id: id}) }); 
         const response = await _makeRequest(address, payload, notification, overlay);
         
         return response
@@ -174,7 +178,7 @@ export function DataProvider({ children }) {
     const submitData = async (tableName, data, notification = true, overlay = true) => {
         const address = url.crud.insert + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({
-            data: [data]
+            data: [data.json]
             , table_name: tableName
         } )});
         const response = await _makeRequest(address, payload, notification, overlay);
