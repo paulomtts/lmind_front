@@ -22,7 +22,7 @@ import VirtualizedSelect from '../VirtualizedSelect/VirtualizedSelect';
 import { DataField, DataRow } from '../../providers/data/models';
 
 
-export default function BasicForm({
+export default function GenericForm({
     state
     , mode = 'create'
     , editable = true

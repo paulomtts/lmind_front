@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 
 import BasicModal from '../../components/BasicModal/BasicModal';
-import BasicForm from '../../components/BasicForm/BasicForm';
+import GenericForm from '../../components/GenericForm/GenericForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
 import { url, useData, DataObject, DataRow } from '../../providers/data/DataProvider';
 
@@ -120,7 +120,7 @@ export default function SymbolsTab() {
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
         >
-            <BasicForm 
+            <GenericForm 
                 state={formState} 
                 mode={formMode}
                 editable={false}

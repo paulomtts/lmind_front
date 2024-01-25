@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 
 
-export default function BasicTab({
+export default function BasicTabs({
     labels = [],
     initialTab,
     children

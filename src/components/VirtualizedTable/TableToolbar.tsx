@@ -8,7 +8,7 @@ import {
     Box,
 
 } from "@chakra-ui/react";
-import { Input } from "@chakra-ui/react";
+
 import { faChevronDown, faRefresh, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
