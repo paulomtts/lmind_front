@@ -7,7 +7,7 @@ import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable
 import { url, useData, DataObject, DataRow } from '../../providers/data/DataProvider';
 
 
-export default function SymbolsTab() {
+export default function UnitsTab() {
 
     const { fetchData, customRoute, generatePayload, getState } = useData();
 
