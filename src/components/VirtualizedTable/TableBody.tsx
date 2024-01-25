@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { v4 } from 'uuid';
 
-import { DataObject, DataRow } from '../../providers/data/dataModels.js';
+import { DataObject, DataRow } from '../../providers/data/models.js';
 import { useVirtualizedList } from '../../hooks/useVirtualizedList.js';
 import { Sorter } from './models.js';
 
@@ -22,10 +22,11 @@ export default function TableBody({
     , onClickRow = () => {}
 }: {
     data: DataObject
+    
     , sorters: Sorter[]
     , containerRef: React.RefObject<HTMLDivElement>
     , displayCallback?: (row: Record<string, any>) => boolean
-    onClickRow?: (row: DataRow) => void;
+    , onClickRow?: (row: DataRow) => void;
 }) {
 
     const rowBuilder = (row: DataRow) => {
@@ -36,7 +37,7 @@ export default function TableBody({
             className="hover:bg-blue-100 border-t border-solid border-gray-300" 
         >
             <Td padding={'0.25rem 0.25px'} textAlign={'center'}>
-                <Button
+                {onClickRow && <Button
                     size='xs' 
                     bg='gray.200' 
                     padding={'0px'} 
@@ -46,7 +47,7 @@ export default function TableBody({
                     onClick={() => onClickRow(row)}
                 >
                     <FontAwesomeIcon icon={faEdit} />
-                </Button>
+                </Button>}
             </Td>
 
             {row.getVisibleFields().map((field) => {

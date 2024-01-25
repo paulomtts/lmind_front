@@ -2,7 +2,7 @@ import React, { useState, useContext, createContext } from 'react';
 
 import { useNotification } from '../NotificationProvider';
 import { useOverlay } from '../OverlayProvider';
-import { DataObject, DataRow, DataField } from './dataModels';
+import { DataObject, DataRow, DataField } from './models';
 
 
 const baseURL = false ? 'some.address' : 'http://localhost:8000';
@@ -23,8 +23,8 @@ const addresses = {
         custom: {
             user: `${baseURL}/tsys/users/me`,
             symbols: {
-                upsert: `${baseURL}/tsys/symbols/upsert`,
-                delete: `${baseURL}/tsys/symbols/delete`,
+                insert: `${baseURL}/tsys/units/insert`,
+                delete: `${baseURL}/tsys/units/delete`,
             }
         }
     }
@@ -41,12 +41,14 @@ export function DataProvider({ children }) {
     const overlayContext = useOverlay();
     const { spawnToast, successModel, infoModel, warningModel, errorModel} = useNotification();
 
-    const [unitData, setUnitData] = useState([]);
+    const [tsys_categoriesData, setTsys_CategoriesData] = useState([]);
 
+    
+    /* Methods */
     const getState = (objectName) => {
         switch (objectName) {
-            case 'tsys_symbols':
-                return unitData;
+            case 'tsys_categories':
+                return tsys_categoriesData;
             default:
                 return null;
         }
@@ -54,15 +56,13 @@ export function DataProvider({ children }) {
 
     const _getStateSetter = (objectName) => {
         switch (objectName) {
-            case 'tsys_symbols':
-                return setUnitData;
+            case 'tsys_categories':
+                return setTsys_CategoriesData;
             default:
                 return null;
         }    
     };
 
-
-    /* Methods */
     function generatePayload({method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json'}, body = null}) {
         return {
             method: method,
@@ -117,11 +117,11 @@ export function DataProvider({ children }) {
     };
 
     
+    /* API Methods */
     const customRoute = async (url, payload = {}, notification = true, overlay = true) => {
         const { response, content } = await _makeRequest(url, payload, notification, overlay);
         return { response, content };
     }
-
 
     const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true) => {
         const address = url.crud.select + '?table_name=' + tableName;
@@ -140,15 +140,14 @@ export function DataProvider({ children }) {
             const stateSetter = _getStateSetter(tableName);
             const json = await JSON.parse(content.data);
             const data = new DataObject(tableName, json);
-            
-            if(stateSetter !== null) stateSetter(json); 
+
+            if(stateSetter !== null) stateSetter(data); 
 
             return { response, data }
         }
-        
+
         return { response, data: [] }
     };
-
 
     const updateData = async (tableName, id, data, notification = true, overlay = true) => {    
         
@@ -158,7 +157,6 @@ export function DataProvider({ children }) {
         
         return response
     };
-
 
     const deleteData = async (tableName, filters, notification = true, overlay = true) => {
         const address = url.crud.delete + '?table_name=' + tableName;
@@ -174,7 +172,6 @@ export function DataProvider({ children }) {
         return response
     }
 
-
     const submitData = async (tableName, data, notification = true, overlay = true) => {
         const address = url.crud.insert + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({
@@ -185,6 +182,12 @@ export function DataProvider({ children }) {
 
         return response
     }
+
+
+    /* Effects */
+    React.useEffect(() => {
+        fetchData('tsys_categories', {}, {}, false, false);
+    }, []);
 
 
     return (

@@ -12,11 +12,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-import { DataField } from "../../providers/data/dataModels";
+import { DataField } from "../../providers/data/models";
 
 
 export default function BasicInput({
-    field
+    value
     , label = ''
     , placeholder = "Search..."
     , required = false
@@ -28,7 +28,7 @@ export default function BasicInput({
     , onBlur = () => { }
     , onFocus = () => { }
 }: {
-    field?: DataField | undefined
+    value: string
     label?: string
     placeholder?: string
     required?: boolean
@@ -42,16 +42,14 @@ export default function BasicInput({
 }) {
 
     const inputRef = React.useRef<HTMLInputElement>(null!);
-    const [inputValue, setInputValue] = React.useState('');
-    const [isInvalid, setIsInvalid] = React.useState(true);
+    const [inputValue, setInputValue] = React.useState<string>('');
+    const [isInvalid, setIsInvalid] = React.useState<boolean>(true);
 
 
     /* Effects */
     React.useEffect(() => {
-        if (!field) return;
-
-        setInputValue(String(field.value ?? ''));
-    }, [field]);
+        setInputValue(value);
+    }, [value]);
 
     React.useEffect(() => {
         if (inputValue === '') {

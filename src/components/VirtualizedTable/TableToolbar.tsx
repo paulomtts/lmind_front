@@ -19,7 +19,7 @@ import { Filter } from "./models";
 
 
 export default function TableToolbar({
-    columns,
+    labels,
     filters,
     searchIn,
     searchFor,
@@ -28,7 +28,7 @@ export default function TableToolbar({
     onRefreshClick,
     onChangeFilters,
 }: {
-    columns: string[]
+    labels: string[]
     , filters: Filter[]
     , searchIn: string
     , searchFor: string
@@ -65,15 +65,20 @@ export default function TableToolbar({
                     <FontAwesomeIcon icon={faChevronDown}/>
                 </Box>
             </MenuButton>
+
             <MenuList shadow={'1px 0px 5px 2px lightgray'} borderRadius={'0.5rem'} border={'1px solid lightgray'} >
+                
                 <MenuItem key={'All'} value={'All'} onClick={onSearchInClick}>All</MenuItem>
-                {columns.map((column) => {
+                
+                {labels.map((column) => {
                     return <MenuItem key={column} value={column} onClick={onSearchInClick}>{column[0].toUpperCase() + column.slice(1)}</MenuItem>
                 })}
+                
             </MenuList>
+
         </Menu>
 
-        <BasicInput placeholder="Start typing to search..." onChange={onSearchForChange} onClear={handleClearClick} />
+        <BasicInput placeholder="Start typing to search..." value={searchFor} onChange={onSearchForChange} onClear={handleClearClick} />
 
         <Button 
             size="md" 

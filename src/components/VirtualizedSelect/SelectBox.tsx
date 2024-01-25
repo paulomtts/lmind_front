@@ -3,21 +3,19 @@ import { v4 } from "uuid";
 
 import SelectOption from "./SelectOption";
 import { useVirtualizedList } from "../../hooks/useVirtualizedList";
-import { DataField, DataObject, DataRow } from "../../providers/data/dataModels";
+import { DataField, DataObject, DataRow } from "../../providers/data/models";
 
 
 export default function SelectBox({
     data
-    , fieldName
-    , currRow
+    , field
     , children
     , handleOptionClick = () => {}
 }: {
     data: DataObject
-    fieldName: string
-    currRow: DataRow | undefined
+    field: DataField
     children: React.ReactNode
-    handleOptionClick?: (row: DataRow, field: DataField) => void
+    handleOptionClick?: (field: DataField) => void
 }) {
 
     const containerRef = React.useRef<HTMLDivElement>(null);
@@ -26,17 +24,18 @@ export default function SelectBox({
     /* Builders */
     const rowBuilder = (row: DataRow) => {
         const uuid = v4();
+
+        const option = row.getFieldObject(field.props.fieldName);
         
         return (
             <SelectOption
                 key={`option-${uuid}`}
-                className={`${row.getFieldObject(fieldName)?.value === currRow?.getFieldObject(fieldName)?.value ? 'bg-slate-300' : ''}`}
-                data={row}
-                field={row.getFieldObject(fieldName)}
+                className={`${option && field.value === option.value ? 'bg-slate-300' : ''}`}
+                field={option}
                 onClick={handleOptionClick}
             >
                 <p className="text-sm font-normal text-slate-800">
-                    {String(row.getFieldObject(fieldName)?.value ?? '')}
+                    {String(option?.value)}
                 </p>
             </SelectOption>
         );
@@ -46,13 +45,13 @@ export default function SelectBox({
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(data.rows, rowBuilder, () => true, containerRef, [currRow], 32, 10, 5);
+    ] = useVirtualizedList(data.rows, rowBuilder, () => true, containerRef, [], 32, 10, 5);
 
     return (
     <div 
         className={`
             absolute z-50 max-h-36
-            overflow-x-hidden overflow-auto
+            overflow-x-hidden
             bg-white rounded border border-slate-300
             select-none
         `}
@@ -60,12 +59,16 @@ export default function SelectBox({
             width: '100%'
         }}
         ref={containerRef}
-    >            
-        {children}
+    >
+        <div className="sticky">
+            {children}
+        </div>
         
-        <div key={`option-prev`} style={{height: `${prevHeight}px`}} />
-        {visibleData}
-        <div key={`option-post`} style={{height: `${postHeight}px`}} />
+        <div>
+            <div key={`option-prev`} style={{height: `${prevHeight}px`}} />
+            {visibleData}
+            <div key={`option-post`} style={{height: `${postHeight}px`}} />
+        </div>
     </div>
     );
 }

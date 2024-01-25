@@ -5,13 +5,13 @@ import TableToolbar from "./TableToolbar";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import { Sorter, Filter } from "./models";
-import { DataObject, DataRow } from "../../providers/data/dataModels";
+import { DataObject, DataRow, getConfigsAsFields } from "../../providers/data/models";
 
 
 export default function VirtualizedTable ({
-    data, 
-    onClickRow = () => {},
-    onRefreshClick = () => {}
+    data
+    , onClickRow = () => {}
+    , onRefreshClick = () => {}
 }: { 
     data: DataObject
     , onClickRow?: (row: DataRow) => void
@@ -41,22 +41,28 @@ export default function VirtualizedTable ({
 
 
     /* Functions */
-    function filterRows(searchFor: string) {
-        const visibleColumns = data.getVisibleColumns();
+    function filterRows(searchFor: string, searchIn: string) {
+        const visibleFieldConfigs = getConfigsAsFields(data.tableName);
 
         let newData: DataObject;
 
         if (searchIn === "All") {
             const newJson = data.json.filter((row) => {
-                return visibleColumns.some((column) => {
-                    return row[column].toString().includes(searchFor);
+                return visibleFieldConfigs.some((field) => {
+                    return String(row[field.name]).includes(searchFor);
                 });
             });
             newData = new DataObject(data.tableName, newJson);
 
         } else {
+            const field = visibleFieldConfigs.find((field) => {
+                return field.label === searchIn;
+            });
+
+            if (!field) return data;
+            
             const newJson = data.json.filter((row) => {
-                return row[searchIn].toString().includes(searchFor);
+                return String(row[field.name]).includes(searchFor);
             });
 
             newData = new DataObject(data.tableName, newJson);
@@ -66,7 +72,11 @@ export default function VirtualizedTable ({
     }
 
     function multiSort(sorters: Sorter[]) {
-        const columns = data.getVisibleColumns();
+        const fields = getConfigsAsFields(data.tableName);
+        const columns = fields.map((field) => {
+            return field.name;
+        });
+
         
         return data.json.sort((a, b) => {
             return columns.reduce((result, col) => {
@@ -101,6 +111,9 @@ export default function VirtualizedTable ({
     /* Handlers */
     const handleSearchInClick = (e: any) => {
         setSearchIn(e.target.value);
+
+        const newData = filterRows(searchFor, e.target.value);
+        setCompData(newData);
     };
 
     const handleSearchForChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,11 +121,10 @@ export default function VirtualizedTable ({
 
         const newSearchFor = e.target.value;
 
-        const newData = filterRows(newSearchFor);
+        const newData = filterRows(newSearchFor, searchIn);
         
         setCompData(newData);
         setSearchFor(newSearchFor);
-        console.log(newData)
     };
 
     const handleSortClick = (targetSorter: Sorter) => {
@@ -154,7 +166,9 @@ export default function VirtualizedTable ({
 
     return (<>
         <TableToolbar
-            columns={compData.getVisibleColumns()}
+            labels={getConfigsAsFields(data.tableName).map((field) => {
+                return field.label;
+            })}
             filters={filters}
             searchIn={searchIn}
             searchFor={searchFor}

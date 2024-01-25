@@ -3,17 +3,17 @@ import React from "react";
 export default function FormFieldWrapper({
     label
     , required
+    , isInvalid
     , errorMessage
     , helperMessage
-    , currField
     , children
 }: {
     label?: string
-    required?: boolean
-    errorMessage?: string
-    helperMessage?: string
-    currField?: any
-    children?: React.ReactNode
+    , required?: boolean
+    , isInvalid?: boolean
+    , errorMessage?: string
+    , helperMessage?: string
+    , children?: React.ReactNode
 
 }) {
     return (<div className="flex flex-col">
@@ -24,6 +24,6 @@ export default function FormFieldWrapper({
 
         {!!helperMessage && <p className="chakra-form__helper-text css-1yjw6w3">{helperMessage}</p>}
 
-        {!currField?.required && !currField?.value && <p className="chakra-form__error-message css-502kp3">{errorMessage}</p>}
+        {isInvalid && <p className="chakra-form__error-message css-502kp3">{errorMessage}</p>}
     </div>)
 }

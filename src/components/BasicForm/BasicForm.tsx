@@ -17,20 +17,22 @@ import {
 
 } from '@chakra-ui/react'
 
-import { DataField, DataObject, DataRow } from '../../providers/data/dataModels';
 import ConfirmationPopover from '../ConfirmationPopover/ConfirmationPopover';
 import VirtualizedSelect from '../VirtualizedSelect/VirtualizedSelect';
+import { DataField, DataRow } from '../../providers/data/models';
 
 
 export default function BasicForm({
     state
     , mode = 'create'
+    , editable = true
     , onChange = () => {}
     , onSaveClick = () => {}
     , onDeleteClick = () => {}
 }: { 
     state: DataRow
-    , mode?: 'create' | 'update'
+    , mode: 'create' | 'update'
+    , editable?: boolean
     , onChange?: (state: DataRow) => void
     , onSaveClick?: () => void
     , onDeleteClick?: () => void
@@ -41,24 +43,23 @@ export default function BasicForm({
 
 
     /* Methods */
-    const _changeState = (name: string, value: any) => {
+    const changeState = (field: DataField, value: any) => {
         const newFormState = new DataRow(formState.tableName, formState.json);
-
-        newFormState.setFieldValue(name, value);
+        
+        newFormState.setFieldValue(field, value);
+        console.log(newFormState)
 
         setFormState(newFormState);
         onChange(newFormState);
     }
-
+       
 
     /* Handlers */
     const handleFieldChange = (e: ChangeEvent<HTMLInputElement>, field: DataField) => {
         if (field.type === 'number' && isNaN(Number(e.target.value))) {
             return;
         }
-
-        const value = e.target.value;
-        _changeState(field.name, value);
+        changeState(field, e.target.value);
     };
 
     const handleStep = (field: DataField, operation: string, stepVal: number = 1) => {
@@ -66,7 +67,7 @@ export default function BasicForm({
         if(field.props.max && Number(field.value) + step > Number(field.props.max)) return;
         if(field.props.min && Number(field.value) + step < Number(field.props.min)) return;
         const value = Number(formState.json[field.name]) + step
-        _changeState(field.name, value);
+        changeState(field, value);
     }
 
     const handleOnKeyDown = (e: React.KeyboardEvent, field: DataField) => {
@@ -81,10 +82,8 @@ export default function BasicForm({
         } 
     }
 
-    const handleOptionClick = (data: DataRow | undefined, field: DataField | undefined) => {
-        if (data && field) {
-            _changeState(field.name, field.value);
-        }
+    const handleOptionClick = (field: DataField, option: DataField) => {
+        changeState(field, option.value);
     }
     
 
@@ -102,40 +101,43 @@ export default function BasicForm({
             return null;
         }
 
+
         switch (field.type) {
-            case 'text' || 'password' || 'email':
+            case 'text':
+            case 'password':
+            case 'email':
                 newIsInvalid = (field.required && field.value === '');
 
                 return (
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={newIsInvalid}>
-                        <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
+                        <FormLabel>{field.label}</FormLabel>
                         <Input 
                             type={field.type} 
                             value={value}
                             minLength={field.props.minLength}
                             maxLength={field.props.maxLength}
                             placeholder='Type...' 
-                            isDisabled={!field.editable}
+                            isDisabled={!editable && mode === 'update'}
                             onChange={(e) => handleFieldChange(e, field)}
                         />
 
                         <FormErrorMessage>{field.message}</FormErrorMessage>
                     </FormControl>
                 );
-                case 'number':
-                    newIsInvalid = ((field.required && field.value === '') || Number(value) < field.props.min || Number(value) > field.props.max);
+            case 'number':
+                newIsInvalid = ((field.required && field.value === '') || Number(value) < field.props.min || Number(value) > field.props.max);
 
-                    return (
+                return (
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={newIsInvalid}>
-                        <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
-                        <NumberInput value={value} min={field.props.min} isDisabled={!field.editable}>
+                        <FormLabel>{field.label}</FormLabel>
+                        <NumberInput value={value} min={field.props.min} isDisabled={!editable && mode === 'update'}>
                             <NumberInputField onChange={(e) => handleFieldChange(e, field)} onKeyDown={(e) => handleOnKeyDown(e, field)}/>
                             <NumberInputStepper>
                                 <NumberIncrementStepper onClick={() => handleStep(field, 'sum')} />
                                 <NumberDecrementStepper onClick={() => handleStep(field, 'sub')} />
                             </NumberInputStepper>
                         </NumberInput>
-                        <FormHelperText>Hold down CTRL + Arrow Up/Down to modify in increments of 10</FormHelperText>
+                        {mode === 'create' && <FormHelperText>Hold down CTRL + Arrow Up/Down to modify in increments of 10</FormHelperText>}
                         <FormErrorMessage>{field.message}</FormErrorMessage>
                     </FormControl>
                 );
@@ -144,7 +146,7 @@ export default function BasicForm({
 
                 return (
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={newIsInvalid}>
-                        <FormLabel>{field.label[0].toUpperCase() + field.label.slice(1)}</FormLabel>
+                        <FormLabel>{field.label}</FormLabel>
                         <Switch 
                             isChecked={Boolean(value)} 
                             onChange={(e) => handleFieldChange(e, field)}
@@ -155,27 +157,9 @@ export default function BasicForm({
                 return (
                     <VirtualizedSelect 
                         key={identifier}
-                        data={
-                            new DataObject(
-                                'tsys_symbols', 
-                                [
-                                    {id: 1, type: 'paulo',}
-                                    , {id: 2, type: 'paulo2'}
-                                    , {id: 3, type: 'paulo3'}
-                                    , {id: 4, type: 'paulo4'}
-                                    , {id: 5, type: 'paulo5'}
-                                    , {id: 6, type: 'paulo6'}
-                                    , {id: 7, type: 'paulo7'}
-                                    , {id: 8, type: 'paulo8'}
-                                ]
-                            )
-                        }
-                        fieldName={field.name}
-                        initialRow={state}
-                        initialField={field}
-                        label={field.label}
-                        required={field.required}
-                        errorMessage={field.message}
+                        field={field}
+                        data={field.props.data}
+                        disabled={!editable && mode === 'update'}
                         onOptionClick={handleOptionClick}
                     />
                 );
@@ -190,7 +174,7 @@ export default function BasicForm({
         <ConfirmationPopover onYes={onDeleteClick}>
             <Button colorScheme="red" variant='outline'>Delete</Button>
         </ConfirmationPopover>
-        <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>
+        {editable && <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>}
     </>
 
     return (<div className='flex flex-col gap-4'>

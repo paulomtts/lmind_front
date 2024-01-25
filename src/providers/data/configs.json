@@ -1,5 +1,5 @@
 {
-    "tsys_symbols": {
+    "tsys_units": {
         "id": {
             "_name": "id"
             , "_label": "ID"
@@ -35,18 +35,6 @@
                 "maxLength": 5
             }
         }
-        , "base" : {
-            "_name": "base"
-            , "_label": "Base"
-            , "_type": "number"
-            , "_visible": true
-            , "_required": true
-            , "_editable": true
-            , "_message": "A base value is required to calculate conversions"
-            , "_props": {
-                "min": 1
-            }
-        }
         , "type": {
             "_name": "type"
             , "_label": "Type"
@@ -55,6 +43,16 @@
             , "_required": true
             , "_editable": true
             , "_message": "Select a category for this unit"
+            , "_props": {
+                "tableName": "tsys_categories"
+                , "fieldName": "name"
+                , "filters": {
+                    "and_": {
+                        "type": ["units"]
+                    }
+                }
+                , "data": {}
+            }
         }
         , "created_by": {
             "_name": "created_by"
@@ -72,6 +70,56 @@
                         , "read": true
                     }
                 }
+            }
+        }
+    }
+
+    , "tsys_categories": {
+        "id": {
+            "_name": "id"
+            , "_label": "ID"
+            , "_type": "number"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_message": ""
+        }
+        , "name" :{
+            "_name": "name"
+            , "_label": "Name"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_message": "Provide a name to your category"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 20
+            }
+        }
+        , "description" :{
+            "_name": "description"
+            , "_label": "Description"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_message": "Provide a description to your category"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 255
+            }
+        }
+        , "type": {
+            "_name": "type"
+            , "_label": "Type"
+            , "_type": "select"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_message": "Select a category for this unit"
+            , "_props": {
+                "tableName": "tsys_categories"
             }
         }
     }

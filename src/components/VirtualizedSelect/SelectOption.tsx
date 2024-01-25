@@ -1,19 +1,17 @@
 import React from "react";
 
-import { DataField, DataRow } from "../../providers/data/dataModels";
+import { DataField, DataRow } from "../../providers/data/models";
 
 export default function SelectOption({
-    data
-    , field
+    field
     , className = ''
     , children
     , onClick = () => { }
 }: {
-    data: DataRow
-    , field: DataField | undefined
+    field: DataField | undefined
     , className?: string
     , children?: React.ReactNode
-    , onClick?: (data: DataRow, field: DataField) => void
+    , onClick?: (field: DataField) => void
 }) {
 
     if (!field) {
@@ -25,7 +23,7 @@ export default function SelectOption({
     }
 
     return (<>
-        <div className={`flex flex-row items-center justify-start w-full h-8 px-2 hover:bg-slate-100 ${className}`} onClick={() => onClick(data, field)}>
+        <div className={`flex flex-row items-center justify-start w-full h-8 px-2 hover:bg-slate-100 ${className}`} onClick={() => onClick(field)}>
             {children}
         </div>
     </>);

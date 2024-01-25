@@ -1,49 +1,39 @@
 import React from "react";
-import { Collapse } from '@chakra-ui/react'
 
 import FormFieldWrapper from "../FormFieldWrapper/FormFieldWrapper";
 import SelectDropdown from "./SelectDropdown";
 import SelectSearch from "./SelectSearch";
 import SelectBox from "./SelectBox";
-import { DataObject, DataRow, DataField } from "../../providers/data/dataModels";
+import { DataObject, DataField } from "../../providers/data/models";
 
 
 export default function VirtualizedSelect({
-    data
-    , fieldName
-    , label = ''
-    , required
-    , errorMessage
+    field
+    , data
+    , disabled = false
     , helperMessage = ''
-    , initialRow
-    , initialField
     , onOptionClick = () => { }
 }: {
+    field: DataField
     data: DataObject
-    fieldName: string
-    label?: string
-    required?: boolean
-    errorMessage?: string
+    disabled?: boolean
     helperMessage?: string
-    initialRow?: DataRow
-    initialField?: DataField
-    onOptionClick?: (data: DataRow | undefined, field: DataField | undefined) => void
+    onOptionClick?: (field: DataField, option: DataField) => void
 }) {
 
     const componentRef = React.useRef<HTMLDivElement>(null);
-    const dropdownRef = React.useRef<HTMLDivElement>(null);
 
     const [compData, setCompData] = React.useState<DataObject>(data);
-    const [isOpen, setIsOpen] = React.useState(false);
-    const [inputValue, setInputValue] = React.useState('');
-    const [currRow, setCurrRow] = React.useState<DataRow | undefined>(initialRow);
-    const [currField, setCurrField] = React.useState<DataField | undefined>(initialField);
+    
+    const [compValue, setCompValue] = React.useState<any>('');
+    const [inputValue, setInputValue] = React.useState<string>('');
+    const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
 
     /* Effects */
     React.useEffect(() => {
         setCompData(data);
-    }, [data, isOpen]);
+    }, [data]);
 
     React.useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -68,7 +58,7 @@ export default function VirtualizedSelect({
     /* Methods */
     const filterData = (value: string) => {
         const newJson = data.json.filter(row => {
-            const fieldValue = row[fieldName];
+            const fieldValue = row[field.name];
             
             if (!fieldValue) return false;
             if (!String(fieldValue).includes(value)) return false;
@@ -95,57 +85,41 @@ export default function VirtualizedSelect({
         filterData(e.target.value);
     }
     
-    const handleOptionClick = (row: DataRow, field: DataField) => {
-        setInputValue('');
-        setCurrRow(row);
-        setCurrField(field);
-        
-        setIsOpen(false);
+    const handleOptionClick = (option: DataField) => {
         setCompData(data);
+        setCompValue(option.value);
 
-        onOptionClick(row, field);
+        setInputValue('');
+        setIsOpen(false);
+
+        onOptionClick(field, option);
     }
-
 
     return (<div ref={componentRef}>
     <FormFieldWrapper
-        label={label}
-        required={required}
-        errorMessage={errorMessage}
+        label={field.label}
+        required={field.required}
+        isInvalid={field.required && !field.value}
+        errorMessage={field.message}
         helperMessage={helperMessage}
-        currField={currField}
     >
         <SelectDropdown
-            value={currField ? String(currField.value) : ''}
-            isInvalid={!currField?.required && !currField?.value}
+            value={compValue}
+            isInvalid={field.required && !field.value}
+            disabled={disabled}
             onClick={handleButtonClick}
         >
-            {<div 
-                className={`
-                    flex flex-col
-                    absolute z-50 
-                    rounded-md
-                `}
+            {<div className={`flex flex-col absolute z-50 rounded-md`}
                 style={{
                     width: `${componentRef.current && componentRef.current.getBoundingClientRect().width}px`
                 }}
-            
             >
-                {isOpen &&
-                <div>
-
-                    <SelectBox
-                        data={compData} 
-                        currRow={currRow}
-                        fieldName={fieldName}
-                        handleOptionClick={handleOptionClick} 
-                    >
-                        <SelectSearch
-                            inputValue={inputValue}
-                            handleInputChange={handleInputChange}
-                        />
-                    </SelectBox>
-                </div>}
+                {isOpen && <SelectBox field={field} data={compData} handleOptionClick={handleOptionClick}>
+                    <SelectSearch
+                        inputValue={inputValue}
+                        handleInputChange={handleInputChange}
+                    />
+                </SelectBox>}
             </div>}
         </SelectDropdown>
 

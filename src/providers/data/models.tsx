@@ -1,4 +1,4 @@
-import configs from './dataConfigs.json';
+import configs from './configs.json';
 
 interface FieldConfig {
     _name: string;
@@ -29,14 +29,14 @@ export class DataField {
     private _editable: boolean;
     private _message?: string;
     private _props: Record<string, any>;
-    private _value: string | number | boolean | Date;;
+    private _value: string | number | boolean | Date;
 
     /**
      * Creates a new instance of DataField.
      * @param config - The configuration object for the field.
      * @param value - The initial value for the field.
      */
-    constructor(config: FieldConfig, value: string | number | boolean | Date) {
+    constructor(config: FieldConfig, value: string | number | boolean | Date = '') {
         this._name = config._name;
         this._label = config._label;
         this._type = config._type;
@@ -105,7 +105,7 @@ export class DataField {
     }
 
     get props() {
-        return { ...this._props };
+        return this._props;
     }    
 
     get value() {
@@ -155,44 +155,17 @@ export class DataRow {
     }
 
     get json() {
-        return { ...this._json };
+        return this._json;
     }
 
     get fields() {
-        return [...this._fields];
+        return this._fields;
     }
 
-
-    /**
-     * Sets the value of a field.
-     * @param name - The name of the field.
-     * @param value - The value to be set.
-     */
-    setFieldValue(name: string, value: string | number | boolean | Date) {
-        this._json[name] = value;
-        const field = this._fields.find(field => field.name === name);
-        if (field) {
-            field.value = value;
-        }
-    }
-
-    /**
-     * Gets the visible fields of the data row.
-     * @returns An array of visible fields.
-     */
+    /* Methods */
     getVisibleFields() {
         return this._fields.filter((field) => {
             return field.visible;
-        });
-    }
-
-    /**
-     * Gets the required fields of the data row.
-     * @returns An array of required fields.
-     */
-    getRequiredFields() {
-        return this._fields.filter((field) => {
-            return field.required;
         });
     }
 
@@ -200,6 +173,15 @@ export class DataRow {
         return this._fields.find((field) => {
             return field.name === name;
         });
+    }
+
+    setFieldValue(field: DataField, value: string | number | boolean | Date) {
+        const ownedField = this.getFieldObject(field.name);
+
+        if (ownedField) {
+            ownedField.value = value;
+            this._json[ownedField.name] = ownedField.value;
+        }
     }
 }
 
@@ -220,7 +202,7 @@ export class DataObject {
      */
     constructor(tableName: string, json: Array<Record<string, string | number | boolean | Date>> = []) {
         this._tableName = tableName;
-        this._columns = Object.keys(configs[tableName]);
+        this._columns = Object.keys(configs[tableName]??{});
         this._json = json;
 
         this._rows = json.map((obj) => {
@@ -235,27 +217,24 @@ export class DataObject {
     }
 
     get columns() {
-        return [...this._columns];
+        return this._columns;
     }
 
     get json() {
-        return [...this._json];
+        return this._json;
     }
 
     get rows() {
-        return [...this._rows];
-    }
-
-    /**
-     * Returns an array of visible columns based on the configuration for the current table.
-     * @returns {string[]} An array of visible columns based on the configuration for the current table.
-     */
-    getVisibleColumns() {
-        return this.columns.filter((column) => {
-            return configs[this.tableName][column]._visible;
-        });
+        return this._rows;
     }
 }
 
+export function getConfigsAsFields(tableName: string) {
+    return Object.keys(configs[tableName]).filter((field) => {
+        return configs[tableName][field]._visible;
+    }).map((field) => {
+        return new DataField(configs[tableName][field]);
+    });
+}
 
 export { configs }
