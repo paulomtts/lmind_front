@@ -66,9 +66,6 @@ export default function UnitsTab() {
     }
 
     const handleFormSaveClick = async () => {
-
-        console.log(formState.json)
-
         const payload = generatePayload({
             method: 'POST'
             , body: JSON.stringify(formState.json)

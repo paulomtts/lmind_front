@@ -15,7 +15,7 @@ export default function SelectBox({
     data: DataObject
     field: DataField
     children: React.ReactNode
-    handleOptionClick?: (field: DataField) => void
+    handleOptionClick?: (label: DataField, field: DataField) => void
 }) {
 
     const containerRef = React.useRef<HTMLDivElement>(null);
@@ -25,17 +25,20 @@ export default function SelectBox({
     const rowBuilder = (row: DataRow) => {
         const uuid = v4();
 
-        const option = row.getFieldObject(field.props.fieldName);
+        const labelOption = row.getFieldObject(field.props.labelName);
+        const valueOption = row.getFieldObject(field.props.valueName);
+
         
         return (
             <SelectOption
+                className={`${labelOption && field.value === labelOption.value ? 'bg-slate-300' : ''}`}
                 key={`option-${uuid}`}
-                className={`${option && field.value === option.value ? 'bg-slate-300' : ''}`}
-                field={option}
+                labelOption={labelOption}
+                valueOption={valueOption}
                 onClick={handleOptionClick}
             >
                 <p className="text-sm font-normal text-slate-800">
-                    {String(option?.value)}
+                    {String(labelOption?.value)}
                 </p>
             </SelectOption>
         );

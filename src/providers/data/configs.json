@@ -45,7 +45,8 @@
             , "_message": "Select a category for this unit"
             , "_props": {
                 "tableName": "tsys_categories"
-                , "fieldName": "name"
+                , "labelName": "name"
+                , "valueName": "name"
                 , "filters": {
                     "and_": {
                         "type": ["units"]

@@ -19,6 +19,7 @@ import {
 
 import ConfirmationPopover from '../ConfirmationPopover/ConfirmationPopover';
 import VirtualizedSelect from '../VirtualizedSelect/VirtualizedSelect';
+import FormFieldWrapper from '../FormFieldWrapper/FormFieldWrapper';
 import { DataField, DataRow } from '../../providers/data/models';
 
 
@@ -47,7 +48,6 @@ export default function GenericForm({
         const newFormState = new DataRow(formState.tableName, formState.json);
         
         newFormState.setFieldValue(field, value);
-        console.log(newFormState)
 
         setFormState(newFormState);
         onChange(newFormState);
@@ -155,13 +155,21 @@ export default function GenericForm({
                 );
             case 'select':
                 return (
-                    <VirtualizedSelect 
+                    <FormFieldWrapper
                         key={identifier}
-                        field={field}
-                        data={field.props.data}
-                        disabled={!editable && mode === 'update'}
-                        onOptionClick={handleOptionClick}
-                    />
+                        label={field.label}
+                        required={field.required}
+                        isInvalid={field.required && !field.value}
+                        errorMessage={field.message}
+                        helperMessage={field.props.helperMessage}
+                    >
+                        <VirtualizedSelect 
+                            field={field}
+                            data={field.props.data}
+                            disabled={!editable && mode === 'update'}
+                            onOptionClick={handleOptionClick}
+                        />
+                    </FormFieldWrapper>
                 );
         }
 

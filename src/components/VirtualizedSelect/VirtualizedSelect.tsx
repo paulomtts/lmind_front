@@ -1,6 +1,5 @@
 import React from "react";
 
-import FormFieldWrapper from "../FormFieldWrapper/FormFieldWrapper";
 import SelectDropdown from "./SelectDropdown";
 import SelectSearch from "./SelectSearch";
 import SelectBox from "./SelectBox";
@@ -11,13 +10,11 @@ export default function VirtualizedSelect({
     field
     , data
     , disabled = false
-    , helperMessage = ''
     , onOptionClick = () => { }
 }: {
     field: DataField
     data: DataObject
     disabled?: boolean
-    helperMessage?: string
     onOptionClick?: (field: DataField, option: DataField) => void
 }) {
 
@@ -25,7 +22,7 @@ export default function VirtualizedSelect({
 
     const [compData, setCompData] = React.useState<DataObject>(data);
     
-    const [compValue, setCompValue] = React.useState<any>('');
+    const [label, setLabel] = React.useState<string>('');
     const [inputValue, setInputValue] = React.useState<string>('');
     const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
@@ -85,45 +82,35 @@ export default function VirtualizedSelect({
         filterData(e.target.value);
     }
     
-    const handleOptionClick = (option: DataField) => {
+    const handleOptionClick = (labelOption: DataField, valueOption: DataField) => {
         setCompData(data);
-        setCompValue(option.value);
+        setLabel(String(labelOption.value));
 
         setInputValue('');
         setIsOpen(false);
 
-        onOptionClick(field, option);
+        onOptionClick(field, valueOption);
     }
 
     return (<div ref={componentRef}>
-    <FormFieldWrapper
-        label={field.label}
-        required={field.required}
+    <SelectDropdown
+        value={label}
         isInvalid={field.required && !field.value}
-        errorMessage={field.message}
-        helperMessage={helperMessage}
+        disabled={disabled}
+        onClick={handleButtonClick}
     >
-        <SelectDropdown
-            value={compValue}
-            isInvalid={field.required && !field.value}
-            disabled={disabled}
-            onClick={handleButtonClick}
+        {<div className={`flex flex-col absolute z-50 rounded-md`}
+            style={{
+                width: `${componentRef.current && componentRef.current.getBoundingClientRect().width}px`
+            }}
         >
-            {<div className={`flex flex-col absolute z-50 rounded-md`}
-                style={{
-                    width: `${componentRef.current && componentRef.current.getBoundingClientRect().width}px`
-                }}
-            >
-                {isOpen && <SelectBox field={field} data={compData} handleOptionClick={handleOptionClick}>
-                    <SelectSearch
-                        inputValue={inputValue}
-                        handleInputChange={handleInputChange}
-                    />
-                </SelectBox>}
-            </div>}
-        </SelectDropdown>
-
-
-    </FormFieldWrapper>
+            {isOpen && <SelectBox field={field} data={compData} handleOptionClick={handleOptionClick}>
+                <SelectSearch
+                    inputValue={inputValue}
+                    handleInputChange={handleInputChange}
+                />
+            </SelectBox>}
+        </div>}
+    </SelectDropdown>
     </div>);
 }
