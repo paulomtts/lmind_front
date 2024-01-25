@@ -2,6 +2,7 @@ import React, { useState, useContext, createContext } from 'react';
 
 import { useNotification } from '../NotificationProvider';
 import { useOverlay } from '../OverlayProvider';
+import { useAuth } from '../AuthProvider';
 import { DataObject, DataRow, DataField } from './models';
 
 
@@ -75,7 +76,7 @@ export function DataProvider({ children }) {
     const _makeRequest = async (url, payload, notification, overlay) => {
         if (overlay) await overlayContext.show();
 
-        const response = await fetch(url, payload).catch((error) => console.log(error));
+        const response = await fetch(url, payload);
         const content = await response.json();
 
         let model;

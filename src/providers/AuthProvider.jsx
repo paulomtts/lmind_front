@@ -24,34 +24,27 @@ export function AuthProvider({ children }) {
     
     /* Effects */
     useEffect(() => {
-        const validateSession = async () => {
-            const payload = {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include'
-            }
-            
-            await fetch(url.auth.validate, payload)
-            .then((response) => {
-                if (response.ok) {
-                    setIsAuthenticated(true);
-                } else {
-                    setIsAuthenticated(false);
-                }
-                return response;
-            })
-            .catch(() => {});
+        overlay.show(1);
+
+        const payload = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
         }
 
-        try {
-            overlay.show(1);
-            validateSession();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            overlay.hide(500);
-        }
+        fetch(url.auth.validate, payload)
+        .then((response) => {
+            if (response.ok) {
+                setIsAuthenticated(true);
+            } else {
+                setIsAuthenticated(false);
+            }
+            return response;
+        });
+        
+        overlay.hide(500);
     }, []);
+
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
