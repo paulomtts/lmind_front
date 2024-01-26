@@ -229,6 +229,7 @@ export class DataObject {
     }
 }
 
+
 export function getConfigsAsFields(tableName: string) {
     return Object.keys(configs[tableName]).filter((field) => {
         return configs[tableName][field]._visible;

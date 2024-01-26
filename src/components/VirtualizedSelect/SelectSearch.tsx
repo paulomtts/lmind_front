@@ -9,11 +9,13 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function SelectSearch({
-    inputValue
-    , handleInputChange = () => {}
+    value
+    , onChange: handleInputChange = () => {}
+    , onKeyDown: handleInputKeyPress = () => {}
 }: {
-    inputValue: string
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    value: string
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }) {
 
     const inputRef = React.useRef<HTMLInputElement>(null);
@@ -31,8 +33,9 @@ export default function SelectSearch({
             ref={inputRef}
             placeholder={'Search...'} 
             fontSize={'sm'}
-            value={inputValue}
+            value={value}
             onChange={handleInputChange}
+            onKeyDown={handleInputKeyPress}
         />
         <InputRightElement>
             <FontAwesomeIcon className="text-slate-500 text-sm" icon={faSearch} />

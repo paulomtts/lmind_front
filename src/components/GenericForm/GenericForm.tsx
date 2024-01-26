@@ -93,7 +93,7 @@ export default function GenericForm({
 
         let newIsInvalid = false;
 
-        if (!field.visible) {
+        if (field.visible === false) {
             return null;
         }
 
@@ -178,12 +178,12 @@ export default function GenericForm({
 
     const modalFooterCreateMode = <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>;
 
-    const modalFooterEditMode = <>
+    const modalFooterEditMode = (<>
         <ConfirmationPopover onYes={onDeleteClick}>
             <Button colorScheme="red" variant='outline'>Delete</Button>
         </ConfirmationPopover>
         {editable && <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>}
-    </>
+    </>);
 
     return (<div className='flex flex-col gap-4'>
         {fieldComponents}

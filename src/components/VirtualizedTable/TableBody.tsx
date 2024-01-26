@@ -19,14 +19,14 @@ export default function TableBody({
     , sorters
     , containerRef
     , displayCallback = () => true
-    , onClickRow = () => {}
+    , onEditClick = () => {}
 }: {
     data: DataObject
     
     , sorters: Sorter[]
     , containerRef: React.RefObject<HTMLDivElement>
     , displayCallback?: (row: Record<string, any>) => boolean
-    , onClickRow?: (row: DataRow) => void;
+    , onEditClick?: (row: DataRow) => void;
 }) {
 
     const rowBuilder = (row: DataRow) => {
@@ -37,14 +37,14 @@ export default function TableBody({
             className="hover:bg-blue-100 border-t border-solid border-gray-300" 
         >
             <Td padding={'0.25rem 0.25px'} textAlign={'center'}>
-                {onClickRow && <Button
+                {onEditClick && <Button
                     size='xs' 
                     bg='gray.200' 
                     padding={'0px'} 
                     margin={'0px'} 
                     className='border border-solid border-gray-400'
                     isDisabled={row.json['created_by'] === 'system'}
-                    onClick={() => onClickRow(row)}
+                    onClick={() => onEditClick(row)}
                 >
                     <FontAwesomeIcon icon={faEdit} />
                 </Button>}

@@ -99,6 +99,7 @@ export default function UnitsTab() {
         setIsOpen(false);
     }
 
+
     return (<Box className='flex flex-col gap-4'>
 
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
@@ -112,13 +113,13 @@ export default function UnitsTab() {
 
         <BasicModal 
             title={formMode === 'create' ? 'New Unit' : 'View Unit'}
-            width='85%'
+            width='60%'
             blur
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
         >
             <GenericForm 
-                state={formState} 
+                state={formState}
                 mode={formMode}
                 editable={false}
                 onChange={handleFormOnChange}
@@ -130,7 +131,7 @@ export default function UnitsTab() {
 
         <VirtualizedTable 
             data={data}
-            onClickRow={handleEditClick} 
+            onEditClick={handleEditClick} 
             onRefreshClick={handleRefreshClick} 
         />
     </Box>)

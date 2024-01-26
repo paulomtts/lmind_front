@@ -22,7 +22,7 @@ export default function VirtualizedSelect({
 
     const [compData, setCompData] = React.useState<DataObject>(data);
     
-    const [label, setLabel] = React.useState<string>('');
+    const [label, setLabel] = React.useState<string>(String(field.value));
     const [inputValue, setInputValue] = React.useState<string>('');
     const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
@@ -55,7 +55,7 @@ export default function VirtualizedSelect({
     /* Methods */
     const filterData = (value: string) => {
         const newJson = data.json.filter(row => {
-            const fieldValue = row[field.name];
+            const fieldValue = row[field.props.labelName];
             
             if (!fieldValue) return false;
             if (!String(fieldValue).includes(value)) return false;
@@ -80,6 +80,17 @@ export default function VirtualizedSelect({
     const handleInputChange = (e: any) => {
         setInputValue(e.target.value);
         filterData(e.target.value);
+    }
+
+    const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        // if 'enter' is pressed then we must select the first option
+        if (e.key === 'Enter') {
+            const firstLabel = compData.rows[0].getFieldObject(field.props.labelName);
+            const firstValue = compData.rows[0].getFieldObject(field.props.valueName);
+
+            if (!firstLabel || !firstValue) return;
+            handleOptionClick(firstLabel, firstValue);
+        }
     }
     
     const handleOptionClick = (labelOption: DataField, valueOption: DataField) => {
@@ -106,8 +117,9 @@ export default function VirtualizedSelect({
         >
             {isOpen && <SelectBox field={field} data={compData} handleOptionClick={handleOptionClick}>
                 <SelectSearch
-                    inputValue={inputValue}
-                    handleInputChange={handleInputChange}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={handleInputKeyPress}
                 />
             </SelectBox>}
         </div>}

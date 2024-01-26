@@ -52,22 +52,15 @@ export default function SelectBox({
 
     return (
     <div 
-        className={`
-            absolute z-50 max-h-36
-            overflow-x-hidden
-            bg-white rounded border border-slate-300
-            select-none
-        `}
-        style={{
-            width: '100%'
-        }}
+        className={`absolute z-50 bg-white border rounded border-slate-300`}
+        style={{width: '100%'}}
         ref={containerRef}
     >
-        <div className="sticky">
-            {children}
-        </div>
+        {children}
         
-        <div>
+        <div
+            className="max-h-24 overflow-y-auto select-none"
+        >
             <div key={`option-prev`} style={{height: `${prevHeight}px`}} />
             {visibleData}
             <div key={`option-post`} style={{height: `${postHeight}px`}} />
