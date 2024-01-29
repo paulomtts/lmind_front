@@ -6,19 +6,19 @@ import { useMouse } from "../../providers/MouseProvider.jsx";
 
 export default function HoverCard({
     className = "rounded-md bg-white border border-gray-300 shadow-md p-2"
-    , scrollableContainerRef
     , zIndex = 1001
     , customX = 0
     , customY = 0
+    , scrollableContainerRef
     , content
     , children
 }: {
     className?: string
-    , scrollableContainerRef: React.RefObject<HTMLDivElement>
     , zIndex?: number
     , customX?: number
     , customY?: number
-    , content?: React.ReactNode
+    , scrollableContainerRef: React.RefObject<HTMLDivElement>
+    , content: React.ReactNode
     , children: React.ReactNode
 }) {
 
