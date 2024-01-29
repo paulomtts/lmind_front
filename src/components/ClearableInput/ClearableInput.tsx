@@ -12,10 +12,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-import { DataField } from "../../providers/data/models";
 
-
-export default function BasicInput({
+export default function ClearableInput({
     value
     , label = ''
     , placeholder = "Search..."

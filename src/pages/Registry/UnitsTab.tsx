@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 
 import BasicModal from '../../components/BasicModal/BasicModal';
-import Form, { FormField } from '../../components/Forms/Form';
+import BasicForm, { BasicFormField } from '../../components/BasicForm/BasicForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
 import { useData, DataObject, DataRow } from '../../providers/data/DataProvider';
 
@@ -109,7 +109,7 @@ export default function UnitsTab() {
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
         >
-            <Form 
+            <BasicForm 
                 row={formState}
                 mode={formMode}
                 editable={false}
@@ -117,10 +117,10 @@ export default function UnitsTab() {
                 onSave={handleFormSaveClick}
                 onDelete={handleFormDeleteClick}
             >
-                <FormField field={formState.getFieldObject('name')} />
-                <FormField field={formState.getFieldObject('abbreviation')} />
-                <FormField field={formState.getFieldObject('type')} />
-            </Form>
+                <BasicFormField field={formState.getFieldObject('name')} />
+                <BasicFormField field={formState.getFieldObject('abbreviation')} />
+                <BasicFormField field={formState.getFieldObject('type')} />
+            </BasicForm>
 
         </BasicModal>
 

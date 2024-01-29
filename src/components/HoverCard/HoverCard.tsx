@@ -1,24 +1,33 @@
 import React, { useRef } from "react";
 
+import DataRowTable from "./DataRowTable.js";
 import { useMouse } from "../../providers/MouseProvider.jsx";
 
 
 export default function HoverCard({
-    className = "rounded-md bg-white border border-gray-300 shadow-md p-2 fixed"
+    className = "rounded-md bg-white border border-gray-300 shadow-md p-2"
+    , scrollableContainerRef
     , zIndex = 1001
     , customX = 0
     , customY = 0
+    , content
     , children
 }: {
     className?: string
+    , scrollableContainerRef: React.RefObject<HTMLDivElement>
     , zIndex?: number
     , customX?: number
     , customY?: number
+    , content?: React.ReactNode
     , children: React.ReactNode
 }) {
 
     const { position } = useMouse();
+    const optionRef = useRef(null);
     const cardRef = useRef(null);
+
+    const [show, setShow] = React.useState(false);
+
 
     function buildPosition() {
         let left = position.x;
@@ -39,9 +48,40 @@ export default function HoverCard({
         return {left: left, top: top};
     }
 
-    return (
+    React.useEffect(() => {
+        if (scrollableContainerRef.current && optionRef.current) {
+            const scrollableContainer = scrollableContainerRef.current as HTMLElement;
+            const option = optionRef.current as HTMLElement;
+
+            const scrollableContainerRect = scrollableContainer.getBoundingClientRect();
+            const optionRect = option.getBoundingClientRect();
+
+            if (
+                position.x >= scrollableContainerRect.left
+                && position.x <= scrollableContainerRect.right
+                && position.y >= scrollableContainerRect.top
+                && position.y <= scrollableContainerRect.bottom
+                && position.x >= optionRect.left
+                && position.x <= optionRect.right
+                && position.y >= optionRect.top
+                && position.y <= optionRect.bottom
+            ) {
+                setShow(true);
+            } else {
+                setShow(false);
+            }
+        }
+        
+    }, [position]);
+
+    return (<>
+
+        <div ref={optionRef}>
+            {children}
+        </div>
+
         <div
-            className={`${className}`}
+            className={`${className} ${show ? 'opacity-100' : 'opacity-0'} fixed`}
             ref={cardRef}
             style={{   
                 zIndex: zIndex
@@ -49,7 +89,10 @@ export default function HoverCard({
                 , top: customY ? customY : buildPosition().top
             }}
         >
-            {children}
+            {content}
         </div>
+    </>
     )
 }
+
+export { DataRowTable }

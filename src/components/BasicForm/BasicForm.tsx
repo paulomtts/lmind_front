@@ -19,11 +19,11 @@ import {
 
 import ConfirmationPopover from '../ConfirmationPopover/ConfirmationPopover';
 import VirtualizedSelect from '../VirtualizedSelect/VirtualizedSelect';
-import FormFieldWrapper from '../FormFieldWrapper/FormFieldWrapper';
+import FormFieldWrapper from './BasicFormFieldWrapper';
 import { DataField, DataRow } from '../../providers/data/models';
-import FormField from './FormField';
+import BasicFormField from './BasicFormField';
 
-export default function Form({
+export default function BasicForm({
     row
     , mode = 'create'
     , editable = true
@@ -199,4 +199,4 @@ export default function Form({
     </div>);
 }
 
-export { FormField }
+export { BasicFormField }

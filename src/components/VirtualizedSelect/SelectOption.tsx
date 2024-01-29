@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DataField, DataRow } from "../../providers/data/models";
+import { DataField } from "../../providers/data/models";
 
 export default function SelectOption({
     valueOption
@@ -16,6 +16,8 @@ export default function SelectOption({
     , onClick?: (labelOption: DataField, valueOption: DataField) => void
 }) {
 
+
+    /* Handlers */
     const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
         if (e.key === 'Enter') {
             onClick(labelOption!, valueOption!);
@@ -31,6 +33,7 @@ export default function SelectOption({
             previousSibling.focus();
         }
     }
+
 
     if (!valueOption) {
         return (<>

@@ -12,7 +12,7 @@ import {
 import { faChevronDown, faRefresh, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import BasicInput from "../BasicInput/BasicInput";
+import ClearableInput from "../ClearableInput/ClearableInput";
 import BasicPopover from "../BasicPopover/BasicPopover";
 import FilterBox from "./FilterBox";
 import { Filter } from "./models";
@@ -78,7 +78,7 @@ export default function TableToolbar({
 
         </Menu>
 
-        <BasicInput placeholder="Start typing to search..." value={searchFor} onChange={onSearchForChange} onClear={handleClearClick} />
+        <ClearableInput placeholder="Start typing to search..." value={searchFor} onChange={onSearchForChange} onClear={handleClearClick} />
 
         <Button 
             size="md" 

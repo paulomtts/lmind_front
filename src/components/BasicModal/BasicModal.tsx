@@ -44,29 +44,27 @@ export default function BasicModal({
         setFooterChildren(footerChildren);
     }, [children]);
     
-    return (<>
-        <Modal isOpen={isOpen} isCentered size={size ? size : 'xl'} onClose={() => {}}> {/* reason: prevent close when clicking outside Modal */}
-            <ModalOverlay backdropFilter={blur ? 'blur(2px)' : 'none'} />
+    return (<Modal isOpen={isOpen} isCentered size={size ? size : 'xl'} onClose={() => {}}> {/* reason: prevent close when clicking outside Modal */}
+        <ModalOverlay backdropFilter={blur ? 'blur(2px)' : 'none'} />
 
-            <ModalContent maxW={width ? width : undefined}>
-                <ModalCloseButton onClick={onClose}/>
-                <ModalHeader color='gray.500'>
-                    {title}
-                </ModalHeader>
+        <ModalContent maxW={width ? width : undefined}>
+            <ModalCloseButton onClick={onClose}/>
+            <ModalHeader color='gray.500'>
+                {title}
+            </ModalHeader>
 
-                <ModalBody className='mb-2'>
-                    {React.Children.toArray(children).filter((child) => {
-                        return (child as React.ReactElement).type !== BasicModalFooter;
-                    })}
-                    
-                </ModalBody>
+            <ModalBody className='mb-2'>
+                {React.Children.toArray(children).filter((child) => {
+                    return (child as React.ReactElement).type !== BasicModalFooter;
+                })}
+                
+            </ModalBody>
 
-                {footerChildren.length > 0 && <ModalFooter className='flex justify-between mb-2'>
-                    {footerChildren}
-                </ModalFooter>}
-            </ModalContent>
-        </Modal>
-    </>);
+            {footerChildren.length > 0 && <ModalFooter className='flex justify-between mb-2'>
+                {footerChildren}
+            </ModalFooter>}
+        </ModalContent>
+    </Modal>);
 }
 
 export {
