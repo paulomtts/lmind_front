@@ -121,7 +121,7 @@ export default function GenericForm({
                             onChange={(e) => handleFieldChange(e, field)}
                         />
 
-                        <FormErrorMessage>{field.message}</FormErrorMessage>
+                        <FormErrorMessage>{field.errorMessage}</FormErrorMessage>
                     </FormControl>
                 );
             case 'number':
@@ -138,7 +138,7 @@ export default function GenericForm({
                             </NumberInputStepper>
                         </NumberInput>
                         {mode === 'create' && <FormHelperText>Hold down CTRL + Arrow Up/Down to modify in increments of 10</FormHelperText>}
-                        <FormErrorMessage>{field.message}</FormErrorMessage>
+                        <FormErrorMessage>{field.errorMessage}</FormErrorMessage>
                     </FormControl>
                 );
             case 'boolean':
@@ -160,7 +160,7 @@ export default function GenericForm({
                         label={field.label}
                         required={field.required}
                         isInvalid={field.required && !field.value}
-                        errorMessage={field.message}
+                        errorMessage={field.errorMessage}
                         helperMessage={field.props.helperMessage}
                     >
                         <VirtualizedSelect 
@@ -176,20 +176,23 @@ export default function GenericForm({
         isInvalid.current = newIsInvalid;
     });
 
-    const modalFooterCreateMode = <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>;
-
-    const modalFooterEditMode = (<>
-        <ConfirmationPopover onYes={onDeleteClick}>
-            <Button colorScheme="red" variant='outline'>Delete</Button>
-        </ConfirmationPopover>
-        {editable && <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>}
-    </>);
-
     return (<div className='flex flex-col gap-4'>
+
         {fieldComponents}
 
         <div className={`flex ${mode === 'create' ? 'justify-end' : 'justify-between'}`}>
-            {mode === 'create' ? modalFooterCreateMode : modalFooterEditMode}
+            {mode === 'update' ?            
+                <>
+                    <ConfirmationPopover onYes={onDeleteClick}>
+                        <Button colorScheme="red" variant='outline'>Delete</Button>
+                    </ConfirmationPopover>
+                    {editable && <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>}
+                </> 
+                
+                : 
+    
+                <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>
+            }
         </div>
     </div>);
 }

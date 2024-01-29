@@ -139,7 +139,7 @@ export function DataProvider({ children }) {
 
         if(response.status === 200 && content.data !== undefined){
             const stateSetter = _getStateSetter(tableName);
-            const json = await JSON.parse(content.data);
+            const json = JSON.parse(content.data);
             const data = new DataObject(tableName, json);
 
             if(stateSetter !== null) stateSetter(data); 
@@ -185,14 +185,69 @@ export function DataProvider({ children }) {
     }
 
 
+    /* Routes */
+    const tsys_unitsInsert = async (state) => {
+        const submitData = {...state.json};
+        delete submitData.id;
+
+        const payload = generatePayload({
+            method: 'POST'
+            , body: JSON.stringify(submitData)
+        });
+
+        const { response, content } =  await _makeRequest(url.custom.symbols.insert, payload, true, true);
+
+        if (response.ok) {
+            const json = JSON.parse(content.data);
+            const data = new DataObject('tsys_units', json);
+
+            return { response, data };
+        }
+
+        return { response, data: [] };
+    }
+
+    const tsys_unitsDelete = async (state) => {
+        const payload = generatePayload({
+            method: 'DELETE'
+            , body: JSON.stringify(state.json)
+        });
+
+        const { response, content } =  await _makeRequest(url.custom.symbols.delete, payload, true, true);
+
+        if (response.ok) {
+            const json = JSON.parse(content.data);
+            const data = new DataObject('tsys_units', json);
+
+            return { response, data };
+        }
+
+        return { response, data: [] };
+    }
+
+
     /* Effects */
     React.useEffect(() => {
         fetchData('tsys_categories', {}, {}, false, false);
     }, []);
 
 
+    const values = {
+        getState
+        , generatePayload
+        
+        , customRoute
+        , fetchData
+        , updateData
+        , deleteData
+        , submitData
+
+        , tsys_unitsInsert
+        , tsys_unitsDelete
+    }
+
     return (
-        <Provider value={{ getState, customRoute, fetchData, updateData, deleteData, submitData, generatePayload }}>
+        <Provider value={values}>
             {children}
         </Provider>
     );

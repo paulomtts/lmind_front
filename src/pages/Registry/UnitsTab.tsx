@@ -3,13 +3,19 @@ import { Box, Button } from '@chakra-ui/react';
 
 import BasicModal from '../../components/BasicModal/BasicModal';
 import GenericForm from '../../components/GenericForm/GenericForm';
+import BasicForm, { BasicFormField } from '../../components/Forms/BasicForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
-import { url, useData, DataObject, DataRow } from '../../providers/data/DataProvider';
+import { url, useData, DataObject, DataRow, DataField } from '../../providers/data/DataProvider';
 
 
 export default function UnitsTab() {
 
-    const { fetchData, customRoute, generatePayload, getState } = useData();
+    const { 
+        fetchData
+        , getState
+        , tsys_unitsInsert 
+        , tsys_unitsDelete
+    } = useData();
 
     const initialData = new DataObject('tsys_units');
     const initialState = new DataRow('tsys_units');
@@ -45,7 +51,7 @@ export default function UnitsTab() {
         const field = initialState.getFieldObject('type');
 
         if (field) {
-            field.props.data = getState('tsys_categories');
+            field.props.data = getState(field.props.tableName);
         }
 
         setFormState(initialState);
@@ -66,34 +72,20 @@ export default function UnitsTab() {
     }
 
     const handleFormSaveClick = async () => {
-        const payload = generatePayload({
-            method: 'POST'
-            , body: JSON.stringify(formState.json)
-        });
-        const {response, content } = await customRoute(url.custom.symbols.insert, payload);
+        const { response, data } = await tsys_unitsInsert(formState);
 
         if (response.ok) {
-            const json = JSON.parse(content.data);
-            const newData = new DataObject('tsys_units', json);
-
-            setData(newData);
+            setData(data);
         }
+
         setIsOpen(false);
     }
 
     const handleFormDeleteClick = async () => {
-        
-        const payload = generatePayload({
-            method: 'DELETE'
-            , body: JSON.stringify(formState.json)
-        });
-        const {response, content } = await customRoute(url.custom.symbols.delete, payload);
+        const { response, data } = await tsys_unitsDelete(formState);
 
         if (response.ok) {
-            const json = JSON.parse(content.data);
-            const newData = new DataObject('tsys_units', json);
-
-            setData(newData);
+            setData(data);
         }
 
         setIsOpen(false);
@@ -126,6 +118,18 @@ export default function UnitsTab() {
                 onSaveClick={handleFormSaveClick}
                 onDeleteClick={handleFormDeleteClick}
             />
+
+            {/* <BasicForm 
+                row={formState}
+                readonly={formMode === 'update'}
+                onSave={handleFormSaveClick}
+                onDelete={handleFormDeleteClick}
+            >
+                <BasicFormField field={formState.getFieldObject('name')} />
+                <BasicFormField field={formState.getFieldObject('abbreviation')} />
+                <BasicFormField field={formState.getFieldObject('type')} />
+            </BasicForm> */}
+
         </BasicModal>
 
 

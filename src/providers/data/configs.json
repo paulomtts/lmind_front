@@ -7,7 +7,8 @@
             , "_visible": false
             , "_required": false
             , "_editable": false
-            , "_message": ""
+            , "_errorMessage": ""
+            , "_helperMessage": ""
         },
         "name" :{
             "_name": "name"
@@ -16,7 +17,8 @@
             , "_visible": true
             , "_required": true
             , "_editable": true
-            , "_message": "Provide a name to your unit"
+            , "_errorMessage": "Provide a name to your unit"
+            , "_helperMessage": ""
             , "_props": {
                 "minLength": 3,
                 "maxLength": 20
@@ -29,7 +31,8 @@
             , "_visible": true
             , "_required": true
             , "_editable": true
-            , "_message": "Type an abbreviation of the name"
+            , "_errorMessage": "Type an abbreviation of the name"
+            , "_helperMessage": ""
             , "_props": {
                 "minLength": 1,
                 "maxLength": 5
@@ -42,7 +45,8 @@
             , "_visible": true
             , "_required": true
             , "_editable": true
-            , "_message": "Select a category for this unit"
+            , "_errorMessage": "Select a category for this unit"
+            , "_helperMessage": ""
             , "_props": {
                 "tableName": "tsys_categories"
                 , "labelName": "name"
@@ -62,7 +66,8 @@
             , "_visible": true
             , "_required": false
             , "_editable": false
-            , "_message": ""
+            , "_errorMessage": ""
+            , "_helperMessage": ""
             , "_props": {
                 "crud": {
                     "visible": {
@@ -83,7 +88,8 @@
             , "_visible": false
             , "_required": false
             , "_editable": false
-            , "_message": ""
+            , "_errorMessage": ""
+            , "_helperMessage": ""
         }
         , "name" :{
             "_name": "name"
@@ -92,7 +98,8 @@
             , "_visible": true
             , "_required": true
             , "_editable": true
-            , "_message": "Provide a name to your category"
+            , "_errorMessage": "Provide a name to your category"
+            , "_helperMessage": ""
             , "_props": {
                 "minLength": 3,
                 "maxLength": 20
@@ -105,7 +112,8 @@
             , "_visible": true
             , "_required": true
             , "_editable": true
-            , "_message": "Provide a description to your category"
+            , "_errorMessage": "Provide a description to your category"
+            , "_helperMessage": ""
             , "_props": {
                 "minLength": 3,
                 "maxLength": 255
@@ -118,9 +126,27 @@
             , "_visible": true
             , "_required": true
             , "_editable": true
-            , "_message": "Select a category for this unit"
+            , "_errorMessage": "Select a category for this unit"
+            , "_helperMessage": ""
             , "_props": {
                 "tableName": "tsys_categories"
+            }
+        }
+    },
+
+    "tsys_tags": {
+        "code_a": {
+            "_name": "code_a"
+            , "_label": "Code A"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide a code for this tag"
+            , "_helperMessage": ""
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 20
             }
         }
     }

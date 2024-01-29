@@ -7,7 +7,8 @@ interface FieldConfig {
     _visible: boolean;
     _required: boolean;
     _editable: boolean;
-    _message?: string;
+    _errorMessage?: string;
+    _helperMessage?: string;
     _props: Record<string, any>;
 }
 
@@ -27,7 +28,8 @@ export class DataField {
     private _visible: boolean;
     private _required: boolean;
     private _editable: boolean;
-    private _message?: string;
+    private _errorMessage?: string;
+    private _helperMessage?: string;
     private _props: Record<string, any>;
     private _value: string | number | boolean | Date;
 
@@ -43,7 +45,8 @@ export class DataField {
         this._visible = config._visible;
         this._required = config._required;
         this._editable = config._editable;
-        this._message = config._message;
+        this._errorMessage = config._errorMessage;
+        this._helperMessage = config._helperMessage;
         this._props = config._props || {};
         this._value = DataField.parse(config._type, value);
     }
@@ -100,8 +103,12 @@ export class DataField {
         return this._editable;
     }
 
-    get message() {
-        return this._message;
+    get errorMessage() {
+        return this._errorMessage;
+    }
+
+    get helperMessage() {
+        return this._helperMessage;
     }
 
     get props() {
@@ -170,9 +177,12 @@ export class DataRow {
     }
 
     getFieldObject(name: string) {
-        return this._fields.find((field) => {
+        const field =  this._fields.find((field) => {
             return field.name === name;
         });
+
+        if (!field) return new DataField(configs[this.tableName][name]);
+        return field;
     }
 
     setFieldValue(field: DataField, value: string | number | boolean | Date) {
