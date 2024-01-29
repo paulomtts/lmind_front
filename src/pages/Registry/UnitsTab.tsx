@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 
 import BasicModal from '../../components/BasicModal/BasicModal';
-import GenericForm from '../../components/GenericForm/GenericForm';
-import BasicForm, { BasicFormField } from '../../components/Forms/BasicForm';
+import Form, { FormField } from '../../components/Forms/Form';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
-import { url, useData, DataObject, DataRow, DataField } from '../../providers/data/DataProvider';
+import { useData, DataObject, DataRow } from '../../providers/data/DataProvider';
 
 
 export default function UnitsTab() {
@@ -110,25 +109,18 @@ export default function UnitsTab() {
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
         >
-            <GenericForm 
-                state={formState}
+            <Form 
+                row={formState}
                 mode={formMode}
                 editable={false}
                 onChange={handleFormOnChange}
-                onSaveClick={handleFormSaveClick}
-                onDeleteClick={handleFormDeleteClick}
-            />
-
-            {/* <BasicForm 
-                row={formState}
-                readonly={formMode === 'update'}
                 onSave={handleFormSaveClick}
                 onDelete={handleFormDeleteClick}
             >
-                <BasicFormField field={formState.getFieldObject('name')} />
-                <BasicFormField field={formState.getFieldObject('abbreviation')} />
-                <BasicFormField field={formState.getFieldObject('type')} />
-            </BasicForm> */}
+                <FormField field={formState.getFieldObject('name')} />
+                <FormField field={formState.getFieldObject('abbreviation')} />
+                <FormField field={formState.getFieldObject('type')} />
+            </Form>
 
         </BasicModal>
 

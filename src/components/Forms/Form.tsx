@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useRef } from 'react';
+import React, { ChangeEvent } from 'react';
 import {
     Input,
     Button,
@@ -21,41 +21,42 @@ import ConfirmationPopover from '../ConfirmationPopover/ConfirmationPopover';
 import VirtualizedSelect from '../VirtualizedSelect/VirtualizedSelect';
 import FormFieldWrapper from '../FormFieldWrapper/FormFieldWrapper';
 import { DataField, DataRow } from '../../providers/data/models';
+import FormField from './FormField';
 
-
-export default function GenericForm({
-    state
+export default function Form({
+    row
     , mode = 'create'
     , editable = true
+    , children
     , onChange = () => {}
-    , onSaveClick = () => {}
-    , onDeleteClick = () => {}
+    , onSave = () => {}
+    , onDelete = () => {}
 }: { 
-    state: DataRow
+    row: DataRow
     , mode: 'create' | 'update'
     , editable?: boolean
+    , children?: React.ReactNode
     , onChange?: (state: DataRow) => void
-    , onSaveClick?: () => void
-    , onDeleteClick?: () => void
+    , onSave?: () => void
+    , onDelete?: () => void
 }) {
 
-    const [formState, setFormState] = useState(state);
-    const isInvalid = useRef(false);
+    const [state, setState] = React.useState(row);
 
 
     /* Methods */
     const changeState = (field: DataField, value: any) => {
-        const newFormState = new DataRow(formState.tableName, formState.json);
+        const newFormState = new DataRow(state.tableName, state.json);
         
         newFormState.setFieldValue(field, value);
 
-        setFormState(newFormState);
+        setState(newFormState);
         onChange(newFormState);
     }
        
 
     /* Handlers */
-    const handleFieldChange = (e: ChangeEvent<HTMLInputElement>, field: DataField) => {
+    const handleFieldChange = (field: DataField, e: ChangeEvent<HTMLInputElement>) => {
         if (field.type === 'number' && isNaN(Number(e.target.value))) {
             return;
         }
@@ -66,11 +67,11 @@ export default function GenericForm({
         const step = operation === 'sum' ? stepVal : -stepVal;
         if(field.props.max && Number(field.value) + step > Number(field.props.max)) return;
         if(field.props.min && Number(field.value) + step < Number(field.props.min)) return;
-        const value = Number(formState.json[field.name]) + step
+        const value = Number(state.json[field.name]) + step
         changeState(field, value);
     }
 
-    const handleOnKeyDown = (e: React.KeyboardEvent, field: DataField) => {
+    const handleOnKeyDown = (field: DataField, e: React.KeyboardEvent) => {
         if (e.ctrlKey && e.key === 'ArrowUp') {
             handleStep(field, 'sum', 10);
         } else if (e.ctrlKey && e.key === 'ArrowDown') {
@@ -87,11 +88,14 @@ export default function GenericForm({
     }
     
 
-    const fieldComponents = formState.fields.map((field: DataField, index: number) => {
+    const fieldComponents = state.fields.map((field: DataField, index: number) => {
+        const childrenFields = React.Children.map(children, (child: any) => child.props.field);
+        if (!childrenFields.includes(field)) return null;
+
         const identifier = `APIForm-field-${field.label}-${index}`;
         const value = String(field.value);
 
-        let newIsInvalid = false;
+        let isInvalid = false;
 
         if (field.visible === false) {
             return null;
@@ -106,10 +110,10 @@ export default function GenericForm({
             case 'text':
             case 'password':
             case 'email':
-                newIsInvalid = (field.required && field.value === '');
+                isInvalid = (field.required && field.value === '');
 
                 return (
-                    <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={newIsInvalid}>
+                    <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
                         <Input 
                             type={field.type} 
@@ -118,20 +122,20 @@ export default function GenericForm({
                             maxLength={field.props.maxLength}
                             placeholder='Type...' 
                             isDisabled={!editable && mode === 'update'}
-                            onChange={(e) => handleFieldChange(e, field)}
+                            onChange={(e) => handleFieldChange(field, e)}
                         />
 
                         <FormErrorMessage>{field.errorMessage}</FormErrorMessage>
                     </FormControl>
                 );
             case 'number':
-                newIsInvalid = ((field.required && field.value === '') || Number(value) < field.props.min || Number(value) > field.props.max);
+                isInvalid = ((field.required && field.value === '') || Number(value) < field.props.min || Number(value) > field.props.max);
 
                 return (
-                    <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={newIsInvalid}>
+                    <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
                         <NumberInput value={value} min={field.props.min} isDisabled={!editable && mode === 'update'}>
-                            <NumberInputField onChange={(e) => handleFieldChange(e, field)} onKeyDown={(e) => handleOnKeyDown(e, field)}/>
+                            <NumberInputField onChange={(e) => handleFieldChange(field, e)} onKeyDown={(e) => handleOnKeyDown(field, e)}/>
                             <NumberInputStepper>
                                 <NumberIncrementStepper onClick={() => handleStep(field, 'sum')} />
                                 <NumberDecrementStepper onClick={() => handleStep(field, 'sub')} />
@@ -142,14 +146,14 @@ export default function GenericForm({
                     </FormControl>
                 );
             case 'boolean':
-                newIsInvalid = (field.required && field.value === '');
+                isInvalid = (field.required && field.value === '');
 
                 return (
-                    <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={newIsInvalid}>
+                    <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
                         <Switch 
                             isChecked={Boolean(value)} 
-                            onChange={(e) => handleFieldChange(e, field)}
+                            onChange={(e) => handleFieldChange(field, e)}
                         />
                     </FormControl>
                 );
@@ -172,8 +176,6 @@ export default function GenericForm({
                     </FormFieldWrapper>
                 );
         }
-
-        isInvalid.current = newIsInvalid;
     });
 
     return (<div className='flex flex-col gap-4'>
@@ -183,16 +185,18 @@ export default function GenericForm({
         <div className={`flex ${mode === 'create' ? 'justify-end' : 'justify-between'}`}>
             {mode === 'update' ?            
                 <>
-                    <ConfirmationPopover onYes={onDeleteClick}>
+                    <ConfirmationPopover onYes={onDelete}>
                         <Button colorScheme="red" variant='outline'>Delete</Button>
                     </ConfirmationPopover>
-                    {editable && <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>}
+                    {editable && <Button colorScheme="blue" onClick={onSave}>Save</Button>}
                 </> 
                 
                 : 
     
-                <Button colorScheme="blue" onClick={onSaveClick}>Save</Button>
+                <Button colorScheme="blue" onClick={onSave}>Save</Button>
             }
         </div>
     </div>);
 }
+
+export { FormField }
