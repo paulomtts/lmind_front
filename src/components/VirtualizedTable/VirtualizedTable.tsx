@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Table } from "@chakra-ui/react";
+import { Box, Table, TableContainer } from "@chakra-ui/react";
 
 import TableToolbar from "./TableToolbar";
 import TableHeader from "./TableHeader";
@@ -43,13 +43,15 @@ export default function VirtualizedTable ({
     /* Functions */
     function filterRows(searchFor: string, searchIn: string) {
         const visibleFieldConfigs = getConfigsAsFields(data.tableName);
+        const searchForLower = searchFor.toLowerCase();
 
         let newData: DataObject;
 
         if (searchIn === "All") {
             const newJson = data.json.filter((row) => {
                 return visibleFieldConfigs.some((field) => {
-                    return String(row[field.name]).includes(searchFor);
+                    const value = String(row[field.name]).toLowerCase();
+                    return value.includes(searchForLower);
                 });
             });
             newData = new DataObject(data.tableName, newJson);
@@ -62,7 +64,8 @@ export default function VirtualizedTable ({
             if (!field) return data;
             
             const newJson = data.json.filter((row) => {
-                return String(row[field.name]).includes(searchFor);
+                const value = String(row[field.name]).toLowerCase();
+                return value.includes(searchForLower);
             });
 
             newData = new DataObject(data.tableName, newJson);
@@ -179,10 +182,12 @@ export default function VirtualizedTable ({
         />
 
         <Box height={'calc(100vh - 188px)'} overflowY={'auto'} ref={containerRef}>
-            <Table size='sm' variant={'unstyled'}>
-                <TableHeader sorters={sorters} onSortClick={handleSortClick} />
-                <TableBody data={compData} containerRef={containerRef} sorters={sorters} onEditClick={onEditClick} />
-            </Table>
+            {/* <TableContainer> */}
+                <Table size='sm' variant={'unstyled'}>
+                    <TableHeader sorters={sorters} onSortClick={handleSortClick} />
+                    <TableBody data={compData} containerRef={containerRef} sorters={sorters} onEditClick={onEditClick} />
+                </Table>
+            {/* </TableContainer> */}
         </Box>
     </>);
 }

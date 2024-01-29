@@ -65,7 +65,7 @@ export default function SidebarItem ({
 
             {children &&
                 <div className={`
-                    transition-all duration-300 ease-in-out cursor-default
+                    ease-in-out cursor-default
                     ${isOpen ? `opacity-100 h-auto` : "opacity-0 h-0 pointer-events-none"}
                 `}>
                     <div 

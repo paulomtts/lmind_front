@@ -132,21 +132,176 @@
                 "tableName": "tsys_categories"
             }
         }
-    },
+    }
 
-    "tsys_tags": {
+    , "tsys_tags": {
         "code_a": {
             "_name": "code_a"
             , "_label": "Code A"
             , "_type": "text"
             , "_visible": true
-            , "_required": true
+            , "_required": false
             , "_editable": true
-            , "_errorMessage": "Provide a code for this tag"
+            , "_errorMessage": ""
+            , "_helperMessage": "Letters or numbers in any combination"
+            , "_props": {
+                "minLength": 0,
+                "maxLength": 255
+            }
+        }
+        , "counter_a": {
+            "_name": "counter_a"
+            , "_label": "Counter A"
+            , "_type": "number"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "A number, usually a counter"
+            , "_props": {
+                "min": 0,
+                "max": 2147483647
+            }
+        }
+        , "code_b": {
+            "_name": "code_b"
+            , "_label": "Code B"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "Letters or numbers in any combination"
+            , "_props": {
+                "minLength": 0,
+                "maxLength": 255
+            }
+        }
+        , "counter_b": {
+            "_name": "counter_b"
+            , "_label": "Counter B"
+            , "_type": "number"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "A number, usually a counter"
+            , "_props": {
+                "min": 0,
+                "max": 2147483647
+            }
+        }
+        , "code_c": {
+            "_name": "code_c"
+            , "_label": "Code C"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "Letters or numbers in any combination"
+            , "_props": {
+                "minLength": 0,
+                "maxLength": 255
+            }
+        }
+        , "counter_c": {
+            "_name": "counter_c"
+            , "_label": "Counter C"
+            , "_type": "number"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "A number, usually a counter"
+            , "_props": {
+                "min": 0,
+                "max": 2147483647
+            }
+        }
+        , "code_d": {
+            "_name": "code_d"
+            , "_label": "Code D"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "Letters or numbers in any combination"
+            , "_props": {
+                "minLength": 0,
+                "maxLength": 255
+            }
+        }
+        , "counter_d": {
+            "_name": "counter_d"
+            , "_label": "Counter D"
+            , "_type": "number"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "A number, usually a counter"
+            , "_props": {
+                "min": 0,
+                "max": 2147483647
+            }
+        }
+        , "code_e": {
+            "_name": "code_e"
+            , "_label": "Code E"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "Letters or numbers in any combination"
+            , "_props": {
+                "minLength": 0,
+                "maxLength": 255
+            }
+        }
+        , "counter_e": {
+            "_name": "counter_e"
+            , "_label": "Counter E"
+            , "_type": "number"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "A number, usually a counter"
+            , "_props": {
+                "min": 0,
+                "max": 2147483647
+            }
+        }
+        , "type": {
+            "_name": "type"
+            , "_label": "Type"
+            , "_type": "text"
+            , "_visible": false
+            , "_required": true
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "created_by": {
+            "_name": "created_by"
+            , "_label": "Created By"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
             , "_helperMessage": ""
             , "_props": {
-                "minLength": 3,
-                "maxLength": 20
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": true
+                        , "read": true
+                    }
+                }
             }
         }
     }

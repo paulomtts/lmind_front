@@ -151,8 +151,11 @@ export class DataRow {
         this._json = json;
 
         this._fields = Object.keys(json).map((key) => {
+            if (!configs[tableName][key]) return null;
             return new DataField(configs[tableName][key], json[key]);
-        });
+        }).filter((field) => {
+            return field !== null;
+        }) as DataField[];
     }
 
 

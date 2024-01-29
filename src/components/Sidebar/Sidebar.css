@@ -1,10 +1,9 @@
 .Sidebar {
     @apply
-    fixed
     flex flex-col justify-normal items-center
     w-fit h-screen p-2 gap-4
+    border border-r-2 border-gray-300 border-solid
     bg-slate-200
-    transition-all duration-200 ease-in-out delay-900
 }
 
 .Sidebar-shadow {
@@ -32,6 +31,7 @@
 .SidebarCard {
     @apply
     fixed
+    z-50
     text-base
     p-2 w-56 h-fit
     bg-white border 

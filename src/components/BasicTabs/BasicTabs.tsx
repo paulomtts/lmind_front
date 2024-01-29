@@ -38,7 +38,7 @@ export default function BasicTabs({
         onTabClick(index);
     }
 
-    return (<div style={{width: '100%'}}>
+    return (<div style={{width: '100%'}} className="ml-2">
         <Tabs index={index} onChange={handleTabClick}>
 
             <TabList className="bg-slate-200 shadow-sm">

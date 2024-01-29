@@ -34,7 +34,7 @@ export default function ConfirmationPopover({
                 <PopoverArrow/>
                 <PopoverBody 
                     borderRadius={'0.35rem'} 
-                    boxShadow={'0px 3px 10px 1px rgba(0,0,0,0.75)'}
+                    boxShadow={'0px 1px 5px 0px rgba(0,0,0,0.75)'}
                     display={'flex'}
                     flexDirection={'column'}
                     gap={'0.5rem'}
