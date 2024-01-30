@@ -23,14 +23,17 @@ export default function SelectOption({
             onClick(labelOption!, valueOption!);
         }
 
+        const parent = e.currentTarget.parentElement?.parentElement
         if (e.key === 'ArrowDown') {
-            const nextSibling = e.currentTarget.nextSibling as HTMLButtonElement;
+            const nextSibling = e.currentTarget.parentElement?.nextElementSibling?.nextElementSibling?.firstChild as HTMLButtonElement;
+            if (!nextSibling) return;
             nextSibling.focus();
         }
 
         if (e.key === 'ArrowUp') {
-            const previousSibling = e.currentTarget.previousSibling as HTMLButtonElement;
-            previousSibling.focus();
+            const prevSibling = e.currentTarget.parentElement?.previousElementSibling?.previousElementSibling?.firstChild as HTMLButtonElement;
+            if (!prevSibling) return;
+            prevSibling.focus();
         }
     }
 
@@ -43,8 +46,8 @@ export default function SelectOption({
         </>);
     }
 
-    return (<>
-        <button 
+    return (
+        <button
             className={`
                 flex flex-row items-center justify-start 
                 w-full h-8 px-2 
@@ -56,5 +59,5 @@ export default function SelectOption({
         >
             {children}
         </button>
-    </>);
+    );
 }

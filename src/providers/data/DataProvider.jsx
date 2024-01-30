@@ -101,10 +101,11 @@ export function DataProvider({ children }) {
                 model = errorModel;
                 model.title = 'Unprocessable Entity';
                 model.description = 'The server could not process the request.';
+                break;
             default:
                 model = errorModel;
                 model.title = 'Error';
-                model.description = content.message;
+                model.description = content.message || content.detail;
                 break;
         }
 

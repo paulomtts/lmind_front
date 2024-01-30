@@ -87,45 +87,9 @@ export default function UnitsTab() {
 
     return (<Box className='flex flex-col gap-4'>
 
-        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+        <div className='flex justify-between items-center mt-2 mb-2'>
             <span>Create, edit and visualize measurement units.</span>
-            {/* <div className='flex justify-between gap-2'>
-                <Button colorScheme="blue" onClick={handleCreateClick}>
-                    New Unit
-                </Button>
-            </div> */}
-        </Box>
-
-        {/* <BasicModal 
-            title={formMode === 'create' ? 'New Unit' : 'View Unit'}
-            width='60%'
-            blur
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-        >
-            <BasicForm 
-                row={formState}
-                mode={formMode}
-                editable={false}
-                onChange={handleFormOnChange}
-                onSave={handleFormSaveClick}
-                onDelete={handleFormDeleteClick}
-            >
-                <BasicFormField field={formState.getFieldObject('code_a')} />
-                <BasicFormField field={formState.getFieldObject('counter_a')} />
-                <BasicFormField field={formState.getFieldObject('code_b')} />
-                <BasicFormField field={formState.getFieldObject('counter_b')} />
-                <BasicFormField field={formState.getFieldObject('code_c')} />
-                <BasicFormField field={formState.getFieldObject('counter_c')} />
-                <BasicFormField field={formState.getFieldObject('code_d')} />
-                <BasicFormField field={formState.getFieldObject('counter_d')} />
-                <BasicFormField field={formState.getFieldObject('code_e')} />
-                <BasicFormField field={formState.getFieldObject('counter_e')} />
-                <BasicFormField field={formState.getFieldObject('type')} />
-            </BasicForm>
-
-        </BasicModal> */}
-
+        </div>
 
         <VirtualizedTable 
             data={data}

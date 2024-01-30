@@ -182,12 +182,12 @@ export default function VirtualizedTable ({
         />
 
         <Box height={'calc(100vh - 188px)'} overflowY={'auto'} ref={containerRef}>
-            {/* <TableContainer> */}
+            <TableContainer>
                 <Table size='sm' variant={'unstyled'}>
                     <TableHeader sorters={sorters} onSortClick={handleSortClick} />
                     <TableBody data={compData} containerRef={containerRef} sorters={sorters} onEditClick={onEditClick} />
                 </Table>
-            {/* </TableContainer> */}
+            </TableContainer>
         </Box>
     </>);
 }

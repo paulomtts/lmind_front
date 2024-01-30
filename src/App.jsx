@@ -55,20 +55,22 @@ function App() {
             </SidebarContainer>
         </Sidebar>
 
-        {(() => {
-            switch (content) {
-                case "Overview": return <ProductionPage selectedTab="Overview" />;
-                case "Tasks": return <ProductionPage selectedTab="Tasks" />;
-                case "Resources": return <ProductionPage selectedTab="Resources" />;
-                case "Routes": return <ProductionPage selectedTab="Routes" />;
-                case "Products": return <ProductionPage selectedTab="Products" />;
-                case "Orders": return <ProductionPage selectedTab="Orders" />;
-                
-                case "Units": return <RegistryPage selectedTab="Units" />;
-                case "Tags": return <RegistryPage selectedTab="Tags" />;
-                default: return <></>;
-            }
-        })()}
+        <div className=" overflow-hidden w-full">
+            {(() => {
+                switch (content) {
+                    case "Overview": return <ProductionPage selectedTab="Overview" />;
+                    case "Tasks": return <ProductionPage selectedTab="Tasks" />;
+                    case "Resources": return <ProductionPage selectedTab="Resources" />;
+                    case "Routes": return <ProductionPage selectedTab="Routes" />;
+                    case "Products": return <ProductionPage selectedTab="Products" />;
+                    case "Orders": return <ProductionPage selectedTab="Orders" />;
+                    
+                    case "Units": return <RegistryPage selectedTab="Units" />;
+                    case "Tags": return <RegistryPage selectedTab="Tags" />;
+                    default: return <></>;
+                }
+            })()}
+        </div>
     </div>);
 }
 
