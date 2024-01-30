@@ -5,12 +5,14 @@ import MultiStepFormPage from "./MultiStepFormPage";
 import { Button } from "@chakra-ui/react";
 
 export default function MultiStepForm({
-    stepperOrientation
+    className = ""
+    , stepperOrientation
     , stepperHeight = "20rem"
     , children
     , onNext = () => true
     , onPrevious = () => true
 }: {
+    className?: string
     stepperOrientation: "horizontal" | "vertical"
     stepperHeight?: string
     children: any
@@ -54,7 +56,7 @@ export default function MultiStepForm({
         </div>
 
 
-        <div className="flex flex-col justify-between flex-grow">
+        <div className={`flex flex-col justify-between flex-grow p-4 ${className}`}>
             
             {React.Children.map(children, (child, index) => {
                 return <div className={` ${index === activeStep ? '' : 'hidden'}`}>
