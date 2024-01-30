@@ -55,7 +55,7 @@ function App() {
             </SidebarContainer>
         </Sidebar>
 
-        <div className=" overflow-hidden w-full">
+        <div className=" overflow-x-hidden w-full">
             {(() => {
                 switch (content) {
                     case "Overview": return <ProductionPage selectedTab="Overview" />;

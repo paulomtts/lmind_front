@@ -1,134 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button } from '@chakra-ui/react';
+import React from "react";
 
-import BasicModal from '../../components/BasicModal/BasicModal';
-import BasicForm, { BasicFormField } from '../../components/BasicForm/BasicForm';
-import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
-import { useData, DataObject, DataRow } from '../../providers/data/DataProvider';
+import MultiStepForm, { MultiStepFormPage } from "../../components/MultiStepForm/MultiStepForm";
+import { Input } from "@chakra-ui/react";
 
+export default function TasksTab({
 
-export default function TasksTab() {
+}: {
 
-    const { 
-        fetchData
-        , getState
-        , tsys_unitsInsert 
-        , tsys_unitsDelete
-    } = useData();
+}) {
 
-    const initialData = new DataObject('tsys_units');
-    const initialState = new DataRow('tsys_units');
-
-    const [data, setData] = useState<DataObject>(initialData);
-    const [formState, setFormState] = useState<DataRow>(initialState);
-    const [formMode, setFormMode] = useState<'create' | 'update'>('create');
-    const [isOpen, setIsOpen] = useState(false);
-
-
-    /* Methods */
-    async function retrieveData() {
-        const { response, data: newData } = await fetchData('tsys_units');
-
-        if (response.ok) {
-            setData(newData);
-        }
+    const handleOnNext = (activeStep: number) => {
+        console.log(`Next clicked from step ${activeStep}`);
+        return true;
     }
 
-
-    /* Effects */
-    useEffect(() => {
-        retrieveData();
-    }, []);
-
-
-    /* Handlers */
-    const handleRefreshClick = () => {
-        retrieveData();
+    const handleOnPrevious = (activeStep: number) => {
+        console.log(`Previous clicked from step ${activeStep}`);
+        return true;
     }
 
-    const handleCreateClick = () => {
-        const field = initialState.getFieldObject('type');
+    return (<>
+        <MultiStepForm stepperOrientation="vertical" stepperHeight="calc(100vh - 4.6rem)" onNext={handleOnNext} onPrevious={handleOnPrevious}>
+            <MultiStepFormPage title="Step 1" description="This is step 1, and it has this really long text associated with it.">
+                <Input
+                    placeholder="Basic usage"
+                />
+            </MultiStepFormPage>
 
-        if (field) {
-            field.props.data = getState(field.props.tableName);
-        }
+            <MultiStepFormPage title="Step 2" description="This is step 2">
+                <span>Step 2 content goes here</span>
+            </MultiStepFormPage>
 
-        setFormState(initialState);
-        setFormMode('create');
-
-        setIsOpen(true);
-    }
-    
-    const handleEditClick = (newState: DataRow) => {
-        setFormState(newState);
-        setFormMode('update');
-
-        setIsOpen(true);
-    }
-
-    const handleFormOnChange = (newState: DataRow) => {
-        setFormState(newState);
-    }
-
-    const handleFormSaveClick = async () => {
-        const { response, data } = await tsys_unitsInsert(formState);
-
-        if (response.ok) {
-            setData(data);
-        }
-
-        setIsOpen(false);
-    }
-
-    const handleFormDeleteClick = async () => {
-        const { response, data } = await tsys_unitsDelete(formState);
-
-        if (response.ok) {
-            setData(data);
-        }
-
-        setIsOpen(false);
-    }
-
-
-    return (<Box className='flex flex-col gap-4'>
-
-        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-            <span>Create, edit and visualize measurement units.</span>
-            <div className='flex justify-between gap-2'>
-                <Button colorScheme="blue" onClick={handleCreateClick}>
-                    New Unit
-                </Button>
-            </div>
-        </Box>
-
-        <BasicModal 
-            title={formMode === 'create' ? 'New Unit' : 'View Unit'}
-            width='60%'
-            blur
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-        >
-            <BasicForm 
-                row={formState}
-                mode={formMode}
-                editable={false}
-                onChange={handleFormOnChange}
-                onSave={handleFormSaveClick}
-                onDelete={handleFormDeleteClick}
-            >
-                <BasicFormField field={formState.getFieldObject('name')} />
-                <BasicFormField field={formState.getFieldObject('abbreviation')} />
-                <BasicFormField field={formState.getFieldObject('type')} />
-            </BasicForm>
-
-        </BasicModal>
-
-
-        <VirtualizedTable 
-            data={data}
-            onEditClick={handleEditClick} 
-            onRefreshClick={handleRefreshClick} 
-        />
-    </Box>)
+            <MultiStepFormPage title="Step 3" description="This is step 3, and it also has a demonstrably large body attached to it.">
+                <span>Step 3</span>
+            </MultiStepFormPage>
+        </MultiStepForm>
+    </>);
 }

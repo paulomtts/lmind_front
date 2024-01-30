@@ -8,9 +8,9 @@ export default function RegistryPage({
     selectedTab
 }) {
 
-    return (<div className="flex flex-grow z-0">
-        <BasicTabs labels={['Tasks']} initialTab={selectedTab}>
-            <TasksTab />
-        </BasicTabs>
-    </div>);
+    return (
+    <BasicTabs labels={['Tasks']} initialTab={selectedTab}>
+        <TasksTab />
+    </BasicTabs>
+    );
 }
