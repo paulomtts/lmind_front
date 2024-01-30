@@ -46,6 +46,9 @@
     rounded-full
     text-slate-500
     
-    hover:bg-slate-300
-    hover:text-slate-800 
+    hover:bg-slate-200
+    hover:text-slate-800
+
+    active:text-slate-400
+    active:shadow-none
 }

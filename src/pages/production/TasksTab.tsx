@@ -1,111 +1,134 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 
 import BasicModal from '../../components/BasicModal/BasicModal';
-import BasicForm from '../../components/BasicForm/BasicForm';
+import BasicForm, { BasicFormField } from '../../components/BasicForm/BasicForm';
 import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
-import ConfirmationPopover from '../../components/ConfirmationPopover/ConfirmationPopover';
-// import { FormField } from '../../components/BasicForm/models';
-import { useData } from '../../providers/data/DataProvider';
-
-import { useOverlay } from '../../providers/OverlayProvider';
+import { useData, DataObject, DataRow } from '../../providers/data/DataProvider';
 
 
 export default function TasksTab() {
-    
-    ///////////////////////////////////////////////////
-    const columns = ['Name', 'Description', 'Status']
-    const taskModel = [
-        new FormField('Name'),
-        new FormField('Description'),
-        new FormField('Status'),
-    ];
-    const initialData = [...Array(1000)].map((_, i) => ({
-        Name: `Task ${i}`,
-        Description: `Description ${i}`,
-        Status: i,
-    }));
-    ///////////////////////////////////////////////////
 
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [currState, setCurrState] = useState(taskModel);
-    const api = useData();
-    const overlay = useOverlay();
+    const { 
+        fetchData
+        , getState
+        , tsys_unitsInsert 
+        , tsys_unitsDelete
+    } = useData();
+
+    const initialData = new DataObject('tsys_units');
+    const initialState = new DataRow('tsys_units');
+
+    const [data, setData] = useState<DataObject>(initialData);
+    const [formState, setFormState] = useState<DataRow>(initialState);
+    const [formMode, setFormMode] = useState<'create' | 'update'>('create');
+    const [isOpen, setIsOpen] = useState(false);
+
+
+    /* Methods */
+    async function retrieveData() {
+        const { response, data: newData } = await fetchData('tsys_units');
+
+        if (response.ok) {
+            setData(newData);
+        }
+    }
+
+
+    /* Effects */
+    useEffect(() => {
+        retrieveData();
+    }, []);
 
 
     /* Handlers */
+    const handleRefreshClick = () => {
+        retrieveData();
+    }
+
     const handleCreateClick = () => {
-        setCurrState(taskModel);
-        setModalIsOpen(true);
+        const field = initialState.getFieldObject('type');
+
+        if (field) {
+            field.props.data = getState(field.props.tableName);
+        }
+
+        setFormState(initialState);
+        setFormMode('create');
+
+        setIsOpen(true);
     }
     
-    const handleSaveClick = () => {
-        // call api here (with returning)
-        setModalIsOpen(false);
+    const handleEditClick = (newState: DataRow) => {
+        setFormState(newState);
+        setFormMode('update');
+
+        setIsOpen(true);
     }
 
-    const handleDeleteClick = () => {
-        // call api here (with returning)
-        setModalIsOpen(false);
+    const handleFormOnChange = (newState: DataRow) => {
+        setFormState(newState);
     }
 
-    const handleEditClick = (state: FormField[]) => {
-        setCurrState(state);
-        setModalIsOpen(true);
+    const handleFormSaveClick = async () => {
+        const { response, data } = await tsys_unitsInsert(formState);
+
+        if (response.ok) {
+            setData(data);
+        }
+
+        setIsOpen(false);
     }
 
-    const handleFormStateChange = (state: FormField[]) => {
-        setCurrState(state);
+    const handleFormDeleteClick = async () => {
+        const { response, data } = await tsys_unitsDelete(formState);
+
+        if (response.ok) {
+            setData(data);
+        }
+
+        setIsOpen(false);
     }
 
-    const testAPI = async () => {
-        const tsys_symbols = await api.fetchData('tsys_symbols');
-        console.log(tsys_symbols.data.rows[0].getVisible());
-    }
 
+    return (<Box className='flex flex-col gap-4'>
 
-    /* Components */
-    const modalFooterCreateMode = [
-        <div key='modal-footer-empty' />
-        , <Button key='modal-footer-save' colorScheme="blue" onClick={handleSaveClick}>Save</Button>
-    ];
-
-    const modalFooterEditMode = [
-        <ConfirmationPopover key='task-modal-popover' onYes={handleDeleteClick}>
-            <Button colorScheme="red" variant='outline'>Delete</Button>
-        </ConfirmationPopover>
-
-        , <Button key='task-modal-save' colorScheme="blue" onClick={handleSaveClick}>Save</Button>
-    ];
-
-
-    return (<Box display={'flex'} flexDirection={'column'} gap={'1rem'}>
-
-        <Box display={'flex'} justifyContent={'space-between'}>
-            <span>Use this area to view, edit and create tasks.</span>
-            <div className='flex justify-between'>
-                <Button colorScheme="green" onClick={handleCreateClick}>
-                    New Task
-                </Button>
-            </div>
-            <div className='flex justify-between'>
-                <Button colorScheme="green" onClick={testAPI}>
-                    API Test
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+            <span>Create, edit and visualize measurement units.</span>
+            <div className='flex justify-between gap-2'>
+                <Button colorScheme="blue" onClick={handleCreateClick}>
+                    New Unit
                 </Button>
             </div>
         </Box>
-{/* 
-        <BasicModal 
-            title="New Task" 
-            width='85%'
-            blur
-            isOpen={modalIsOpen} 
-            footer={currState === taskModel ? modalFooterCreateMode : modalFooterEditMode}
-            onClose={() => setModalIsOpen(false)}
-        >
-            <BasicForm fields={currState} onChange={handleFormStateChange} />
-        </BasicModal> */}
 
-        <VirtualizedTable columns={columns} initialData={initialData} onClickRow={handleEditClick}/>
+        <BasicModal 
+            title={formMode === 'create' ? 'New Unit' : 'View Unit'}
+            width='60%'
+            blur
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+        >
+            <BasicForm 
+                row={formState}
+                mode={formMode}
+                editable={false}
+                onChange={handleFormOnChange}
+                onSave={handleFormSaveClick}
+                onDelete={handleFormDeleteClick}
+            >
+                <BasicFormField field={formState.getFieldObject('name')} />
+                <BasicFormField field={formState.getFieldObject('abbreviation')} />
+                <BasicFormField field={formState.getFieldObject('type')} />
+            </BasicForm>
+
+        </BasicModal>
+
+
+        <VirtualizedTable 
+            data={data}
+            onEditClick={handleEditClick} 
+            onRefreshClick={handleRefreshClick} 
+        />
     </Box>)
 }

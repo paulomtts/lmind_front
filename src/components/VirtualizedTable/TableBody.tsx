@@ -19,7 +19,7 @@ export default function TableBody({
     , sorters
     , containerRef
     , displayCallback = () => true
-    , onEditClick = () => {}
+    , onEditClick = undefined
 }: {
     data: DataObject
     
@@ -29,6 +29,11 @@ export default function TableBody({
     , onEditClick?: (row: DataRow) => void;
 }) {
 
+    const handleEditClick = (row: DataRow) => {
+        if (!onEditClick) return;
+        onEditClick(row);
+    }
+
     const rowBuilder = (row: DataRow) => {
         const uuid = v4();
 
@@ -36,19 +41,19 @@ export default function TableBody({
             key={uuid}
             className="hover:bg-blue-100 border-t border-solid border-gray-300" 
         >
-            <Td padding={'0.25rem 0.25px'} textAlign={'center'}>
-                {onEditClick && <Button
+            {onEditClick && <Td padding={'0.25rem 0.25px'} textAlign={'center'}>
+                <Button
                     size='xs' 
                     bg='gray.200' 
                     padding={'0px'} 
                     margin={'0px'} 
                     className='border border-solid border-gray-400'
                     isDisabled={row.json['created_by'] === 'system'}
-                    onClick={() => onEditClick(row)}
+                    onClick={() => handleEditClick(row)}
                 >
                     <FontAwesomeIcon icon={faEdit} />
-                </Button>}
-            </Td>
+                </Button>
+            </Td>}
 
             {row.getVisibleFields().map((field) => {
                 return <Td key={field.label}>{String(field.value)}</Td>

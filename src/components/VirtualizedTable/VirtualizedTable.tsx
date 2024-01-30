@@ -10,7 +10,7 @@ import { DataObject, DataRow, getConfigsAsFields } from "../../providers/data/mo
 
 export default function VirtualizedTable ({
     data
-    , onEditClick = () => {}
+    , onEditClick = undefined
     , onRefreshClick = () => {}
 }: { 
     data: DataObject
@@ -184,7 +184,7 @@ export default function VirtualizedTable ({
         <Box height={'calc(100vh - 188px)'} overflowY={'auto'} ref={containerRef}>
             <TableContainer>
                 <Table size='sm' variant={'unstyled'}>
-                    <TableHeader sorters={sorters} onSortClick={handleSortClick} />
+                    <TableHeader sorters={sorters} onSortClick={handleSortClick} onEditClick={onEditClick}/>
                     <TableBody data={compData} containerRef={containerRef} sorters={sorters} onEditClick={onEditClick} />
                 </Table>
             </TableContainer>
