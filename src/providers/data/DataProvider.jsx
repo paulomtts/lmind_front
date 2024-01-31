@@ -177,7 +177,7 @@ export function DataProvider({ children }) {
     const submitData = async (tableName, data, notification = true, overlay = true) => {
         const address = url.crud.insert + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({
-            data: [data.json]
+            data: [data.popEmpties()]
             , table_name: tableName
         } )});
         const response = await _makeRequest(address, payload, notification, overlay);
@@ -188,12 +188,10 @@ export function DataProvider({ children }) {
 
     /* Routes */
     const tsys_unitsInsert = async (state) => {
-        const submitData = {...state.json};
-        delete submitData.id;
-
+        console.log(state)
         const payload = generatePayload({
             method: 'POST'
-            , body: JSON.stringify(submitData)
+            , body: JSON.stringify(state.popEmpties())
         });
 
         const { response, content } =  await _makeRequest(url.custom.symbols.insert, payload, true, true);

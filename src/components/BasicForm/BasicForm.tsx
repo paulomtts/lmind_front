@@ -165,7 +165,7 @@ export default function BasicForm({
                         required={field.required}
                         isInvalid={field.required && !field.value}
                         errorMessage={field.errorMessage}
-                        helperMessage={field.props.helperMessage}
+                        helperMessage={field.helperMessage}
                     >
                         <VirtualizedSelect 
                             field={field}

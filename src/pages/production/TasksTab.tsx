@@ -1,13 +1,26 @@
 import React from "react";
+import { Input } from "@chakra-ui/react";
 
 import MultiStepForm, { MultiStepFormPage } from "../../components/MultiStepForm/MultiStepForm";
-import { Input } from "@chakra-ui/react";
+import { useData } from "../../providers/data/DataProvider";
 
 export default function TasksTab({
 
 }: {
 
 }) {
+
+    const { fetchData } = useData();
+
+    const retrieveTasks = async () => {
+        const { response, data } = await fetchData('tprod_tasks');
+        console.log(response);
+        console.log(data);
+    }
+
+    React.useEffect(() => {
+        retrieveTasks();
+    }, []);
 
     const handleOnNext = (activeStep: number) => {
         console.log(`Next clicked from step ${activeStep}`);

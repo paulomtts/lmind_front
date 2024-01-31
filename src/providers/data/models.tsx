@@ -71,7 +71,8 @@ export class DataField {
             case 'boolean':
                 return Boolean(value);
             case 'date':
-                return new Date(value.toString());
+            case 'datetime':
+                return new Date(String(value));
             default:
                 return value;
         }
@@ -145,7 +146,21 @@ export class DataRow {
 
         if (Object.keys(json).length === 0) {
             Object.keys(configs[tableName]).forEach((key) => {
-                json[key] = configs[tableName][key].type === 'number' ? (0 || configs[tableName][key].props?.min) : '';
+                let value: string | number | boolean | Date = '';
+
+                switch (configs[tableName][key].type) {
+                    case 'number':
+                        value = 0 || configs[tableName][key].props?.min;
+                        break;
+                    case 'boolean':
+                        value = false || configs[tableName][key].props?.default;
+                        break;
+                    case 'date':
+                        value = new Date();
+                        break;
+                }
+
+                json[key] = value;
             });
         }
         this._json = json;
@@ -196,6 +211,16 @@ export class DataRow {
             this._json[ownedField.name] = ownedField.value;
         }
     }
+
+    popEmpties() {
+        return Object.keys(this._json).reduce((acc, key) => {
+            if (this._json[key] !== '') {
+                acc[key] = this._json[key];
+            }
+            return acc;
+        }, {} as Record<string, string | number | boolean | Date>);
+    }
+        
 }
 
 

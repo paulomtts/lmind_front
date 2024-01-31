@@ -22,8 +22,11 @@ export default function FormFieldWrapper({
 
         {children}
 
-        {!!helperMessage && <p className="chakra-form__helper-text css-1yjw6w3">{helperMessage}</p>}
+        <div className="flex flex-col gap-1">
+            {isInvalid && <p className="chakra-form__error-message css-502kp3">{errorMessage}</p>}
 
-        {isInvalid && <p className="chakra-form__error-message css-502kp3">{errorMessage}</p>}
+            {!!helperMessage && <p className={`${!isInvalid ? 'mt-2' : ''} text-sm text-slate-500 chakra-form__helper-text css-1yjw6w3`}>{helperMessage}</p>}
+        </div>
+
     </div>)
 }

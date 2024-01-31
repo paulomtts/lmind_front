@@ -21,7 +21,8 @@
             , "_helperMessage": ""
             , "_props": {
                 "minLength": 3,
-                "maxLength": 20
+                "maxLength": 20,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "abbreviation" : {
@@ -35,7 +36,8 @@
             , "_helperMessage": ""
             , "_props": {
                 "minLength": 1,
-                "maxLength": 5
+                "maxLength": 5,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "type": {
@@ -46,17 +48,18 @@
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Select a category for this unit"
-            , "_helperMessage": ""
+            , "_helperMessage": "Describes what this unit measures"
             , "_props": {
                 "tableName": "tsys_categories"
-                , "labelName": "name"
                 , "valueName": "name"
+                , "labelName": "name"
                 , "filters": {
                     "and_": {
                         "type": ["units"]
                     }
                 }
                 , "data": {}
+                , "regex":"^[a-zA-Z0-9]+$"
             }
         }
         , "created_by": {
@@ -102,7 +105,8 @@
             , "_helperMessage": ""
             , "_props": {
                 "minLength": 3,
-                "maxLength": 20
+                "maxLength": 20,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "description" :{
@@ -116,7 +120,8 @@
             , "_helperMessage": ""
             , "_props": {
                 "minLength": 3,
-                "maxLength": 255
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "type": {
@@ -128,9 +133,6 @@
             , "_editable": true
             , "_errorMessage": "Select a category for this unit"
             , "_helperMessage": ""
-            , "_props": {
-                "tableName": "tsys_categories"
-            }
         }
     }
 
@@ -146,7 +148,8 @@
             , "_helperMessage": "Letters or numbers in any combination"
             , "_props": {
                 "minLength": 0,
-                "maxLength": 255
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "counter_a": {
@@ -174,7 +177,8 @@
             , "_helperMessage": "Letters or numbers in any combination"
             , "_props": {
                 "minLength": 0,
-                "maxLength": 255
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "counter_b": {
@@ -202,7 +206,8 @@
             , "_helperMessage": "Letters or numbers in any combination"
             , "_props": {
                 "minLength": 0,
-                "maxLength": 255
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "counter_c": {
@@ -230,7 +235,8 @@
             , "_helperMessage": "Letters or numbers in any combination"
             , "_props": {
                 "minLength": 0,
-                "maxLength": 255
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "counter_d": {
@@ -258,7 +264,8 @@
             , "_helperMessage": "Letters or numbers in any combination"
             , "_props": {
                 "minLength": 0,
-                "maxLength": 255
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
         , "counter_e": {
@@ -299,6 +306,408 @@
                     "visible": {
                         "create": false
                         , "update": true
+                        , "read": true
+                    }
+                }
+            }
+        }
+    }
+
+
+    , "tprod_resources": {
+        "id": {
+            "_name": "id"
+            , "_label": "ID"
+            , "_type": "number"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "name": {
+            "_name": "name"
+            , "_label": "Name"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide a name to your resource"
+            , "_helperMessage": "A resource is anything or anyone that can perform a task"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 20,
+                "regex": "^[a-zA-Z0-9]+$"
+            }
+        }
+        , "created_by": {
+            "_name": "created_by"
+            , "_label": "Created By"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": true
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "created_at": {
+            "_name": "created_at"
+            , "_label": "Created At"
+            , "_type": "datetime"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": false
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "updated_by": {
+            "_name": "updated_by"
+            , "_label": "Updated By"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": true
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "updated_at": {
+            "_name": "updated_at"
+            , "_label": "Updated At"
+            , "_type": "datetime"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": false
+                        , "read": true
+                    }
+                }
+            }
+        }
+    }
+
+    , "tprod_skills": {
+        "id": {
+            "_name": "id"
+            , "_label": "ID"
+            , "_type": "number"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "name": {
+            "_name": "name"
+            , "_label": "Name"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide a name to your skill"
+            , "_helperMessage": ""
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 20,
+                "regex": "^[a-zA-Z0-9]+$"
+            }
+        }
+        , "description": {
+            "_name": "description"
+            , "_label": "Description"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide a description to your skill"
+            , "_helperMessage": "What does this skill achieve"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
+            }
+        }
+        , "created_by": {
+            "_name": "created_by"
+            , "_label": "Created By"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": true
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "created_at": {
+            "_name": "created_at"
+            , "_label": "Created At"
+            , "_type": "datetime"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": false
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "updated_by": {
+            "_name": "updated_by"
+            , "_label": "Updated By"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": true
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "updated_at": {
+            "_name": "updated_at"
+            , "_label": "Updated At"
+            , "_type": "datetime"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": false
+                        , "read": true
+                    }
+                }
+            }
+        }
+    }
+
+    , "tprod_tasks": {
+        "id": {
+            "_name": "id"
+            , "_label": "ID"
+            , "_type": "number"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "name": {
+            "_name": "name"
+            , "_label": "Name"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide a name to your task"
+            , "_helperMessage": ""
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 20,
+                "regex": "^[a-zA-Z0-9]+$"
+            }
+        }
+        , "description": {
+            "_name": "description"
+            , "_label": "Description"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide a description to your task"
+            , "_helperMessage": "What is to be done"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
+            }
+        }
+        , "duration": {
+            "_name": "duration"
+            , "_label": "Duration"
+            , "_type": "number"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide a duration to your task"
+            , "_helperMessage": "The time it takes to complete this task"
+            , "_props": {
+                "min": 0,
+                "max": 2147483647
+            }
+        }
+        , "id_unit": {
+            "_name": "id_unit"
+            , "_label": "Unit"
+            , "_type": "select"
+            , "_visible": true
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Select a unit for this task"
+            , "_helperMessage": "Tthe unit of measure for this task's duration"
+            , "_props": {
+                "tableName": "tsys_units"
+                , "valueName": "id"
+                , "labelName": "name"
+                , "filters": {
+                    "and_": {
+                        "type": ["time"]
+                    }
+                }
+                , "data": {}
+                , "regex":"^[a-zA-Z0-9]+$"
+            }
+        }
+        , "interruptible": {
+            "_name": "interruptible"
+            , "_label": "Interruptible"
+            , "_type": "checkbox"
+            , "_visible": true
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "Whether this task be paused and resumed later"
+        }
+        , "error_margin": {
+            "_name": "error_margin"
+            , "_label": "Error Margin"
+            , "_type": "number"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "min": 0
+            }
+        }
+        , "created_by": {
+            "_name": "created_by"
+            , "_label": "Created By"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": true
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "created_at": {
+            "_name": "created_at"
+            , "_label": "Created At"
+            , "_type": "datetime"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": false
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "updated_by": {
+            "_name": "updated_by"
+            , "_label": "Updated By"
+            , "_type": "text"
+            , "_visible": true
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": true
+                        , "read": true
+                    }
+                }
+            }
+        }
+        , "updated_at": {
+            "_name": "updated_at"
+            , "_label": "Updated At"
+            , "_type": "datetime"
+            , "_visible": false
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+            , "_props": {
+                "crud": {
+                    "visible": {
+                        "create": false
+                        , "update": false
                         , "read": true
                     }
                 }
