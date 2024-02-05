@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@chakra-ui/react';
 
-import BasicModal from '../../components/BasicModal/BasicModal';
-import BasicForm, { BasicFormField } from '../../components/BasicForm/BasicForm';
-import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
-import { useData, DataObject, DataRow } from '../../providers/data/DataProvider';
+import BasicModal from '../../../components/BasicModal/BasicModal';
+import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicForm';
+import VirtualizedTable from '../../../components/VirtualizedTable/VirtualizedTable';
+import { useData, DataObject, DataRow } from '../../../providers/data/DataProvider';
 
 
-export default function UnitsTab() {
+
+export default function TasksAccordionItem() {
 
     const { 
         fetchData
-        , getState
-        , tsys_unitsInsert 
-        , tsys_unitsDelete
+        , tprod_tasksUpsert
+        , tprod_tasksDelete
     } = useData();
 
-    const initialData = new DataObject('tsys_units');
-    const initialState = new DataRow('tsys_units');
+    const initialData = new DataObject('tprod_tasks');
+    const initialState = new DataRow('tprod_tasks');
 
     const [data, setData] = useState<DataObject>(initialData);
     const [formState, setFormState] = useState<DataRow>(initialState);
@@ -27,7 +27,7 @@ export default function UnitsTab() {
 
     /* Methods */
     async function retrieveData() {
-        const { response, data: newData } = await fetchData('tsys_units', {}, {}, false, true, true);
+        const { response, data: newData } = await fetchData('tprod_tasks', {}, {}, false);
 
         if (response.ok) {
             setData(newData);
@@ -46,11 +46,12 @@ export default function UnitsTab() {
         retrieveData();
     }
 
-    const handleCreateClick = () => {
-        const field = initialState.getFieldObject('type');
-
+    const handleCreateClick = async () => {
+        const field = initialState.getFieldObject('id_unit');
+        console.log(field.props.filters)
         if (field) {
-            field.props.data = getState(field.props.tableName);
+            const { data } = await fetchData('tsys_units', field.props.filters, {type: 'time'}, false, true, true);
+            field.props.data = data;
         }
 
         setFormState(initialState);
@@ -60,12 +61,6 @@ export default function UnitsTab() {
     }
     
     const handleEditClick = (newState: DataRow) => {
-        const field = initialState.getFieldObject('type');
-
-        if (field) {
-            field.props.data = getState(field.props.tableName);
-        }
-
         setFormState(newState);
         setFormMode('update');
 
@@ -77,7 +72,7 @@ export default function UnitsTab() {
     }
 
     const handleFormSaveClick = async () => {
-        const { response, data } = await tsys_unitsInsert(formState);
+        const { response, data } = await tprod_tasksUpsert(formState);
 
         if (response.ok) {
             setData(data);
@@ -87,7 +82,7 @@ export default function UnitsTab() {
     }
 
     const handleFormDeleteClick = async () => {
-        const { response, data } = await tsys_unitsDelete(formState);
+        const { response, data } = await tprod_tasksDelete(formState);
 
         if (response.ok) {
             setData(data);
@@ -100,14 +95,14 @@ export default function UnitsTab() {
     return (<div className='flex flex-col gap-4'>
 
         <div className='flex justify-between items-center'>
-            <span>Create, edit and visualize measurement units.</span>
+            <span>Catalog, edit or delete tasks</span>
             <Button colorScheme="blue" onClick={handleCreateClick}>
-                New Unit
+                New Task
             </Button>
         </div>
 
         <BasicModal 
-            title={formMode === 'create' ? 'New Unit' : 'View Unit'}
+            title={formMode === 'create' ? 'New Task' : 'View Task'}
             width='60%'
             blur
             isOpen={isOpen}
@@ -116,21 +111,23 @@ export default function UnitsTab() {
             <BasicForm 
                 row={formState}
                 mode={formMode}
-                allowUpdates={false}
                 onChange={handleFormOnChange}
                 onSave={handleFormSaveClick}
                 onDelete={handleFormDeleteClick}
             >
                 <BasicFormField field={formState.getFieldObject('name')} />
-                <BasicFormField field={formState.getFieldObject('abbreviation')} />
-                <BasicFormField field={formState.getFieldObject('type')} />
+                <BasicFormField field={formState.getFieldObject('description')} />
+                <BasicFormField field={formState.getFieldObject('duration')} />
+                <BasicFormField field={formState.getFieldObject('id_unit')} />
+                <BasicFormField field={formState.getFieldObject('interruptible')} />
+                <BasicFormField field={formState.getFieldObject('error_margin')} />   
             </BasicForm>
-
         </BasicModal>
 
 
         <VirtualizedTable 
             data={data}
+            fillScreen={false}
             onEditClick={handleEditClick} 
             onRefreshClick={handleRefreshClick} 
         />

@@ -55,8 +55,8 @@ export default function TableBody({
                 </Button>
             </Td>}
 
-            {row.getVisibleFields().map((field) => {
-                return <Td key={field.label}>{String(field.value)}</Td>
+            {row.getVisibleFields('read').map((field) => {
+                return <Td key={field.label} className='text-wrap'>{String(field.value)}</Td>
             })}
         </Tr>
     }

@@ -2,7 +2,6 @@ import React, { useState, useContext, createContext } from 'react';
 
 import { useNotification } from '../NotificationProvider';
 import { useOverlay } from '../OverlayProvider';
-import { useAuth } from '../AuthProvider';
 import { DataObject, DataRow, DataField } from './models';
 
 
@@ -23,21 +22,32 @@ const addresses = {
         },
         custom: {
             user: `${baseURL}/tsys/users/me`,
-            symbols: {
+            units: {
                 insert: `${baseURL}/tsys/units/insert`,
                 delete: `${baseURL}/tsys/units/delete`,
-            }
+            },
+            skills: {
+                upsert: `${baseURL}/tprod/skills/upsert`,
+                delete: `${baseURL}/tprod/skills/delete`,
+            },
+            resources: {
+                upsert: `${baseURL}/tprod/resources/upsert`,
+                delete: `${baseURL}/tprod/resources/delete`,
+            },
+            tasks: {
+                upsert: `${baseURL}/tprod/tasks/upsert`,
+                delete: `${baseURL}/tprod/tasks/delete`,
+            },
         }
     }
 };
-
-export const url = addresses.local;
+const url = addresses.local;
 
 
 const DataContext = createContext();
 const { Provider } = DataContext;
 
-export function DataProvider({ children }) {
+function DataProvider({ children }) {
 
     const overlayContext = useOverlay();
     const { spawnToast, successModel, infoModel, warningModel, errorModel} = useNotification();
@@ -125,7 +135,7 @@ export function DataProvider({ children }) {
         return { response, content };
     }
 
-    const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true) => {
+    const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true, simple = false) => {
         const address = url.crud.select + '?table_name=' + tableName;
         const payload = generatePayload({ 
             method: 'POST'
@@ -133,6 +143,7 @@ export function DataProvider({ children }) {
                 table_name: tableName
                 , filters: filters
                 , lambda_kwargs: lambdaKwargs
+                , simple: simple
             }) 
         });
             
@@ -187,42 +198,154 @@ export function DataProvider({ children }) {
 
 
     /* Routes */
-    const tsys_unitsInsert = async (state) => {
-        console.log(state)
-        const payload = generatePayload({
-            method: 'POST'
-            , body: JSON.stringify(state.popEmpties())
-        });
 
-        const { response, content } =  await _makeRequest(url.custom.symbols.insert, payload, true, true);
+        // TSYS
+        const tsys_unitsInsert = async (state) => {
+            const payload = generatePayload({
+                method: 'POST'
+                , body: JSON.stringify(state.popEmpties())
+            });
 
-        if (response.ok) {
-            const json = JSON.parse(content.data);
-            const data = new DataObject('tsys_units', json);
+            const { response, content } =  await _makeRequest(url.custom.units.insert, payload, true, true);
 
-            return { response, data };
+            if (response.ok) {
+                const json = JSON.parse(content.data);
+                const data = new DataObject('tsys_units', json);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
         }
 
-        return { response, data: [] };
-    }
+        const tsys_unitsDelete = async (state) => {
+            const payload = generatePayload({
+                method: 'DELETE'
+                , body: JSON.stringify(state.json)
+            });
 
-    const tsys_unitsDelete = async (state) => {
-        const payload = generatePayload({
-            method: 'DELETE'
-            , body: JSON.stringify(state.json)
-        });
+            const { response, content } =  await _makeRequest(url.custom.units.delete, payload, true, true);
 
-        const { response, content } =  await _makeRequest(url.custom.symbols.delete, payload, true, true);
+            if (response.ok) {
+                const json = JSON.parse(content.data);
+                const data = new DataObject('tsys_units', json);
 
-        if (response.ok) {
-            const json = JSON.parse(content.data);
-            const data = new DataObject('tsys_units', json);
+                return { response, data };
+            }
 
-            return { response, data };
+            return { response, data: [] };
         }
 
-        return { response, data: [] };
-    }
+
+        // TPROD
+        const tprod_skillsUpsert = async (state) => {
+            console.log(state.popEmpties())
+            const payload = generatePayload({
+                method: 'POST'
+                , body: JSON.stringify(state.popEmpties())
+            });
+
+            const { response, content } =  await _makeRequest(url.custom.skills.upsert, payload, true, true);
+
+            if (response.ok) {
+                const json = JSON.parse(content.data);
+                const data = new DataObject('tprod_skills', json);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
+        }
+
+        const tprod_skillsDelete = async (state) => {
+            const payload = generatePayload({
+                method: 'DELETE'
+                , body: JSON.stringify(state.json)
+            });
+
+            const { response, content } =  await _makeRequest(url.custom.skills.delete, payload, true, true);
+
+            if (response.ok) {
+                const json = JSON.parse(content.data);
+                const data = new DataObject('tprod_skills', json);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
+        }
+
+        const tprod_resourcesUpsert = async (state) => {
+            const payload = generatePayload({
+                method: 'POST'
+                , body: JSON.stringify(state.popEmpties())
+            });
+
+            const { response, content } =  await _makeRequest(url.custom.resources.upsert, payload, true, true);
+
+            if (response.ok) {
+                const json = JSON.parse(content.data);
+                const data = new DataObject('tprod_resources', json);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
+        }
+
+        const tprod_resourcesDelete = async (state) => {
+            const payload = generatePayload({
+                method: 'DELETE'
+                , body: JSON.stringify(state.json)
+            });
+
+            const { response, content } =  await _makeRequest(url.custom.resources.delete, payload, true, true);
+
+            if (response.ok) {
+                const json = JSON.parse(content.data);
+                const data = new DataObject('tprod_resources', json);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
+        }
+
+        const tprod_tasksUpsert = async (state) => {
+            const payload = generatePayload({
+                method: 'POST'
+                , body: JSON.stringify(state.popEmpties())
+            });
+
+            const { response, content } =  await _makeRequest(url.custom.tasks.upsert, payload, true, true);
+
+            if (response.ok) {
+                const json = JSON.parse(content.data);
+                const data = new DataObject('tprod_tasks', json);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
+        }
+
+        const tprod_tasksDelete = async (state) => {
+            const payload = generatePayload({
+                method: 'DELETE'
+                , body: JSON.stringify(state.json)
+            });
+
+            const { response, content } =  await _makeRequest(url.custom.tasks.delete, payload, true, true);
+
+            if (response.ok) {
+                const json = JSON.parse(content.data);
+                const data = new DataObject('tprod_tasks', json);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
+        }
 
 
     /* Effects */
@@ -243,6 +366,13 @@ export function DataProvider({ children }) {
 
         , tsys_unitsInsert
         , tsys_unitsDelete
+
+        , tprod_skillsUpsert
+        , tprod_skillsDelete
+        , tprod_resourcesUpsert
+        , tprod_resourcesDelete
+        , tprod_tasksUpsert
+        , tprod_tasksDelete
     }
 
     return (
@@ -253,8 +383,8 @@ export function DataProvider({ children }) {
 }
 
 
-export const useData = () => {
+const useData = () => {
     return useContext(DataContext);
 };
 
-export { DataObject, DataRow, DataField};
+export { DataProvider, url, useData, DataObject, DataRow, DataField};

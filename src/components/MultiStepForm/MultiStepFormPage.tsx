@@ -1,7 +1,8 @@
 import React from "react";
 
 export default function MultiStepFormPage({
-    title
+    title // DO NOT ERASE, reason: used in the MultiStepForm component
+    , description // DO NOT ERASE, reason: used in the MultiStepForm component
     , children
 }: {
     title: string

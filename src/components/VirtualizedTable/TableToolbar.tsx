@@ -70,8 +70,8 @@ export default function TableToolbar({
                 
                 <MenuItem key={'All'} value={'All'} onClick={onSearchInClick}>All</MenuItem>
                 
-                {labels.map((column) => {
-                    return <MenuItem key={column} value={column} onClick={onSearchInClick}>{column[0].toUpperCase() + column.slice(1)}</MenuItem>
+                {labels.map((column, index) => {
+                    return <MenuItem key={`${column}-${index}`} value={column} onClick={onSearchInClick}>{column[0].toUpperCase() + column.slice(1)}</MenuItem>
                 })}
                 
             </MenuList>

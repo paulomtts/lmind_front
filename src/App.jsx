@@ -26,15 +26,14 @@ function App() {
         setCurrentItem(title);
     }
 
-    return (<div className="flex">
-        <Sidebar className="flex justify-between">
+    return (<div className="flex gap-2">
+        <Sidebar>
             <SidebarContainer className="flex flex-col gap-4">
                 <SidebarItem icon={faHome} title="Home" onClick={() => handleSidebarItemClick("Home")} />
 
                 <SidebarItem icon={faIndustry} title="Production">
                     <SidebarSubItem title="Overview" onClick={() => handleSidebarItemClick("Overview")} />
-                    <SidebarSubItem title="Tasks" onClick={() => handleSidebarItemClick("Tasks")} />
-                    <SidebarSubItem title="Resources" onClick={() => handleSidebarItemClick("Resources")} />
+                    <SidebarSubItem title="Records" onClick={() => handleSidebarItemClick("Records")} />
                     <SidebarSubItem title="Routes" onClick={() => handleSidebarItemClick("Routes")} />
                     <SidebarSubItem title="Products" onClick={() => handleSidebarItemClick("Products")} />
                     <SidebarSubItem title="Orders" onClick={() => handleSidebarItemClick("Orders")} />
@@ -47,7 +46,7 @@ function App() {
             </SidebarContainer>
         
             <SidebarContainer className="flex flex-col gap-4 mb-2">
-                <Avatar size={'md'} name={auth.user?.name} src={auth.user?.picture} title={auth.user?.name} />
+                <Avatar size={'md'} name={auth.user?.name} src={auth.user?.picture} title={auth.user?.name} className="select-none"/>
                 <SidebarItem icon={faRightFromBracket} title="Logout" text="Are you sure?">
                     <SidebarSubItem title="Confirm" onClick={() => auth.logout()} />
                     <SidebarSubItem title="Cancel" />
@@ -55,12 +54,11 @@ function App() {
             </SidebarContainer>
         </Sidebar>
 
-        <div className=" overflow-x-hidden w-full">
+        <div className="overflow-x-hidden w-full">
             {(() => {
                 switch (content) {
                     case "Overview": return <ProductionPage selectedTab="Overview" />;
-                    case "Tasks": return <ProductionPage selectedTab="Tasks" />;
-                    case "Resources": return <ProductionPage selectedTab="Resources" />;
+                    case "Records": return <ProductionPage selectedTab="Records" />;
                     case "Routes": return <ProductionPage selectedTab="Routes" />;
                     case "Products": return <ProductionPage selectedTab="Products" />;
                     case "Orders": return <ProductionPage selectedTab="Orders" />;

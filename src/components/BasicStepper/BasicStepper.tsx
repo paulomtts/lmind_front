@@ -21,6 +21,10 @@ export default function BasicStepper({
     return (
         <Stepper index={currentIndex} orientation={orientation} height={height}>
             {React.Children.map(children, (child, index) => {
+                if (child.type !== BasicStep) {
+                    throw new Error('BasicStepper only accepts BasicStep children');
+                }
+
                 return React.cloneElement(child, {
                     title: child.props.title,
                     index: index,

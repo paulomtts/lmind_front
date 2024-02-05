@@ -26,7 +26,7 @@ import BasicFormField from './BasicFormField';
 export default function BasicForm({
     row
     , mode = 'create'
-    , editable = true
+    , allowUpdates = true
     , children
     , onChange = () => {}
     , onSave = () => {}
@@ -34,7 +34,7 @@ export default function BasicForm({
 }: { 
     row: DataRow
     , mode: 'create' | 'update'
-    , editable?: boolean
+    , allowUpdates?: boolean
     , children?: React.ReactNode
     , onChange?: (state: DataRow) => void
     , onSave?: () => void
@@ -60,13 +60,30 @@ export default function BasicForm({
         if (field.type === 'number' && isNaN(Number(e.target.value))) {
             return;
         }
-        changeState(field, e.target.value);
+        
+        let value: string | number | boolean | Date;
+        switch (field.type) {
+            case 'number':
+                value = Number(e.target.value);
+                break;
+            case 'checkbox':
+            case 'boolean':
+                value = !field.value;
+                break;
+            default:
+                value = e.target.value;
+                break;
+        }
+
+        changeState(field, value);
     };
 
     const handleStep = (field: DataField, operation: string, stepVal: number = 1) => {
         const step = operation === 'sum' ? stepVal : -stepVal;
-        if(field.props.max && Number(field.value) + step > Number(field.props.max)) return;
-        if(field.props.min && Number(field.value) + step < Number(field.props.min)) return;
+
+        if(Number(field.value) + step > Number(field.props.max)) return;
+        if(Number(field.value) + step < Number(field.props.min)) return;
+        
         const value = Number(state.json[field.name]) + step
         changeState(field, value);
     }
@@ -94,24 +111,24 @@ export default function BasicForm({
 
         const identifier = `APIForm-field-${field.label}-${index}`;
         const value = String(field.value);
+        const isDisabled = mode === 'create' ? false : !(field.editable && allowUpdates);
 
-        let isInvalid = false;
-
-        if (field.visible === false) {
+        if (mode === 'create' && field.visible?.create === false) {
             return null;
         }
-
-        if (field.props && mode === 'create' && field.props.crud?.visible.create === false) {
+        
+        if (mode === 'update' && field.visible?.update === false) {
             return null;
         }
-
+        
+        let isInvalid = field.required && field.value === '';
 
         switch (field.type) {
             case 'text':
             case 'password':
             case 'email':
-                isInvalid = (field.required && field.value === '');
-
+            case 'date':
+            case 'datetime':
                 return (
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
@@ -121,7 +138,7 @@ export default function BasicForm({
                             minLength={field.props.minLength}
                             maxLength={field.props.maxLength}
                             placeholder='Type...' 
-                            isDisabled={!editable && mode === 'update'}
+                            isDisabled={isDisabled}
                             onChange={(e) => handleFieldChange(field, e)}
                         />
 
@@ -129,12 +146,12 @@ export default function BasicForm({
                     </FormControl>
                 );
             case 'number':
-                isInvalid = ((field.required && field.value === '') || Number(value) < field.props.min || Number(value) > field.props.max);
+                isInvalid = (field.required && field.value === '') || Number(value) < field.props.min || Number(value) > field.props.max;
 
                 return (
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
-                        <NumberInput value={value} min={field.props.min} isDisabled={!editable && mode === 'update'}>
+                        <NumberInput value={value} min={field.props.min} isDisabled={isDisabled}>
                             <NumberInputField onChange={(e) => handleFieldChange(field, e)} onKeyDown={(e) => handleOnKeyDown(field, e)}/>
                             <NumberInputStepper>
                                 <NumberIncrementStepper onClick={() => handleStep(field, 'sum')} />
@@ -145,16 +162,17 @@ export default function BasicForm({
                         <FormErrorMessage>{field.errorMessage}</FormErrorMessage>
                     </FormControl>
                 );
+            case 'checkbox':
             case 'boolean':
-                isInvalid = (field.required && field.value === '');
-
                 return (
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
                         <Switch 
-                            isChecked={Boolean(value)} 
+                            defaultChecked={field.value as boolean}
                             onChange={(e) => handleFieldChange(field, e)}
+                            disabled={isDisabled}
                         />
+                        <FormHelperText>Click to toggle</FormHelperText>
                     </FormControl>
                 );
             case 'select':
@@ -170,7 +188,7 @@ export default function BasicForm({
                         <VirtualizedSelect 
                             field={field}
                             data={field.props.data}
-                            disabled={!editable && mode === 'update'}
+                            disabled={isDisabled}
                             onOptionClick={handleOptionClick}
                         />
                     </FormFieldWrapper>
@@ -188,7 +206,7 @@ export default function BasicForm({
                     <ConfirmationPopover onYes={onDelete}>
                         <Button colorScheme="red" variant='outline'>Delete</Button>
                     </ConfirmationPopover>
-                    {editable && <Button colorScheme="blue" onClick={onSave}>Save</Button>}
+                    {allowUpdates && <Button colorScheme="blue" onClick={onSave}>Save</Button>}
                 </> 
                 
                 : 

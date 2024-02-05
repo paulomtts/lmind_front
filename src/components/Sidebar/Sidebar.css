@@ -1,14 +1,10 @@
 .Sidebar {
     @apply
-    flex flex-col justify-normal items-center
-    w-fit h-screen p-2 gap-4
-    border border-r-2 border-gray-300 border-solid
+    fixed
+    flex flex-col justify-between items-center gap-4
+    w-fit h-screen p-2
+    /* border border-r-1.5 border-gray-300 border-solid */
     bg-slate-200
-}
-
-.Sidebar-shadow {
-    box-shadow: 1px 0 6px 1px rgba(0, 0, 0, 0.2);
-    z-index: 3;
 }
 
 .SidebarItem {
@@ -31,7 +27,6 @@
 .SidebarCard {
     @apply
     fixed
-    z-50
     text-base
     p-2 w-56 h-fit
     bg-white border 

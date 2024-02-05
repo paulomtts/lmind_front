@@ -4,7 +4,7 @@ interface FieldConfig {
     _name: string;
     _label: string;
     _type: string;
-    _visible: boolean;
+    _visible: { create: boolean, read: boolean, update: boolean };
     _required: boolean;
     _editable: boolean;
     _errorMessage?: string;
@@ -13,19 +13,13 @@ interface FieldConfig {
 }
 
 /**
- * Represents a data field.
- * @property name - The name of the field.
- * @property label - The displayed label of the field.
- * @property type - The type of the field, used for parsing.
- * @property visible - Whether the field should be visible in the UI.
- * @property required - Whether the field is required when performing input on the database.
- * @property message - The message message to be displayed when the field does not pass validation.
+ * Represents a field in a row.
  */
 export class DataField {
     private _name: string;
     private _label: string;
     private _type: string;
-    private _visible: boolean;
+    private _visible: { create: boolean, read: boolean, update: boolean };
     private _required: boolean;
     private _editable: boolean;
     private _errorMessage?: string;
@@ -71,8 +65,21 @@ export class DataField {
             case 'boolean':
                 return Boolean(value);
             case 'date':
+                const newDate = new Date(String(value));
+                return newDate.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    year: 'numeric',
+                    month: '2-digit',
+                })
             case 'datetime':
-                return new Date(String(value));
+                const newDatetime = new Date(String(value));
+                return newDatetime.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    year: 'numeric',
+                    month: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })
             default:
                 return value;
         }
@@ -127,7 +134,7 @@ export class DataField {
 
 
 /**
- * Represents a data row with JSON data and associated fields.
+ * Represents a row from a table.
  */
 export class DataRow {
     private _tableName: string;
@@ -188,9 +195,9 @@ export class DataRow {
     }
 
     /* Methods */
-    getVisibleFields() {
+    getVisibleFields(context: string) {
         return this._fields.filter((field) => {
-            return field.visible;
+            return field.visible[context];
         });
     }
 
@@ -225,7 +232,7 @@ export class DataRow {
 
 
 /**
- * Represents a data object that contains rows of data.
+ * Represents a table of data.
  */
 export class DataObject {
     private _tableName: string;

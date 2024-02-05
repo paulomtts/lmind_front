@@ -18,7 +18,7 @@ export default function DataRowTable({
     return (<Table variant="simple" size="sm" className="">
             <Tbody>
                 {row.fields.map((field, index) => {
-                    if (!field.visible) return null;
+                    if (!field.visible.read) return null;
                     return (<Tr key={`field-${index}`}>
                         <Th>{field.name}</Th>
                         <Td>{String(field.value)}</Td>

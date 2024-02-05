@@ -4,7 +4,11 @@
             "_name": "id"
             , "_label": "ID"
             , "_type": "number"
-            , "_visible": false
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
@@ -14,7 +18,11 @@
             "_name": "name"
             , "_label": "Name"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a name to your unit"
@@ -29,7 +37,11 @@
             "_name": "abbreviation"
             , "_label": "Abbreviation"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Type an abbreviation of the name"
@@ -44,12 +56,21 @@
             "_name": "type"
             , "_label": "Type"
             , "_type": "select"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Select a category for this unit"
             , "_helperMessage": "Describes what this unit measures"
             , "_props": {
+                "visible": {
+                    "create": true
+                    , "update": false
+                    , "read": true
+                },
                 "tableName": "tsys_categories"
                 , "valueName": "name"
                 , "labelName": "name"
@@ -66,20 +87,15 @@
             "_name": "created_by"
             , "_label": "Created By"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": true
-                        , "read": true
-                    }
-                }
-            }
         }
     }
 
@@ -88,7 +104,11 @@
             "_name": "id"
             , "_label": "ID"
             , "_type": "number"
-            , "_visible": false
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
@@ -98,7 +118,11 @@
             "_name": "name"
             , "_label": "Name"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a name to your category"
@@ -113,7 +137,11 @@
             "_name": "description"
             , "_label": "Description"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a description to your category"
@@ -128,7 +156,11 @@
             "_name": "type"
             , "_label": "Type"
             , "_type": "select"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Select a category for this unit"
@@ -141,7 +173,11 @@
             "_name": "code_a"
             , "_label": "Code A"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -156,7 +192,11 @@
             "_name": "counter_a"
             , "_label": "Counter A"
             , "_type": "number"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -170,7 +210,11 @@
             "_name": "code_b"
             , "_label": "Code B"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -185,7 +229,11 @@
             "_name": "counter_b"
             , "_label": "Counter B"
             , "_type": "number"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -199,7 +247,11 @@
             "_name": "code_c"
             , "_label": "Code C"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -214,7 +266,11 @@
             "_name": "counter_c"
             , "_label": "Counter C"
             , "_type": "number"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -228,7 +284,11 @@
             "_name": "code_d"
             , "_label": "Code D"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -243,7 +303,11 @@
             "_name": "counter_d"
             , "_label": "Counter D"
             , "_type": "number"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -257,7 +321,11 @@
             "_name": "code_e"
             , "_label": "Code E"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -272,7 +340,11 @@
             "_name": "counter_e"
             , "_label": "Counter E"
             , "_type": "number"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -296,7 +368,11 @@
             "_name": "created_by"
             , "_label": "Created By"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
@@ -314,116 +390,17 @@
     }
 
 
-    , "tprod_resources": {
-        "id": {
-            "_name": "id"
-            , "_label": "ID"
-            , "_type": "number"
-            , "_visible": false
-            , "_required": false
-            , "_editable": false
-            , "_errorMessage": ""
-            , "_helperMessage": ""
-        }
-        , "name": {
-            "_name": "name"
-            , "_label": "Name"
-            , "_type": "text"
-            , "_visible": true
-            , "_required": true
-            , "_editable": true
-            , "_errorMessage": "Provide a name to your resource"
-            , "_helperMessage": "A resource is anything or anyone that can perform a task"
-            , "_props": {
-                "minLength": 3,
-                "maxLength": 20,
-                "regex": "^[a-zA-Z0-9]+$"
-            }
-        }
-        , "created_by": {
-            "_name": "created_by"
-            , "_label": "Created By"
-            , "_type": "text"
-            , "_visible": true
-            , "_required": false
-            , "_editable": false
-            , "_errorMessage": ""
-            , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": true
-                        , "read": true
-                    }
-                }
-            }
-        }
-        , "created_at": {
-            "_name": "created_at"
-            , "_label": "Created At"
-            , "_type": "datetime"
-            , "_visible": false
-            , "_required": false
-            , "_editable": false
-            , "_errorMessage": ""
-            , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": false
-                        , "read": true
-                    }
-                }
-            }
-        }
-        , "updated_by": {
-            "_name": "updated_by"
-            , "_label": "Updated By"
-            , "_type": "text"
-            , "_visible": true
-            , "_required": false
-            , "_editable": false
-            , "_errorMessage": ""
-            , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": true
-                        , "read": true
-                    }
-                }
-            }
-        }
-        , "updated_at": {
-            "_name": "updated_at"
-            , "_label": "Updated At"
-            , "_type": "datetime"
-            , "_visible": false
-            , "_required": false
-            , "_editable": false
-            , "_errorMessage": ""
-            , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": false
-                        , "read": true
-                    }
-                }
-            }
-        }
-    }
 
     , "tprod_skills": {
         "id": {
             "_name": "id"
             , "_label": "ID"
             , "_type": "number"
-            , "_visible": false
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
@@ -433,7 +410,11 @@
             "_name": "name"
             , "_label": "Name"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a name to your skill"
@@ -448,7 +429,11 @@
             "_name": "description"
             , "_label": "Description"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a description to your skill"
@@ -463,86 +448,71 @@
             "_name": "created_by"
             , "_label": "Created By"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": true
-                        , "read": true
-                    }
-                }
-            }
         }
         , "created_at": {
             "_name": "created_at"
             , "_label": "Created At"
             , "_type": "datetime"
-            , "_visible": false
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": false
-                        , "read": true
-                    }
-                }
-            }
         }
         , "updated_by": {
             "_name": "updated_by"
             , "_label": "Updated By"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": true
-                        , "read": true
-                    }
-                }
-            }
+
         }
         , "updated_at": {
             "_name": "updated_at"
             , "_label": "Updated At"
             , "_type": "datetime"
-            , "_visible": false
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": false
-                        , "read": true
-                    }
-                }
-            }
         }
     }
 
-    , "tprod_tasks": {
+    , "tprod_resources": {
         "id": {
             "_name": "id"
             , "_label": "ID"
             , "_type": "number"
-            , "_visible": false
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
@@ -552,7 +522,103 @@
             "_name": "name"
             , "_label": "Name"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide a name to your resource"
+            , "_helperMessage": "A resource is anything or anyone that can perform a task"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 20,
+                "regex": "^[a-zA-Z0-9]+$"
+            }
+        }
+        , "created_by": {
+            "_name": "created_by"
+            , "_label": "Created By"
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "created_at": {
+            "_name": "created_at"
+            , "_label": "Created At"
+            , "_type": "datetime"
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "updated_by": {
+            "_name": "updated_by"
+            , "_label": "Updated By"
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "updated_at": {
+            "_name": "updated_at"
+            , "_label": "Updated At"
+            , "_type": "datetime"
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+    }
+
+    , "tprod_tasks": {
+        "id": {
+            "_name": "id"
+            , "_label": "ID"
+            , "_type": "number"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "name": {
+            "_name": "name"
+            , "_label": "Name"
+            , "_type": "text"
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a name to your task"
@@ -567,7 +633,11 @@
             "_name": "description"
             , "_label": "Description"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a description to your task"
@@ -582,7 +652,11 @@
             "_name": "duration"
             , "_label": "Duration"
             , "_type": "number"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a duration to your task"
@@ -596,11 +670,15 @@
             "_name": "id_unit"
             , "_label": "Unit"
             , "_type": "select"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Select a unit for this task"
-            , "_helperMessage": "Tthe unit of measure for this task's duration"
+            , "_helperMessage": "The unit of measure for this task's duration"
             , "_props": {
                 "tableName": "tsys_units"
                 , "valueName": "id"
@@ -613,12 +691,30 @@
                 , "data": {}
                 , "regex":"^[a-zA-Z0-9]+$"
             }
+        },
+        "unit": {
+            "_name": "unit"
+            , "_label": "Unit"
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": true
+            }
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
         }
         , "interruptible": {
             "_name": "interruptible"
             , "_label": "Interruptible"
             , "_type": "checkbox"
-            , "_visible": true
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": true
             , "_errorMessage": ""
@@ -628,7 +724,11 @@
             "_name": "error_margin"
             , "_label": "Error Margin"
             , "_type": "number"
-            , "_visible": true
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
@@ -641,77 +741,57 @@
             "_name": "created_by"
             , "_label": "Created By"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": true
-                        , "read": true
-                    }
-                }
-            }
         }
         , "created_at": {
             "_name": "created_at"
             , "_label": "Created At"
             , "_type": "datetime"
-            , "_visible": false
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": false
-                        , "read": true
-                    }
-                }
-            }
         }
         , "updated_by": {
             "_name": "updated_by"
             , "_label": "Updated By"
             , "_type": "text"
-            , "_visible": true
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": true
-                        , "read": true
-                    }
-                }
-            }
         }
         , "updated_at": {
             "_name": "updated_at"
             , "_label": "Updated At"
             , "_type": "datetime"
-            , "_visible": false
+            , "_visible": {
+                "create": false
+                , "update": true
+                , "read": true
+            }
             , "_required": false
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
-            , "_props": {
-                "crud": {
-                    "visible": {
-                        "create": false
-                        , "update": false
-                        , "read": true
-                    }
-                }
-            }
         }
     }
 }

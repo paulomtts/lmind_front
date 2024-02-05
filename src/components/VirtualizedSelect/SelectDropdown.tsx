@@ -36,7 +36,7 @@ export default function SelectDropdown({
                 disabled:text-slate-400
                 disabled:border-slate-100
                 
-                ${isInvalid ? 'border-2 border-required' : 'border border-slate-400'} rounded-md
+                ${isInvalid ? 'border-2 border-required' : 'border border-slate-200'} rounded-md
             `}
             onClick={onClick}
             disabled={disabled}

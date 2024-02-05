@@ -9,15 +9,17 @@ import {
 
 
 export default function BasicTabs({
-    labels = [],
-    initialTab,
-    children
+    labels = []
+    , initialTab
+    , padding = '1rem'
+    , children
     , onTabClick = () => { }
 }: {
-    labels: string[],
-    initialTab: string,
-    children: React.ReactNode
-    onTabClick?: (index: number) => void
+    labels: string[];
+    initialTab: string;
+    padding?: string;
+    children: React.ReactNode;
+    onTabClick?: (index: number) => void;
 }) {
 
     if (labels.length !== React.Children.count(children)) {
@@ -38,10 +40,11 @@ export default function BasicTabs({
         onTabClick(index);
     }
 
-    return (<div style={{width: '100%'}} className="ml-2">
+    return (
+    <div style={{width: '100%'}}>
         <Tabs index={index} onChange={handleTabClick}>
 
-            <TabList className="bg-slate-200 shadow-sm">
+            <TabList className="bg-slate-200 shadow-sm fixed w-screen z-50" style={{boxShadow: '0px 2px 8px 0 rgba(0,0,0,0.3)', borderBottom: '1px solid lightgray'}}>
                 {labels.map((label) => (
                     <Tab key={label}>{label[0].toUpperCase() + label.slice(1)}</Tab>
                 ))}
@@ -50,12 +53,15 @@ export default function BasicTabs({
             <TabPanels>
                 {React.Children.map(children, (child, index) => {
                     return (
-                        <TabPanel key={index}>
-                            {child}
+                        <TabPanel key={index} padding={padding}>
+                            <div className="mt-10">
+                                {child}
+                            </div>
                         </TabPanel>
                     )
                 })}
             </TabPanels>
         </Tabs>
-    </div>);
+    </div>
+    );
 }

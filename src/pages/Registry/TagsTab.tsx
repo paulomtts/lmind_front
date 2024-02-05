@@ -14,7 +14,7 @@ export default function UnitsTab() {
 
     /* Methods */
     async function retrieveData() {
-        const { response, data: newData } = await fetchData('tsys_tags');
+        const { response, data: newData } = await fetchData('tsys_tags', {}, {}, false, true);
         
         if (response.ok) {
             setData(newData);

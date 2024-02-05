@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import SidebarSubItem from './SidebarSubItem';
+
 
 export default function SidebarItem ({ 
     title
     , text
     , icon
-    , offsetY = 45
-    , currentItem
+    , offsetY = 75
     , parentDimensions
     , children
     , onClick 
@@ -53,12 +54,11 @@ export default function SidebarItem ({
         <div className='
                 flex flex-col items-center gap-2
                 select-none
-                text-sm'
-            onClick={handleSidebarItemClick}
-            ref={selfRef}
-        >
+                text-sm
+        '>
 
-            <div className={`text-xl SidebarItem`}>
+            
+            <div className={`text-xl SidebarItem`} onClick={handleSidebarItemClick} ref={selfRef}>
                 <FontAwesomeIcon icon={icon} title={title} />             
             </div>
             {title}
@@ -76,8 +76,14 @@ export default function SidebarItem ({
                         }}
                     >
                         {text && <p className='p-2'>{text}</p>}
-                        <div className='cursor-pointer'>
-                            {children}
+                        <div className='cursor-pointer' onClick={() => setIsOpen(!isOpen)}>
+                            {React.Children.map(children, (child) => {
+                                if (child.type !== SidebarSubItem) {
+                                    throw new Error('SidebarItem children must be of type SidebarSubItem');
+                                }
+                                
+                                return child;
+                            })}
                         </div>
                     </div>
                 </div>

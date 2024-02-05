@@ -10,10 +10,12 @@ import { DataObject, DataRow, getConfigsAsFields } from "../../providers/data/mo
 
 export default function VirtualizedTable ({
     data
+    , fillScreen = true
     , onEditClick = undefined
     , onRefreshClick = () => {}
 }: { 
     data: DataObject
+    , fillScreen?: boolean
     , onEditClick?: (row: DataRow) => void
     , onRefreshClick?: () => void
 }) {
@@ -31,7 +33,7 @@ export default function VirtualizedTable ({
     useEffect(() => {
         if (Object.keys(data.json).length === 0) return;
 
-        const newSorters = data.rows[0].getVisibleFields().map((field) => {
+        const newSorters = data.rows[0].getVisibleFields('read').map((field) => {
             return new Sorter(field.name, field.label, 'none');
         });
 
@@ -181,7 +183,7 @@ export default function VirtualizedTable ({
             onChangeFilters={() => {}}
         />
 
-        <Box height={'calc(100vh - 188px)'} overflowY={'auto'} ref={containerRef}>
+        <Box height={fillScreen ? 'calc(100vh - 188px)' : ''} overflowY={'auto'} ref={containerRef}>
             <TableContainer>
                 <Table size='sm' variant={'unstyled'}>
                     <TableHeader sorters={sorters} onSortClick={handleSortClick} onEditClick={onEditClick}/>
