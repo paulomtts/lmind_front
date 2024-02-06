@@ -195,13 +195,20 @@ export class DataRow {
     }
 
     /* Methods */
-    getVisibleFields(context: string) {
-        return this._fields.filter((field) => {
-            return field.visible[context];
-        });
+    isEqual(other: DataRow) {
+        return JSON.stringify(this.json) === JSON.stringify(other.json);
     }
 
-    getFieldObject(name: string) {
+    setValue(field: DataField, value: string | number | boolean | Date) {
+        const ownedField = this.getField(field.name);
+
+        if (ownedField) {
+            ownedField.value = value;
+            this._json[ownedField.name] = ownedField.value;
+        }
+    }
+
+    getField(name: string) {
         const field =  this._fields.find((field) => {
             return field.name === name;
         });
@@ -210,13 +217,10 @@ export class DataRow {
         return field;
     }
 
-    setFieldValue(field: DataField, value: string | number | boolean | Date) {
-        const ownedField = this.getFieldObject(field.name);
-
-        if (ownedField) {
-            ownedField.value = value;
-            this._json[ownedField.name] = ownedField.value;
-        }
+    getVisible(context: 'read' | 'create' | 'update' = 'read') {
+        return this.fields.filter((field) => {
+            return field.visible[context];
+        });
     }
 
     popEmpties() {
@@ -226,8 +230,7 @@ export class DataRow {
             }
             return acc;
         }, {} as Record<string, string | number | boolean | Date>);
-    }
-        
+    }   
 }
 
 
@@ -236,7 +239,6 @@ export class DataRow {
  */
 export class DataObject {
     private _tableName: string;
-    private _columns: string[] = [];
     private _json: Record<string, string | number | boolean | Date>[] = [];
     private _rows: DataRow[];
 
@@ -247,7 +249,6 @@ export class DataObject {
      */
     constructor(tableName: string, json: Array<Record<string, string | number | boolean | Date>> = []) {
         this._tableName = tableName;
-        this._columns = Object.keys(configs[tableName]??{});
         this._json = json;
 
         this._rows = json.map((obj) => {
@@ -261,10 +262,6 @@ export class DataObject {
         return this._tableName;
     }
 
-    get columns() {
-        return this._columns;
-    }
-
     get json() {
         return this._json;
     }
@@ -272,15 +269,14 @@ export class DataObject {
     get rows() {
         return this._rows;
     }
-}
 
 
-export function getConfigsAsFields(tableName: string) {
-    return Object.keys(configs[tableName]).filter((field) => {
-        return configs[tableName][field]._visible;
-    }).map((field) => {
-        return new DataField(configs[tableName][field]);
-    });
+    /* Methods */
+    getArray(prop: string) {
+        return this._rows.map((row) => {
+            return row.json[prop];
+        });
+    }
 }
 
 export { configs }

@@ -83,10 +83,9 @@ export default function VirtualizedSelect({
     }
 
     const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        // if 'enter' is pressed then we must select the first option
         if (e.key === 'Enter') {
-            const firstLabel = compData.rows[0].getFieldObject(field.props.labelName);
-            const firstValue = compData.rows[0].getFieldObject(field.props.valueName);
+            const firstLabel = compData.rows[0].getField(field.props.labelName);
+            const firstValue = compData.rows[0].getField(field.props.valueName);
 
             if (!firstLabel || !firstValue) return;
             handleOptionClick(firstLabel, firstValue);

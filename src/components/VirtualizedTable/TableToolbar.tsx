@@ -38,13 +38,13 @@ export default function TableToolbar({
     , onChangeFilters: (filters: Filter[]) => void
 }) {
 
-    const filterPopoverContent = <FilterBox filters={filters} onChangeFilters={onChangeFilters}/>;
+    // const filterPopoverContent = <FilterBox filters={filters} onChangeFilters={onChangeFilters}/>;
 
     const handleClearClick = () => {
         onSearchForChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
     }
 
-    return (<Box display={'flex'} gap={'0.5rem'}>
+    return (<Box className="flex gap-2 mb-2">
         {/* <BasicPopover content={filterPopoverContent}>
             <Button 
                 size="md"
@@ -71,7 +71,7 @@ export default function TableToolbar({
                 <MenuItem key={'All'} value={'All'} onClick={onSearchInClick}>All</MenuItem>
                 
                 {labels.map((column, index) => {
-                    return <MenuItem key={`${column}-${index}`} value={column} onClick={onSearchInClick}>{column[0].toUpperCase() + column.slice(1)}</MenuItem>
+                    return <MenuItem key={`${column}-${index}`} value={column} onClick={onSearchInClick}>{column}</MenuItem>
                 })}
                 
             </MenuList>

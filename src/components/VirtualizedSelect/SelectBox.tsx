@@ -27,8 +27,8 @@ export default function SelectBox({
     const rowBuilder = (row: DataRow) => {
         const uuid = v4();
         
-        const labelOption = row.getFieldObject(field.props.labelName);
-        const valueOption = row.getFieldObject(field.props.valueName);
+        const labelOption = row.getField(field.props.labelName);
+        const valueOption = row.getField(field.props.valueName);
 
         return (
             <HoverCard 

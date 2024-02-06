@@ -27,7 +27,7 @@ export default function SkillsAccordionItem() {
 
     /* Methods */
     async function retrieveData() {
-        const { response, data: newData } = await fetchData('tprod_skills', {}, {}, false);
+        const { response, data: newData } = await fetchData('tprod_skills', {notification: false});
 
         if (response.ok) {
             setData(newData);
@@ -108,12 +108,12 @@ export default function SkillsAccordionItem() {
                 onSave={handleFormSaveClick}
                 onDelete={handleFormDeleteClick}
             >
-                <BasicFormField field={formState.getFieldObject('name')} />
-                <BasicFormField field={formState.getFieldObject('description')} />
-                <BasicFormField field={formState.getFieldObject('created_by')} />
-                <BasicFormField field={formState.getFieldObject('created_at')} />
-                <BasicFormField field={formState.getFieldObject('updated_by')} />
-                <BasicFormField field={formState.getFieldObject('updated_at')} />   
+                <BasicFormField field={formState.getField('name')} />
+                <BasicFormField field={formState.getField('description')} />
+                <BasicFormField field={formState.getField('created_by')} />
+                <BasicFormField field={formState.getField('created_at')} />
+                <BasicFormField field={formState.getField('updated_by')} />
+                <BasicFormField field={formState.getField('updated_at')} />   
             </BasicForm>
         </BasicModal>
 

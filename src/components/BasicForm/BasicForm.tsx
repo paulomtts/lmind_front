@@ -27,6 +27,7 @@ export default function BasicForm({
     row
     , mode = 'create'
     , allowUpdates = true
+    , defaultFooter = true
     , children
     , onChange = () => {}
     , onSave = () => {}
@@ -35,6 +36,7 @@ export default function BasicForm({
     row: DataRow
     , mode: 'create' | 'update'
     , allowUpdates?: boolean
+    , defaultFooter?: boolean
     , children?: React.ReactNode
     , onChange?: (state: DataRow) => void
     , onSave?: () => void
@@ -48,7 +50,7 @@ export default function BasicForm({
     const changeState = (field: DataField, value: any) => {
         const newFormState = new DataRow(state.tableName, state.json);
         
-        newFormState.setFieldValue(field, value);
+        newFormState.setValue(field, value);
 
         setState(newFormState);
         onChange(newFormState);
@@ -133,6 +135,7 @@ export default function BasicForm({
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
                         <Input 
+                            bg={'white'}
                             type={field.type} 
                             value={value}
                             minLength={field.props.minLength}
@@ -151,7 +154,7 @@ export default function BasicForm({
                 return (
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
-                        <NumberInput value={value} min={field.props.min} isDisabled={isDisabled}>
+                        <NumberInput value={value} min={field.props.min} isDisabled={isDisabled} bg={'wwhite'}>
                             <NumberInputField onChange={(e) => handleFieldChange(field, e)} onKeyDown={(e) => handleOnKeyDown(field, e)}/>
                             <NumberInputStepper>
                                 <NumberIncrementStepper onClick={() => handleStep(field, 'sum')} />
@@ -200,7 +203,7 @@ export default function BasicForm({
 
         {fieldComponents}
 
-        <div className={`flex ${mode === 'create' ? 'justify-end' : 'justify-between'}`}>
+        {defaultFooter && <div className={`flex ${mode === 'create' ? 'justify-end' : 'justify-between'}`}>
             {mode === 'update' ?            
                 <>
                     <ConfirmationPopover onYes={onDelete}>
@@ -213,7 +216,7 @@ export default function BasicForm({
     
                 <Button colorScheme="blue" onClick={onSave}>Save</Button>
             }
-        </div>
+        </div>}
     </div>);
 }
 

@@ -1,9 +1,10 @@
 import React from 'react';
 import {
-    Tbody,
-    Tr,
-    Td,
-    Button,
+    Tbody
+    , Tr
+    , Td
+    , Button
+    , Checkbox
 } from '@chakra-ui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -16,22 +17,34 @@ import { Sorter } from './models.js';
 
 export default function TableBody({
     data
+    , selectedData = []
     , sorters
     , containerRef
+    , editable
+    , selectable
     , displayCallback = () => true
     , onEditClick = undefined
+    , onSelectClick = undefined
 }: {
     data: DataObject
-    
-    , sorters: Sorter[]
-    , containerRef: React.RefObject<HTMLDivElement>
-    , displayCallback?: (row: Record<string, any>) => boolean
-    , onEditClick?: (row: DataRow) => void;
+    selectedData?: DataRow[];
+    sorters: Sorter[];
+    containerRef: React.RefObject<HTMLDivElement>;
+    editable?: boolean;
+    selectable?: boolean;
+    displayCallback?: (row: Record<string, any>) => boolean;
+    onEditClick?: (row: DataRow) => void;
+    onSelectClick?: (row: DataRow) => void;
 }) {
 
     const handleEditClick = (row: DataRow) => {
         if (!onEditClick) return;
         onEditClick(row);
+    }
+
+    const handleSelectClick = (row: DataRow) => {
+        if (!onSelectClick) return;
+        onSelectClick(row);
     }
 
     const rowBuilder = (row: DataRow) => {
@@ -41,7 +54,7 @@ export default function TableBody({
             key={uuid}
             className="hover:bg-blue-100 border-t border-solid border-gray-300" 
         >
-            {onEditClick && <Td padding={'0.25rem 0.25px'} textAlign={'center'}>
+            {editable &&<Td>
                 <Button
                     size='xs' 
                     bg='gray.200' 
@@ -50,12 +63,21 @@ export default function TableBody({
                     className='border border-solid border-gray-400'
                     isDisabled={row.json['created_by'] === 'system'}
                     onClick={() => handleEditClick(row)}
-                >
+                    >
                     <FontAwesomeIcon icon={faEdit} />
                 </Button>
             </Td>}
 
-            {row.getVisibleFields('read').map((field) => {
+            {selectable && <Td>
+                <Checkbox 
+                    border={'1px solid #CBD5E0'}
+                    colorScheme="blue"
+                    defaultChecked={selectedData.some((selectedRow) => selectedRow.isEqual(row))}
+                    onChange={() => handleSelectClick(row)}
+                />
+            </Td>}
+
+            {row.getVisible('read').map((field) => {
                 return <Td key={field.label} className='text-wrap'>{String(field.value)}</Td>
             })}
         </Tr>

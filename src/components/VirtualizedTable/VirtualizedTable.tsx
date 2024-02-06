@@ -5,22 +5,30 @@ import TableToolbar from "./TableToolbar";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import { Sorter, Filter } from "./models";
-import { DataObject, DataRow, getConfigsAsFields } from "../../providers/data/models";
+import { DataObject, DataRow } from "../../providers/data/models";
 
 
 export default function VirtualizedTable ({
     data
+    , selectedData = []
+    , editable = true
+    , selectable = false
     , fillScreen = true
-    , onEditClick = undefined
+    , onEditClick = () => {}
+    , onSelectClick = () => {}
     , onRefreshClick = () => {}
 }: { 
     data: DataObject
+    , selectedData?: DataRow[]
+    , editable?: boolean
+    , selectable?: boolean
     , fillScreen?: boolean
     , onEditClick?: (row: DataRow) => void
+    , onSelectClick?: (row: DataRow) => void
     , onRefreshClick?: () => void
 }) {
     
-    const [compData, setCompData] = useState<DataObject>(data);
+    const [state, setState] = useState<DataObject>(data);
     const [searchIn, setSearchIn] = useState<string>("All");
     const [searchFor, setSearchFor] = useState<string>("");
     const [sorters, setSorters] = useState<Sorter[]>([]);
@@ -33,53 +41,49 @@ export default function VirtualizedTable ({
     useEffect(() => {
         if (Object.keys(data.json).length === 0) return;
 
-        const newSorters = data.rows[0].getVisibleFields('read').map((field) => {
+        const newSorters = data.rows[0].getVisible('read').map((field) => {
             return new Sorter(field.name, field.label, 'none');
         });
 
-        setCompData(data);
+        setState(data);
         setSorters(newSorters);
     }, [data]);
 
 
     /* Functions */
     function filterRows(searchFor: string, searchIn: string) {
-        const visibleFieldConfigs = getConfigsAsFields(data.tableName);
+        if (!searchFor) return data;
         const searchForLower = searchFor.toLowerCase();
 
-        let newData: DataObject;
+        const newData = state.rows.filter((row) => {
+            if(searchIn === "All") {
+                const fields = row.getVisible();
 
-        if (searchIn === "All") {
-            const newJson = data.json.filter((row) => {
-                return visibleFieldConfigs.some((field) => {
-                    const value = String(row[field.name]).toLowerCase();
+                return fields.some((field) => {
+                    const value = String(field.value).toLowerCase();
                     return value.includes(searchForLower);
                 });
-            });
-            newData = new DataObject(data.tableName, newJson);
 
-        } else {
-            const field = visibleFieldConfigs.find((field) => {
-                return field.label === searchIn;
-            });
+            } else {
+                const field = row.fields.filter((field) => field.label === searchIn)[0];
+                if(!field) return data;
 
-            if (!field) return data;
-            
-            const newJson = data.json.filter((row) => {
-                const value = String(row[field.name]).toLowerCase();
+                const value = String(field.value).toLowerCase();
                 return value.includes(searchForLower);
-            });
+            }
+        });
 
-            newData = new DataObject(data.tableName, newJson);
-        }
+        const newJson = newData.map((row) => {
+            return row.json;
+        });
 
-        return newData;
+        return new DataObject(data.tableName, newJson);
+
     }
 
     function multiSort(sorters: Sorter[]) {
-        const fields = getConfigsAsFields(data.tableName);
-        const columns = fields.map((field) => {
-            return field.name;
+        const columns = sorters.map((sorter) => {
+            return sorter.name;
         });
 
         
@@ -118,22 +122,22 @@ export default function VirtualizedTable ({
         setSearchIn(e.target.value);
 
         const newData = filterRows(searchFor, e.target.value);
-        setCompData(newData);
+        setState(newData);
     };
 
     const handleSearchForChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(!compData) return;
+        if(!state) return;
 
         const newSearchFor = e.target.value;
 
         const newData = filterRows(newSearchFor, searchIn);
         
-        setCompData(newData);
+        setState(newData);
         setSearchFor(newSearchFor);
     };
 
     const handleSortClick = (targetSorter: Sorter) => {
-        if (!compData) return;
+        if (!state) return;
 
         const newSorters = sorters.map((srt) => {
             if (srt.label === targetSorter.label) {
@@ -153,7 +157,7 @@ export default function VirtualizedTable ({
         const newJson = multiSort(newSorters);
         const newData = new DataObject(data.tableName, newJson);
         
-        setCompData(newData);
+        setState(newData);
     };
 
     const handleRefreshClick = () => {
@@ -164,15 +168,15 @@ export default function VirtualizedTable ({
                 return new Sorter(field.name, field.label, 'none');
             })
         );
-        setCompData(data);
+        setState(data);
 
         onRefreshClick();
     }
 
     return (<>
         <TableToolbar
-            labels={getConfigsAsFields(data.tableName).map((field) => {
-                return field.label;
+            labels={sorters.map((sorter) => {
+                return sorter.label;
             })}
             filters={filters}
             searchIn={searchIn}
@@ -186,8 +190,22 @@ export default function VirtualizedTable ({
         <Box height={fillScreen ? 'calc(100vh - 188px)' : ''} overflowY={'auto'} ref={containerRef}>
             <TableContainer>
                 <Table size='sm' variant={'unstyled'}>
-                    <TableHeader sorters={sorters} onSortClick={handleSortClick} onEditClick={onEditClick}/>
-                    <TableBody data={compData} containerRef={containerRef} sorters={sorters} onEditClick={onEditClick} />
+                    <TableHeader 
+                        sorters={sorters} 
+                        onSortClick={handleSortClick} 
+                        editable={editable} 
+                        selectable={selectable}
+                    />
+                    <TableBody
+                        data={state} 
+                        selectedData={selectedData}
+                        sorters={sorters} 
+                        containerRef={containerRef} 
+                        editable={editable} 
+                        selectable={selectable}
+                        onEditClick={onEditClick} 
+                        onSelectClick={onSelectClick} 
+                    />
                 </Table>
             </TableContainer>
         </Box>

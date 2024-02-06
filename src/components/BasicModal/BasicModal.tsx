@@ -47,7 +47,7 @@ export default function BasicModal({
     return (<Modal isOpen={isOpen} isCentered size={size ? size : 'xl'} onClose={() => {}}> {/* reason: prevent close when clicking outside Modal */}
         <ModalOverlay backdropFilter={blur ? 'blur(2px)' : 'none'} />
 
-        <ModalContent maxW={width ? width : undefined}>
+        <ModalContent maxW={width ? width : undefined} width={'fit-content'} minW={'40%'}>
             <ModalCloseButton onClick={onClose}/>
             <ModalHeader color='gray.500'>
                 {title}

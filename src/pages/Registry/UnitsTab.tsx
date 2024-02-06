@@ -27,7 +27,7 @@ export default function UnitsTab() {
 
     /* Methods */
     async function retrieveData() {
-        const { response, data: newData } = await fetchData('tsys_units', {}, {}, false, true, true);
+        const { response, data: newData } = await fetchData('tsys_units', {notification: false});
 
         if (response.ok) {
             setData(newData);
@@ -131,6 +131,7 @@ export default function UnitsTab() {
 
         <VirtualizedTable 
             data={data}
+            editable
             onEditClick={handleEditClick} 
             onRefreshClick={handleRefreshClick} 
         />

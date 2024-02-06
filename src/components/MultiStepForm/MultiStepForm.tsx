@@ -11,6 +11,7 @@ export default function MultiStepForm({
     , children
     , onNext = () => true
     , onPrevious = () => true
+    , onSave = () => true
 }: {
     className?: string
     stepperOrientation: "horizontal" | "vertical"
@@ -18,6 +19,7 @@ export default function MultiStepForm({
     children: any
     onNext?: (activeStep: number) => boolean
     onPrevious?: (activeStep: number) => boolean
+    onSave?: () => void
 }) {
 
 
@@ -33,11 +35,14 @@ export default function MultiStepForm({
     }
 
     const handleNextClick = () => {
-        if (activeStep >= children.length) return;
+        if (activeStep >= children.length -1) return;
         if (!onNext(activeStep)) return;
 
-        setActiveStep(activeStep + 1);
-        
+        setActiveStep(activeStep + 1);   
+    }
+
+    const handleSaveClick = () => {
+        onSave();
     }
 
 
@@ -69,15 +74,18 @@ export default function MultiStepForm({
                     colorScheme="blue"
                     variant="outline"
                     onClick={handlePreviousClick}
+                    isDisabled={activeStep <= 0}
                 >
                     Previous
                 </Button>
 
                 <Button
                     colorScheme="blue"
-                    onClick={handleNextClick}
+                    onClick={
+                        activeStep <= children.length -2 ? handleNextClick : handleSaveClick
+                    }
                 >
-                    Next
+                    {activeStep <= children.length -2 ? "Next" : "Save"}
                 </Button>
             </div>
 

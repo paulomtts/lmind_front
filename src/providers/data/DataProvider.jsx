@@ -135,7 +135,7 @@ function DataProvider({ children }) {
         return { response, content };
     }
 
-    const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true, simple = false) => {
+    const fetchData = async (tableName, {filters = {}, lambdaKwargs = {}, notification = true, overlay = true}) => {
         const address = url.crud.select + '?table_name=' + tableName;
         const payload = generatePayload({ 
             method: 'POST'
@@ -143,7 +143,6 @@ function DataProvider({ children }) {
                 table_name: tableName
                 , filters: filters
                 , lambda_kwargs: lambdaKwargs
-                , simple: simple
             }) 
         });
             
@@ -350,7 +349,7 @@ function DataProvider({ children }) {
 
     /* Effects */
     React.useEffect(() => {
-        fetchData('tsys_categories', {}, {}, false, false);
+        fetchData('tsys_categories', {notification: false, overlay: false});
     }, []);
 
 

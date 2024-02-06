@@ -19,18 +19,18 @@ export default function TasksAccordionItem() {
     const initialData = new DataObject('tprod_tasks');
     const initialState = new DataRow('tprod_tasks');
 
-    const [data, setData] = useState<DataObject>(initialData);
-    const [formState, setFormState] = useState<DataRow>(initialState);
-    const [formMode, setFormMode] = useState<'create' | 'update'>('create');
-    const [isOpen, setIsOpen] = useState(false);
+    const [tasks, setTasks] = useState<DataObject>(initialData);
+    const [state, setState] = useState<DataRow>(initialState);
+    const [mode, setMode] = useState<'create' | 'update'>('create');
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
 
     /* Methods */
     async function retrieveData() {
-        const { response, data: newData } = await fetchData('tprod_tasks', {}, {}, false);
+        const { response, data: newData } = await fetchData('tprod_tasks', {notification: false});
 
         if (response.ok) {
-            setData(newData);
+            setTasks(newData);
         }
     }
 
@@ -47,45 +47,45 @@ export default function TasksAccordionItem() {
     }
 
     const handleCreateClick = async () => {
-        const field = initialState.getFieldObject('id_unit');
-        console.log(field.props.filters)
+        const field = initialState.getField('id_unit');
+
         if (field) {
-            const { data } = await fetchData('tsys_units', field.props.filters, {type: 'time'}, false, true, true);
+            const { data } = await fetchData('tsys_units', field.props.filters, {type: 'time'}, false, true);
             field.props.data = data;
         }
 
-        setFormState(initialState);
-        setFormMode('create');
+        setState(initialState);
+        setMode('create');
 
         setIsOpen(true);
     }
     
     const handleEditClick = (newState: DataRow) => {
-        setFormState(newState);
-        setFormMode('update');
+        setState(newState);
+        setMode('update');
 
         setIsOpen(true);
     }
 
     const handleFormOnChange = (newState: DataRow) => {
-        setFormState(newState);
+        setState(newState);
     }
 
     const handleFormSaveClick = async () => {
-        const { response, data } = await tprod_tasksUpsert(formState);
+        const { response, data } = await tprod_tasksUpsert(state);
 
         if (response.ok) {
-            setData(data);
+            setTasks(data);
         }
 
         setIsOpen(false);
     }
 
     const handleFormDeleteClick = async () => {
-        const { response, data } = await tprod_tasksDelete(formState);
+        const { response, data } = await tprod_tasksDelete(state);
 
         if (response.ok) {
-            setData(data);
+            setTasks(data);
         }
 
         setIsOpen(false);
@@ -102,31 +102,31 @@ export default function TasksAccordionItem() {
         </div>
 
         <BasicModal 
-            title={formMode === 'create' ? 'New Task' : 'View Task'}
+            title={mode === 'create' ? 'New Task' : 'View Task'}
             width='60%'
             blur
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
         >
             <BasicForm 
-                row={formState}
-                mode={formMode}
+                row={state}
+                mode={mode}
                 onChange={handleFormOnChange}
                 onSave={handleFormSaveClick}
                 onDelete={handleFormDeleteClick}
             >
-                <BasicFormField field={formState.getFieldObject('name')} />
-                <BasicFormField field={formState.getFieldObject('description')} />
-                <BasicFormField field={formState.getFieldObject('duration')} />
-                <BasicFormField field={formState.getFieldObject('id_unit')} />
-                <BasicFormField field={formState.getFieldObject('interruptible')} />
-                <BasicFormField field={formState.getFieldObject('error_margin')} />   
+                <BasicFormField field={state.getField('name')} />
+                <BasicFormField field={state.getField('description')} />
+                <BasicFormField field={state.getField('duration')} />
+                <BasicFormField field={state.getField('id_unit')} />
+                <BasicFormField field={state.getField('interruptible')} />
+                <BasicFormField field={state.getField('error_margin')} />   
             </BasicForm>
         </BasicModal>
 
 
         <VirtualizedTable 
-            data={data}
+            data={tasks}
             fillScreen={false}
             onEditClick={handleEditClick} 
             onRefreshClick={handleRefreshClick} 

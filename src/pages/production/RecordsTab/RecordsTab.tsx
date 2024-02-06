@@ -9,7 +9,7 @@ import TasksAccordionItem from "./TasksAccordionItem";
 export default function RecordsTab({}: {}) {
     return (
         <BasicAccordion allowMultiple={false}>
-            <BasicAccordionItem title="Skills" description="Skills pieces of knowledge">
+            <BasicAccordionItem title="Skills" description="Skills are pieces of knowledge">
                 <SkillsAccordionItem />
             </BasicAccordionItem>
             <BasicAccordionItem title="Resources" description="Resources are productive agents">

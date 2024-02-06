@@ -8,18 +8,19 @@ import {
 import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { DataRow } from '../../providers/data/models';
 import { Sorter } from './models';
 
 
 export default function TableHeader({
-    sorters,
-    onSortClick,
-    onEditClick = undefined,
+    sorters
+    , editable
+    , selectable
+    , onSortClick
 }: {
-    sorters: Sorter[],
-    onSortClick: (targetSorter: Sorter) => void,
-    onEditClick?: (row: DataRow) => void,
+    sorters: Sorter[];
+    editable?: boolean;
+    selectable?: boolean;
+    onSortClick: (targetSorter: Sorter) => void;
 }) {
 
     const getIcon = (direction: string) => {
@@ -31,7 +32,8 @@ export default function TableHeader({
     return (<>
         <Thead>
             <Tr>
-                {onEditClick && <Th w={0} />}
+                {editable && <Th w={0} />}
+                {selectable && <Th w={0} />}
 
                 {sorters.map((sort) => {
                     const icon = getIcon(sort.direction);

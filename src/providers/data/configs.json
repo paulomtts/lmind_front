@@ -662,7 +662,7 @@
             , "_errorMessage": "Provide a duration to your task"
             , "_helperMessage": "The time it takes to complete this task"
             , "_props": {
-                "min": 0,
+                "min": 1,
                 "max": 2147483647
             }
         }
@@ -792,6 +792,37 @@
             , "_editable": false
             , "_errorMessage": ""
             , "_helperMessage": ""
+        }
+    }
+
+    , "tprod_resourceskills": {
+        "id_resource": {
+            "_name": "id_resource"
+            , "_label": "Resource"
+            , "_type": "select"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": false
+            , "_errorMessage": "This field should never be manipulated by the user"
+            , "_helperMessage": "This is here only to leverage the DataModel's capabilities"
+        }
+        , "id_skill": {
+            "_name": "id_skill"
+            , "_label": "Skill"
+            , "_type": "select"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": false
+            , "_errorMessage": "This field should never be manipulated by the user"
+            , "_helperMessage": "This is here only to leverage the DataModel's capabilities"
         }
     }
 }
