@@ -1,13 +1,11 @@
 import React from 'react';
 import { Button } from '@chakra-ui/react';
 
+import { useData, DataObject, DataRow } from '../../../providers/data/DataProvider';
 import BasicModal from '../../../components/BasicModal/BasicModal';
 import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicForm';
 import VirtualizedTable from '../../../components/VirtualizedTable/VirtualizedTable';
-import { useData, DataObject, DataRow } from '../../../providers/data/DataProvider';
-
 import MultiStepForm, { MultiStepFormPage } from '../../../components/MultiStepForm/MultiStepForm';
-
 
 
 export default function ResourcesAccordionItem() {
@@ -34,6 +32,7 @@ export default function ResourcesAccordionItem() {
     async function retrieveResources() {
         const { response, data: newData } = await fetchData('tprod_resources', {notification: false});
 
+        console.log(newData)
         if (response.ok) {
             setResourcesData(newData);
         }
@@ -74,6 +73,12 @@ export default function ResourcesAccordionItem() {
         retrieveResources();
         retrieveSkills();
     }, []);
+
+    React.useEffect(() => {
+        if (isOpen === false) return;
+        // retrieveSkills();
+        
+    }, [isOpen]);
 
 
     /* Handlers */
@@ -134,9 +139,12 @@ export default function ResourcesAccordionItem() {
     }
 
     const handleSaveClick = async () => {
-        console.log(state);
-        console.log(selectedSkills);
-        setIsOpen(false);
+        const { response, data } = await tprod_resourcesUpsert(state, selectedSkills);
+
+        if (response.ok) {
+            setResourcesData(data);
+            setIsOpen(false);
+        }
     }
 
 

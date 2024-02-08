@@ -273,10 +273,16 @@ function DataProvider({ children }) {
             return { response, data: [] };
         }
 
-        const tprod_resourcesUpsert = async (state) => {
+
+        const tprod_resourcesUpsert = async (state, selectedSkills) => {
+            const idSkillsList = selectedSkills.map(skill => skill.json.id); 
+
             const payload = generatePayload({
                 method: 'POST'
-                , body: JSON.stringify(state.popEmpties())
+                , body: JSON.stringify({
+                    resource: state.popEmpties()
+                    , id_skill_list: idSkillsList}
+                )
             });
 
             const { response, content } =  await _makeRequest(url.custom.resources.upsert, payload, true, true);
@@ -284,7 +290,7 @@ function DataProvider({ children }) {
             if (response.ok) {
                 const json = JSON.parse(content.data);
                 const data = new DataObject('tprod_resources', json);
-
+                console.log(response)
                 return { response, data };
             }
 
@@ -308,6 +314,7 @@ function DataProvider({ children }) {
 
             return { response, data: [] };
         }
+
 
         const tprod_tasksUpsert = async (state) => {
             const payload = generatePayload({
