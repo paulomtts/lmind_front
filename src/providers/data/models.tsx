@@ -279,4 +279,18 @@ export class DataObject {
     }
 }
 
-export { configs }
+
+const buildDataObjectFromRows = (rows: DataRow[]) => {
+    if (rows?.length === 0) {
+        throw new Error('No rows to build DataObject from');
+    }
+
+    const tableName = rows[0].tableName;
+    const json = rows.map((row) => {
+        return row.json;
+    });
+
+    return new DataObject(tableName, json);
+}
+
+export { configs, buildDataObjectFromRows }

@@ -7,7 +7,7 @@ import { Button } from "@chakra-ui/react";
 export default function MultiStepForm({
     className = ""
     , stepperOrientation
-    , stepperHeight = "20rem"
+    , stepperHeight: stepperMaxHeight = "20rem"
     , children
     , onNext = () => true
     , onPrevious = () => true
@@ -49,7 +49,7 @@ export default function MultiStepForm({
     return (<div className="flex gap-8">
 
         <div className="sticky">
-            <BasicStepper currentIndex={activeStep} orientation={stepperOrientation} height={stepperHeight}>
+            <BasicStepper currentIndex={activeStep} orientation={stepperOrientation} maxHeight={stepperMaxHeight}>
                 {React.Children.map(children, (child) => {
                     if (child.type !== MultiStepFormPage) {
                         throw new Error("MultiStepForm children must be of type MultiStepFormPage");
@@ -61,7 +61,7 @@ export default function MultiStepForm({
         </div>
 
 
-        <div className={`flex flex-col justify-between flex-grow p-4 ${className}`}>
+        <div className={`flex flex-col justify-between flex-grow gap-4 ${className}`}>
             
             {React.Children.map(children, (child, index) => {
                 return <div className={` ${index === activeStep ? '' : 'hidden'}`}>

@@ -50,7 +50,12 @@ export default function TasksAccordionItem() {
         const field = initialState.getField('id_unit');
 
         if (field) {
-            const { data } = await fetchData('tsys_units', field.props.filters, {type: 'time'}, false, true);
+            const { data } = await fetchData('tsys_units', {
+                filters: field.props.filters
+                , lambdaKwargs: {type: 'time'}
+                , notification: false
+                , overlay: false
+            });
             field.props.data = data;
         }
 
@@ -72,6 +77,7 @@ export default function TasksAccordionItem() {
     }
 
     const handleFormSaveClick = async () => {
+        console.log(state.json)
         const { response, data } = await tprod_tasksUpsert(state);
 
         if (response.ok) {
@@ -119,6 +125,7 @@ export default function TasksAccordionItem() {
                 <BasicFormField field={state.getField('description')} />
                 <BasicFormField field={state.getField('duration')} />
                 <BasicFormField field={state.getField('id_unit')} />
+                {/* {mode === 'update' && <BasicFormField field={state.getField('unit')} />} */}
                 <BasicFormField field={state.getField('interruptible')} />
                 <BasicFormField field={state.getField('error_margin')} />   
             </BasicForm>

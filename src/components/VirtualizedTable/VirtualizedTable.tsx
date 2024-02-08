@@ -1,16 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { Box, Table, TableContainer } from "@chakra-ui/react";
 
 import TableToolbar from "./TableToolbar";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import { Sorter, Filter } from "./models";
-import { DataObject, DataRow } from "../../providers/data/models";
+import { DataObject, DataRow, buildDataObjectFromRows } from "../../providers/data/models";
 
 
 export default function VirtualizedTable ({
     data
-    , selectedData = []
+    , selectedData
     , editable = true
     , selectable = false
     , fillScreen = true
@@ -28,17 +28,17 @@ export default function VirtualizedTable ({
     , onRefreshClick?: () => void
 }) {
     
-    const [state, setState] = useState<DataObject>(data);
-    const [searchIn, setSearchIn] = useState<string>("All");
-    const [searchFor, setSearchFor] = useState<string>("");
-    const [sorters, setSorters] = useState<Sorter[]>([]);
-    const [filters, setFilters] = useState<Filter[]>([]);
+    const [state, setState] = React.useState<DataObject>(data);
+    const [searchIn, setSearchIn] = React.useState<string>("All");
+    const [searchFor, setSearchFor] = React.useState<string>("");
+    const [sorters, setSorters] = React.useState<Sorter[]>([]);
+    const [filters, setFilters] = React.useState<Filter[]>([]);
 
-    const containerRef = useRef<HTMLDivElement>(null!);
+    const containerRef = React.useRef<HTMLDivElement>(null!);
 
 
     /* Effects */
-    useEffect(() => {
+    React.useEffect(() => {
         if (Object.keys(data.json).length === 0) return;
 
         const newSorters = data.rows[0].getVisible('read').map((field) => {
@@ -48,6 +48,13 @@ export default function VirtualizedTable ({
         setState(data);
         setSorters(newSorters);
     }, [data]);
+
+    React.useEffect(() => {
+        if (selectable && selectedData && selectedData.length > 0) {
+            const newData = buildDataObjectFromRows(selectedData);
+            setState(newData);
+        }
+    }, []);
 
 
     /* Functions */
@@ -160,6 +167,17 @@ export default function VirtualizedTable ({
         setState(newData);
     };
 
+    const handleSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!selectable || !selectedData?.length) return;
+ 
+        if (e.target.checked) {
+            const newData = buildDataObjectFromRows(selectedData);
+            setState(newData);
+        } else {
+            setState(data);
+        }
+    }
+
     const handleRefreshClick = () => {
         setSearchIn("All");
         setSearchFor("");
@@ -181,8 +199,11 @@ export default function VirtualizedTable ({
             filters={filters}
             searchIn={searchIn}
             searchFor={searchFor}
+            selectable={selectable}
+            selectedData={selectedData}
             onSearchInClick={handleSearchInClick}
             onSearchForChange={handleSearchForChange}
+            onSwitchChange={handleSwitchChange}
             onRefreshClick={handleRefreshClick}
             onChangeFilters={() => {}}
         />

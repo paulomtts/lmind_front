@@ -17,7 +17,7 @@ import { Sorter } from './models.js';
 
 export default function TableBody({
     data
-    , selectedData = []
+    , selectedData
     , sorters
     , containerRef
     , editable
@@ -72,7 +72,7 @@ export default function TableBody({
                 <Checkbox 
                     border={'1px solid #CBD5E0'}
                     colorScheme="blue"
-                    defaultChecked={selectedData.some((selectedRow) => selectedRow.isEqual(row))}
+                    defaultChecked={selectedData?.some((selectedRow) => selectedRow.isEqual(row))}
                     onChange={() => handleSelectClick(row)}
                 />
             </Td>}
@@ -87,7 +87,7 @@ export default function TableBody({
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(data.rows, rowBuilder, displayCallback, containerRef, [sorters], 32, 10, 5);
+    ] = useVirtualizedList(data.rows, rowBuilder, displayCallback, containerRef, [sorters, selectedData], 32, 10, 5);
 
     return (<>
         <Tbody>

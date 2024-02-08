@@ -55,6 +55,17 @@ export default function BasicForm({
         setState(newFormState);
         onChange(newFormState);
     }
+
+    const checkValidity = () => {
+        return state.fields.every((field: DataField) => {
+            if (field.required) {
+                if (!field.value) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
        
 
     /* Handlers */
@@ -124,6 +135,7 @@ export default function BasicForm({
         }
         
         let isInvalid = field.required && field.value === '';
+        
 
         switch (field.type) {
             case 'text':
@@ -184,7 +196,7 @@ export default function BasicForm({
                         key={identifier}
                         label={field.label}
                         required={field.required}
-                        isInvalid={field.required && !field.value}
+                        isInvalid={isInvalid}
                         errorMessage={field.errorMessage}
                         helperMessage={field.helperMessage}
                     >
@@ -204,18 +216,18 @@ export default function BasicForm({
         {fieldComponents}
 
         {defaultFooter && <div className={`flex ${mode === 'create' ? 'justify-end' : 'justify-between'}`}>
-            {mode === 'update' ?            
-                <>
-                    <ConfirmationPopover onYes={onDelete}>
-                        <Button colorScheme="red" variant='outline'>Delete</Button>
-                    </ConfirmationPopover>
-                    {allowUpdates && <Button colorScheme="blue" onClick={onSave}>Save</Button>}
-                </> 
-                
-                : 
-    
-                <Button colorScheme="blue" onClick={onSave}>Save</Button>
+            {mode === 'update' && 
+                <ConfirmationPopover onYes={onDelete}>
+                    <Button colorScheme="red" variant='outline'>Delete</Button>
+                </ConfirmationPopover>
             }
+            <Button 
+                colorScheme="blue" 
+                onClick={onSave} 
+                isDisabled={!checkValidity() || (mode === 'update' && !allowUpdates)}
+            >
+                Save
+            </Button>
         </div>}
     </div>);
 }

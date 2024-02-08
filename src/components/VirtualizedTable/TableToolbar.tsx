@@ -1,50 +1,76 @@
 import React from "react";
 import {
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    Button,
-    Box,
-
+    Menu
+    , MenuButton
+    , MenuList
+    , MenuItem
+    , Button
+    , Box
+    , Switch
+    , FormControl
+    , FormLabel
+    , IconButton
 } from "@chakra-ui/react";
 
-import { faChevronDown, faRefresh, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faRefresh, faFilter, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import ClearableInput from "../ClearableInput/ClearableInput";
 import BasicPopover from "../BasicPopover/BasicPopover";
 import FilterBox from "./FilterBox";
 import { Filter } from "./models";
+import { DataRow } from "../../providers/data/models";
 
 
 export default function TableToolbar({
-    labels,
-    filters,
-    searchIn,
-    searchFor,
-    onSearchInClick,
-    onSearchForChange,
-    onRefreshClick,
-    onChangeFilters,
+    labels
+    , filters
+    , searchIn
+    , searchFor
+    , selectable
+    , selectedData
+    , onSearchInClick = () => {}
+    , onSearchForChange = () => {}  
+    , onSwitchChange = () => {}
+    , onRefreshClick = () => {} 
+    , onChangeFilters = () => {}
 }: {
-    labels: string[]
-    , filters: Filter[]
-    , searchIn: string
-    , searchFor: string
-    , onSearchInClick: (event: React.MouseEvent<HTMLElement>) => void
-    , onSearchForChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-    , onRefreshClick: (event: React.MouseEvent<HTMLElement>) => void
-    , onChangeFilters: (filters: Filter[]) => void
+    labels: string[];
+    filters: Filter[];
+    searchIn: string;
+    searchFor: string;
+    selectable?: boolean;
+    selectedData?: DataRow[];
+    onSearchInClick: (event: React.MouseEvent<HTMLElement>) => void;
+    onSearchForChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onSwitchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onRefreshClick: (event: React.MouseEvent<HTMLElement>) => void;
+    onChangeFilters: (filters: Filter[]) => void;
 }) {
 
+    const [switchChecked, setSwitchChecked] = React.useState<boolean>();
     // const filterPopoverContent = <FilterBox filters={filters} onChangeFilters={onChangeFilters}/>;
 
+
+    /* Effects */
+    React.useEffect(() => {
+        if (selectedData) {
+            setSwitchChecked(Boolean(selectedData.length > 0));
+        }
+    }, []);
+
+
+    /* Handlers */
     const handleClearClick = () => {
         onSearchForChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
     }
 
-    return (<Box className="flex gap-2 mb-2">
+    const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSwitchChecked(event.target.checked);
+        onSwitchChange(event);
+    }
+
+    return (<Box className="flex items-center gap-2 mb-2">
         {/* <BasicPopover content={filterPopoverContent}>
             <Button 
                 size="md"
@@ -78,7 +104,27 @@ export default function TableToolbar({
 
         </Menu>
 
-        <ClearableInput placeholder="Start typing to search..." value={searchFor} onChange={onSearchForChange} onClear={handleClearClick} />
+        <ClearableInput 
+            placeholder="Start typing to search..." 
+            value={searchFor} 
+            disabled={switchChecked}
+            onChange={onSearchForChange} 
+            onClear={handleClearClick} 
+        />
+
+        {selectable && 
+        <FormControl className="flex items-center gap-2 max-w-fit ml-1 mr-1">
+            <Switch 
+                size="md"
+                colorScheme="blue"
+                title="Click to toggle between showing all rows and only the selected ones"
+                isChecked={switchChecked}
+                isDisabled={Boolean(searchFor)}
+                onChange={(e) => handleSwitchChange(e)}
+            />
+            <FormLabel className="mt-1 font-light">Filter selected</FormLabel>
+        </FormControl>
+        }
 
         <Button 
             size="md" 

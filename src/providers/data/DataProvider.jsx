@@ -129,7 +129,7 @@ function DataProvider({ children }) {
     };
 
     
-    /* API Methods */
+    /* Standard Routes */
     const customRoute = async (url, payload = {}, notification = true, overlay = true) => {
         const { response, content } = await _makeRequest(url, payload, notification, overlay);
         return { response, content };
@@ -238,7 +238,6 @@ function DataProvider({ children }) {
 
         // TPROD
         const tprod_skillsUpsert = async (state) => {
-            console.log(state.popEmpties())
             const payload = generatePayload({
                 method: 'POST'
                 , body: JSON.stringify(state.popEmpties())

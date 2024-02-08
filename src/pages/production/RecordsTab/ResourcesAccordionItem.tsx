@@ -18,12 +18,12 @@ export default function ResourcesAccordionItem() {
     } = useData();
 
 
-    const [resourcesData, setResourcesData] = React.useState<DataObject | null>(null);
+    const [resourcesData, setResourcesData] = React.useState<DataObject>();
     
     const emptyState = new DataRow('tprod_resources');
     const [state, setState] = React.useState<DataRow>(emptyState);
     
-    const [skillsData, setSkillsData] = React.useState<DataObject | null>(null);
+    const [skillsData, setSkillsData] = React.useState<DataObject>();
     const [selectedSkills, setSelectedSkills] = React.useState<DataRow[]>([]);
     
     const [mode, setMode] = React.useState<'create' | 'update'>('create');
@@ -43,7 +43,7 @@ export default function ResourcesAccordionItem() {
         const { response: dataResponse, data: newData } = await fetchData('tprod_skills', {notification: false});
 
         if (dataResponse.ok) {
-            setSkillsData(newData);
+            setSkillsData((prev) => newData);
         }
     }
 
@@ -82,6 +82,7 @@ export default function ResourcesAccordionItem() {
     }
 
     const handleCreateClick = () => {
+        setSelectedSkills([]);
         setState(emptyState);
         setMode('create');
 
@@ -133,7 +134,8 @@ export default function ResourcesAccordionItem() {
     }
 
     const handleSaveClick = async () => {
-        // API call to save everything
+        console.log(state);
+        console.log(selectedSkills);
         setIsOpen(false);
     }
 
@@ -178,13 +180,13 @@ export default function ResourcesAccordionItem() {
                 </MultiStepFormPage>
 
                 <MultiStepFormPage title="Skills" description="These tell which tasks your resource is capable of performing">
-                    {skillsData && <VirtualizedTable 
+                    {skillsData && selectedSkills &&
+                    <VirtualizedTable 
                         data={skillsData}
                         selectedData={selectedSkills}
                         fillScreen={false}
                         editable={false}
                         selectable={true}
-                        onEditClick={handleEditClick} 
                         onSelectClick={handleSkillSelect}
                         onRefreshClick={handleRefreshClick} 
                     />}
@@ -192,7 +194,7 @@ export default function ResourcesAccordionItem() {
             </MultiStepForm>
         </BasicModal>
 
-        {resourcesData &&
+        {resourcesData && skillsData &&
         <VirtualizedTable 
             data={resourcesData}
             fillScreen={false}

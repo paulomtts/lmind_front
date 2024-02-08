@@ -673,7 +673,7 @@
             , "_visible": {
                 "create": true
                 , "update": true
-                , "read": true
+                , "read": false
             }
             , "_required": true
             , "_editable": true

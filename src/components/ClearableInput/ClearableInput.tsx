@@ -18,6 +18,7 @@ export default function ClearableInput({
     , label = ''
     , placeholder = "Search..."
     , required = false
+    , disabled
     , errorMessage
     , children
     , onClick = () => { }
@@ -30,6 +31,7 @@ export default function ClearableInput({
     label?: string
     placeholder?: string
     required?: boolean
+    disabled?: boolean
     errorMessage?: string
     children?: React.ReactNode
     onClick?: (e: React.MouseEvent<HTMLInputElement>) => void
@@ -82,7 +84,7 @@ export default function ClearableInput({
     }
 
     return (<>
-        <FormControl isInvalid={!!errorMessage && isInvalid}>
+        <FormControl isInvalid={!!errorMessage && isInvalid} isDisabled={disabled}>
             {!!label && <FormLabel>{label}</FormLabel>}
             <InputGroup>
                 <Input 
