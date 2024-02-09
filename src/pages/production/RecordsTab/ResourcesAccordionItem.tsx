@@ -32,7 +32,6 @@ export default function ResourcesAccordionItem() {
     async function retrieveResources() {
         const { response, data: newData } = await fetchData('tprod_resources', {notification: false});
 
-        console.log(newData)
         if (response.ok) {
             setResourcesData(newData);
         }

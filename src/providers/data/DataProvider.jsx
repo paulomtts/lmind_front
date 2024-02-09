@@ -290,7 +290,7 @@ function DataProvider({ children }) {
             if (response.ok) {
                 const json = JSON.parse(content.data);
                 const data = new DataObject('tprod_resources', json);
-                console.log(response)
+
                 return { response, data };
             }
 
