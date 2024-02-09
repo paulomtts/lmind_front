@@ -41,7 +41,7 @@ export default function ResourcesAccordionItem() {
         const { response: dataResponse, data: newData } = await fetchData('tprod_skills', {notification: false});
 
         if (dataResponse.ok) {
-            setSkillsData((prev) => newData);
+            setSkillsData(newData);
         }
     }
 
@@ -73,19 +73,14 @@ export default function ResourcesAccordionItem() {
         retrieveSkills();
     }, []);
 
-    React.useEffect(() => {
-        if (isOpen === false) return;
-        // retrieveSkills();
-        
-    }, [isOpen]);
-
-
+    
     /* Handlers */
     const handleRefreshClick = () => {
         retrieveResources();
     }
 
-    const handleCreateClick = () => {
+    const handleCreateClick = async () => {
+        await retrieveSkills();
         setSelectedSkills([]);
         setState(emptyState);
         setMode('create');
@@ -94,6 +89,7 @@ export default function ResourcesAccordionItem() {
     }
     
     const handleEditClick = async (row: DataRow) => {
+        await retrieveSkills();
         await retrieveSelectedSkills(row);
         setState(row);
         setMode('update');
@@ -125,16 +121,8 @@ export default function ResourcesAccordionItem() {
         setIsOpen(false);
     }
 
-    const handleSkillSelect = (row: DataRow) => {
-        setSelectedSkills((prevSelectedSkills) => {
-            const index = prevSelectedSkills.findIndex((r) => r.isEqual(row));
-            if (index > -1) {
-                return prevSelectedSkills.filter((_, i) => i !== index);
-            } else {
-
-                return [...prevSelectedSkills, row];
-            }
-        });
+    const handleSkillSelect = (rows: DataRow[]) => {
+        setSelectedSkills(rows);
     }
 
     const handleSaveClick = async () => {
@@ -193,6 +181,7 @@ export default function ResourcesAccordionItem() {
                         selectedData={selectedSkills}
                         fillScreen={false}
                         editable={false}
+                        refreshable={false}
                         selectable={true}
                         onSelectClick={handleSkillSelect}
                         onRefreshClick={handleRefreshClick} 

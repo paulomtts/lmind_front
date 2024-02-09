@@ -37,6 +37,13 @@ export default function TableBody({
     onSelectClick?: (row: DataRow) => void;
 }) {
 
+
+    /* Methods */
+    const isChecked = (row: DataRow) => {
+        return selectedData?.some((selectedRow) => selectedRow.isEqual(row));
+    }   
+
+    /* Handlers */
     const handleEditClick = (row: DataRow) => {
         if (!onEditClick) return;
         onEditClick(row);
@@ -72,7 +79,7 @@ export default function TableBody({
                 <Checkbox 
                     border={'1px solid #CBD5E0'}
                     colorScheme="blue"
-                    defaultChecked={selectedData?.some((selectedRow) => selectedRow.isEqual(row))}
+                    defaultChecked={isChecked(row)}
                     onChange={() => handleSelectClick(row)}
                 />
             </Td>}

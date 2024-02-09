@@ -103,6 +103,7 @@ export default function ClearableInput({
                         variant="ghost" 
                         size="sm" 
                         tabIndex={0}
+                        isDisabled={disabled}
                         onClick={handleClearClick}
                     >
                         <FontAwesomeIcon icon={faXmark} />

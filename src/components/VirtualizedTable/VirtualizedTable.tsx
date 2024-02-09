@@ -13,6 +13,7 @@ export default function VirtualizedTable ({
     , selectedData
     , editable = true
     , selectable = false
+    , refreshable = true
     , fillScreen = true
     , onEditClick = () => {}
     , onSelectClick = () => {}
@@ -22,13 +23,15 @@ export default function VirtualizedTable ({
     , selectedData?: DataRow[]
     , editable?: boolean
     , selectable?: boolean
+    , refreshable?: boolean
     , fillScreen?: boolean
     , onEditClick?: (row: DataRow) => void
-    , onSelectClick?: (row: DataRow) => void
+    , onSelectClick?: (row: DataRow[]) => void
     , onRefreshClick?: () => void
 }) {
     
     const [state, setState] = React.useState<DataObject>(data);
+    const [selectedStates, setSelectedStates] = React.useState<DataRow[]>(selectedData || []);
     const [searchIn, setSearchIn] = React.useState<string>("All");
     const [searchFor, setSearchFor] = React.useState<string>("");
     const [sorters, setSorters] = React.useState<Sorter[]>([]);
@@ -168,10 +171,10 @@ export default function VirtualizedTable ({
     };
 
     const handleSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!selectable || !selectedData?.length) return;
+        if (!selectable || !selectedStates?.length) return;
  
         if (e.target.checked) {
-            const newData = buildDataObjectFromRows(selectedData);
+            const newData = buildDataObjectFromRows(selectedStates);
             setState(newData);
         } else {
             setState(data);
@@ -191,6 +194,17 @@ export default function VirtualizedTable ({
         onRefreshClick();
     }
 
+    const handleSelectClick = (row: DataRow) => {
+        if (!selectable) return;
+
+        const newSelectedStates = selectedStates.some((r) => r.isEqual(row))
+            ? selectedStates.filter((r) => !r.isEqual(row))
+            : [...selectedStates, row];
+        setSelectedStates(newSelectedStates);
+        onSelectClick(newSelectedStates);
+    }
+    
+
     return (<>
         <TableToolbar
             labels={sorters.map((sorter) => {
@@ -200,7 +214,8 @@ export default function VirtualizedTable ({
             searchIn={searchIn}
             searchFor={searchFor}
             selectable={selectable}
-            selectedData={selectedData}
+            refreshable={refreshable}
+            selectedData={selectedStates}
             onSearchInClick={handleSearchInClick}
             onSearchForChange={handleSearchForChange}
             onSwitchChange={handleSwitchChange}
@@ -219,13 +234,13 @@ export default function VirtualizedTable ({
                     />
                     <TableBody
                         data={state} 
-                        selectedData={selectedData}
+                        selectedData={selectedStates}
                         sorters={sorters} 
                         containerRef={containerRef} 
                         editable={editable} 
                         selectable={selectable}
                         onEditClick={onEditClick} 
-                        onSelectClick={onSelectClick} 
+                        onSelectClick={handleSelectClick}
                     />
                 </Table>
             </TableContainer>

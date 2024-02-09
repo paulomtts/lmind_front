@@ -28,6 +28,7 @@ export default function TableToolbar({
     , searchIn
     , searchFor
     , selectable
+    , refreshable
     , selectedData
     , onSearchInClick = () => {}
     , onSearchForChange = () => {}  
@@ -40,6 +41,7 @@ export default function TableToolbar({
     searchIn: string;
     searchFor: string;
     selectable?: boolean;
+    refreshable?: boolean;
     selectedData?: DataRow[];
     onSearchInClick: (event: React.MouseEvent<HTMLElement>) => void;
     onSearchForChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -85,7 +87,7 @@ export default function TableToolbar({
         </BasicPopover> */}
 
         <Menu>
-            <MenuButton minW={150} as={Button} border={'1px solid rgba(107, 114, 128, 0.6)'}>
+            <MenuButton minW={150} as={Button} border={'1px solid rgba(107, 114, 128, 0.6)'} isDisabled={switchChecked}>
                 <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={'0.5rem'}>
                     {searchIn[0].toUpperCase() + searchIn.slice(1)}
                     <FontAwesomeIcon icon={faChevronDown}/>
@@ -126,6 +128,7 @@ export default function TableToolbar({
         </FormControl>
         }
 
+        {refreshable &&
         <Button 
             size="md" 
             border={'1px solid rgba(107, 114, 128, 0.6)'}
@@ -133,7 +136,7 @@ export default function TableToolbar({
             onClick={onRefreshClick}
         >
             <FontAwesomeIcon className="text-gray-500" icon={faRefresh}/>
-        </Button>
+        </Button>}
 
     </Box>);
 }
