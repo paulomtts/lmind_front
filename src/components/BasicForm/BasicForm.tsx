@@ -19,7 +19,7 @@ import {
 
 import ConfirmationPopover from '../ConfirmationPopover/ConfirmationPopover';
 import VirtualizedSelect from '../VirtualizedSelect/VirtualizedSelect';
-import FormFieldWrapper from './BasicFormFieldWrapper';
+import FormFieldWrapper from '../FormFieldWrapper/FormFieldWrapper';
 import { DataField, DataRow } from '../../providers/data/models';
 import BasicFormField from './BasicFormField';
 

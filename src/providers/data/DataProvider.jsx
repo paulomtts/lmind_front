@@ -109,8 +109,8 @@ function DataProvider({ children }) {
                 break;
             case 422:
                 model = errorModel;
-                model.title = 'Unprocessable Entity';
-                model.description = 'The server could not process the request.';
+                model.title = 'Unprocessable Request';
+                model.description = 'Your request did not meet the requirements.';
                 break;
             default:
                 model = errorModel;

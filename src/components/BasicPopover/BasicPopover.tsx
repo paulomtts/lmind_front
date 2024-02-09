@@ -4,33 +4,53 @@ import {
     PopoverTrigger,
     PopoverContent,
     PopoverBody,
-    PopoverCloseButton,
     PopoverArrow,
+    Box,
+    useDisclosure
 } from "@chakra-ui/react";
 
 export default function BasicPopover({
-    children,
     content
+    , focusContent
+    , children
+}: {
+    content: React.ReactNode;
+    focusContent?: boolean;
+    children: React.ReactNode;
 }) {
+
+    const { isOpen } = useDisclosure();
+
     return (<>
-        <Popover>
+        <Popover isOpen={isOpen}>
             <PopoverTrigger>
                 {children}
             </PopoverTrigger>
-            <PopoverContent width={'auto'} borderRadius={'0.35rem'}>
-                <PopoverCloseButton />
+            <PopoverContent width={'auto'} borderRadius={'0.35rem'} zIndex={'popover'}>
                 <PopoverArrow/>
                 <PopoverBody 
-                    borderRadius={'0.35rem'} 
                     boxShadow={'0px 3px 10px 1px rgba(0,0,0,0.75)'}
                     display={'flex'}
                     flexDirection={'column'}
                     gap={'0.5rem'}
-                    paddingTop={'1.75rem'}
                 >
-                    {content}
+                    {React.cloneElement(content as React.ReactComponentElement<any>, {
+                        isopen: isOpen
+                    })}
                 </PopoverBody>
             </PopoverContent>
         </Popover>
+        {isOpen && focusContent && (
+            <Box
+                position="fixed"
+                top={0}
+                right={0}
+                bottom={0}
+                left={0}
+                bg="blackAlpha.600"
+                backdropFilter={'blur(2px)'}
+                zIndex="1"
+            />
+        )}
     </>);
 }

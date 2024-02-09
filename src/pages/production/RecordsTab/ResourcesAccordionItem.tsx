@@ -4,6 +4,8 @@ import { Button } from '@chakra-ui/react';
 import { useData, DataObject, DataRow } from '../../../providers/data/DataProvider';
 import BasicModal from '../../../components/BasicModal/BasicModal';
 import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicForm';
+import SimpleTagBox, { SimpleTag } from '../../../components/TagBox/SimpleTagBox';
+import NewTagButton from '../../../components/TagBox/NewTagButton';
 import VirtualizedTable from '../../../components/VirtualizedTable/VirtualizedTable';
 import MultiStepForm, { MultiStepFormPage } from '../../../components/MultiStepForm/MultiStepForm';
 
@@ -20,6 +22,7 @@ export default function ResourcesAccordionItem() {
     
     const emptyState = new DataRow('tprod_resources');
     const [state, setState] = React.useState<DataRow>(emptyState);
+    const [tags, setTags] = React.useState<string[]>([]);
     
     const [skillsData, setSkillsData] = React.useState<DataObject>();
     const [selectedSkills, setSelectedSkills] = React.useState<DataRow[]>([]);
@@ -154,7 +157,7 @@ export default function ResourcesAccordionItem() {
 
             <MultiStepForm
                 stepperOrientation="vertical" 
-                stepperHeight="calc(100vh - 16.6rem)" 
+                stepperHeight="calc(100vh - 16.6rem)"
                 onSave={handleSaveClick}
             >
                 <MultiStepFormPage title="Resource" description="Productive agents capable of performing tasks">
@@ -172,7 +175,45 @@ export default function ResourcesAccordionItem() {
                         <BasicFormField field={state.getField('updated_by')} />
                         <BasicFormField field={state.getField('updated_at')} />
                     </BasicForm>
+
+                    <div className='flex flex-col gap-2'>
+                        <div className='flex justify-end'>
+                            <NewTagButton onClick={() => {}} tagForm={
+                                <div>Tag Form</div>
+                            }/>
+                        </div>
+                        <SimpleTagBox randomColors className="max-h-72 min-w-120 max-w-120 min-h-10">
+                            <SimpleTag label="Tag 1" onClose={() => {}} />
+                            <SimpleTag label="Tag 2" onClose={() => {}} />
+                            <SimpleTag label="Tag 3" onClose={() => {}} />
+                            <SimpleTag label="Tag 4" onClose={() => {}} />
+                            <SimpleTag label="Tag 5" onClose={() => {}} />
+                            <SimpleTag label="Tag 6" onClose={() => {}} />
+                            <SimpleTag label="Tag 7" onClose={() => {}} />
+                            <SimpleTag label="Tag 8" onClose={() => {}} />
+                            <SimpleTag label="Tag 9" onClose={() => {}} />
+                            <SimpleTag label="Tag 10" onClose={() => {}} />
+                            <SimpleTag label="Tag 11" onClose={() => {}} />
+                            <SimpleTag label="Tag 12" onClose={() => {}} />
+                            <SimpleTag label="Tag 13" onClose={() => {}} />
+                            <SimpleTag label="Tag 14" onClose={() => {}} />
+                            <SimpleTag label="Tag 15" onClose={() => {}} />
+                            <SimpleTag label="Tag 16" onClose={() => {}} />
+                            <SimpleTag label="Tag 17" onClose={() => {}} />
+                            <SimpleTag label="Tag 18" onClose={() => {}} />
+                            <SimpleTag label="Tag 19" onClose={() => {}} />
+                            <SimpleTag label="Tag 20" onClose={() => {}} />
+                            <SimpleTag label="Tag 21" onClose={() => {}} />
+                            <SimpleTag label="Tag 22" onClose={() => {}} />
+                        </SimpleTagBox>
+                    </div>
+
+
                 </MultiStepFormPage>
+
+                {/* <MultiStepFormPage title="Tags" description="Help to categorize your resources">
+                </MultiStepFormPage> */}
+
 
                 <MultiStepFormPage title="Skills" description="These tell which tasks your resource is capable of performing">
                     {skillsData && selectedSkills &&

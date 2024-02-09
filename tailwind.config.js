@@ -15,7 +15,20 @@ export default {
       width: {
         '18': '4.5rem',  // 1rem = 16px, so 4.5rem = 72px
       },
+      maxWidth: {
+        '120': '30rem',  // 1rem = 16px, so 30rem = 480px
+      },
+      minWidth: {
+        '120': '30rem',  // 1rem = 16px, so 30rem = 480px
+      },
       padding: {
+        '0.25': '0.0625rem',  // 1rem = 16px, so 0.0625rem = 1px
+        '0.5': '0.125rem',  // 1rem = 16px, so 0.125rem = 2px
+        '1.5': '0.375rem',  // 1rem = 16px, so 0.375rem = 6px
+      },
+      margin: {
+        '0.25': '0.0625rem',  // 1rem = 16px, so 0.0625rem = 1px
+        '0.5': '0.125rem',  // 1rem = 16px, so 0.125rem = 2px
         '1.5': '0.375rem',  // 1rem = 16px, so 0.375rem = 6px
       },
       spacing: {
@@ -28,6 +41,9 @@ export default {
         '1100': '1100ms',
       },
       scale: {
+        '80': '0.8',
+        '85': '0.85',
+        '95': '0.95',
         '99': '0.99',
       },
       translate: {

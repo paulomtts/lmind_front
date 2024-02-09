@@ -16,18 +16,22 @@ export default function BasicModal({
     title
     , size
     , width
+    , height
     , blur = false
     , children
     , isOpen = false
+    , className = ''
     , onClose = () => {}
 }: {
-    title: string
-    , size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
-    , width?: string
-    , blur?: boolean
-    , children: React.ReactNode
-    , isOpen?: boolean
-    , onClose?: () => void
+    title: string;
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+    width?: string;
+    height?: string;
+    blur?: boolean;
+    isOpen?: boolean;
+    className?: string;
+    children: React.ReactNode;
+    onClose?: () => void;
 }) {
 
     if (size && width) {
@@ -47,7 +51,7 @@ export default function BasicModal({
     return (<Modal isOpen={isOpen} isCentered size={size ? size : 'xl'} onClose={() => {}}> {/* reason: prevent close when clicking outside Modal */}
         <ModalOverlay backdropFilter={blur ? 'blur(2px)' : 'none'} />
 
-        <ModalContent maxW={width ? width : undefined} width={'fit-content'} minW={'40%'}>
+        <ModalContent maxW={width ? width : undefined} width={'fit-content'} minW={'40%'} minH={height} className={className}>
             <ModalCloseButton onClick={onClose}/>
             <ModalHeader color='gray.500'>
                 {title}

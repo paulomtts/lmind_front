@@ -7,7 +7,7 @@ import TasksAccordionItem from "./TasksAccordionItem";
 
 
 export default function RecordsTab({}: {}) {
-    return (
+    return (<>
         <BasicAccordion allowMultiple={false}>
             <BasicAccordionItem title="Skills" description="Skills are pieces of knowledge">
                 <SkillsAccordionItem />
@@ -19,5 +19,5 @@ export default function RecordsTab({}: {}) {
                 <TasksAccordionItem />
             </BasicAccordionItem>
         </BasicAccordion>
-    );
+    </>);
 }
