@@ -112,11 +112,11 @@ export class DataField {
     }
 
     get errorMessage() {
-        return this._errorMessage;
+        return this._errorMessage as string;
     }
 
     get helperMessage() {
-        return this._helperMessage;
+        return this._helperMessage as string;
     }
 
     get props() {
@@ -129,6 +129,22 @@ export class DataField {
 
     set value(value: string | number | boolean | Date) {
         this._value = DataField.parse(this.type, value);
+    }
+
+    set label(label: string) {
+        this._label = label;
+    }
+
+    set required(required: boolean) {     
+        this._required = required;
+    }
+
+    set helperMessage(helperMessage: string) {
+        this._helperMessage = helperMessage;
+    }
+
+    set errorMessage(errorMessage: string) {
+        this._errorMessage = errorMessage;
     }
 }
 

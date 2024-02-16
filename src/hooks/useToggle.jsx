@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-
 /**
  * Toggles a state between two values. If a list of values is provided, the 
  * state will be toggled between the values in the list. Please note that only 

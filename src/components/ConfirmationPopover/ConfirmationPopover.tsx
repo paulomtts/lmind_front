@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
     Popover,
     PopoverTrigger,
@@ -9,6 +9,7 @@ import {
     Button,
     Box,
 } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/hooks";
 
 export default function ConfirmationPopover({
     text = 'Are you sure?',
@@ -16,21 +17,15 @@ export default function ConfirmationPopover({
     children
 }) {
 
-    const closeButtonRef = useRef<HTMLButtonElement>(null);
-
-    const handleNoClick = () => {
-        if (closeButtonRef.current) {
-            closeButtonRef.current.click();
-        }
-    }
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (<>
-        <Popover>
+        <Popover isOpen={isOpen} onClose={onClose} onOpen={onOpen}>
             <PopoverTrigger>
                 {children}
             </PopoverTrigger>
             <PopoverContent width={'auto'} borderRadius={'0.35rem'}>
-                <PopoverCloseButton ref={closeButtonRef} visibility={'hidden'}/>
+                <PopoverCloseButton  visibility={'hidden'}/>
                 <PopoverArrow/>
                 <PopoverBody 
                     borderRadius={'0.35rem'} 
@@ -42,10 +37,20 @@ export default function ConfirmationPopover({
                     <span>{text}</span>
                     <Box display={'flex'} gap={'0.5rem'}>
                         <Button colorScheme="red" size='sm' variant={'outline'} onClick={onYes}>Yes</Button>
-                        <Button colorScheme="blue" size='sm' onClick={handleNoClick}>No</Button>
+                        <Button colorScheme="blue" size='sm' onClick={onClose}>No</Button>
                     </Box>
                 </PopoverBody>
             </PopoverContent>
         </Popover>
+        {isOpen && <Box
+            position="fixed"
+            top={0}
+            right={0}
+            bottom={0}
+            left={0}
+            bg="blackAlpha.600"
+            backdropFilter={'blur(2px)'}
+            zIndex="1"
+        />}
     </>);
 }

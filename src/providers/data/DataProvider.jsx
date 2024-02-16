@@ -274,15 +274,17 @@ function DataProvider({ children }) {
         }
 
 
-        const tprod_resourcesUpsert = async (state, selectedSkills) => {
+        const tprod_resourcesUpsert = async (state, selectedSkills, keywordList) => {
             const idSkillsList = selectedSkills.map(skill => skill.json.id); 
+            console.log(keywordList)
 
             const payload = generatePayload({
                 method: 'POST'
                 , body: JSON.stringify({
                     resource: state.popEmpties()
-                    , id_skill_list: idSkillsList}
-                )
+                    , id_skill_list: idSkillsList
+                    , keyword_list: keywordList
+                })
             });
 
             const { response, content } =  await _makeRequest(url.custom.resources.upsert, payload, true, true);

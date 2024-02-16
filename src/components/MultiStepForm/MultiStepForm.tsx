@@ -2,24 +2,26 @@ import React from "react";
 
 import BasicStepper, { BasicStep } from "../BasicStepper/BasicStepper";
 import MultiStepFormPage from "./MultiStepFormPage";
+import ConfirmationPopover from "../ConfirmationPopover/ConfirmationPopover";
 import { Button } from "@chakra-ui/react";
+
 
 export default function MultiStepForm({
     className = ""
-    , stepperOrientation
-    , stepperHeight: stepperMaxHeight = "20rem"
+    , readonly = false
     , children
     , onNext = () => true
     , onPrevious = () => true
-    , onSave = () => true
+    , onSave = undefined
+    , onDelete = undefined
 }: {
     className?: string
-    stepperOrientation: "horizontal" | "vertical"
-    stepperHeight?: string
+    readonly?: boolean
     children: any
     onNext?: (activeStep: number) => boolean
     onPrevious?: (activeStep: number) => boolean
     onSave?: () => void
+    onDelete?: () => void
 }) {
 
 
@@ -41,15 +43,11 @@ export default function MultiStepForm({
         setActiveStep(activeStep + 1);   
     }
 
-    const handleSaveClick = () => {
-        onSave();
-    }
 
-
-    return (<div className="flex gap-8">
+    return (<div className="flex gap-8 h-full">
 
         <div className="sticky">
-            <BasicStepper currentIndex={activeStep} orientation={stepperOrientation} maxHeight={stepperMaxHeight}>
+            <BasicStepper currentIndex={activeStep} orientation={'vertical'}>
                 {React.Children.map(children, (child) => {
                     if (child.type !== MultiStepFormPage) {
                         throw new Error("MultiStepForm children must be of type MultiStepFormPage");
@@ -79,17 +77,33 @@ export default function MultiStepForm({
                     Previous
                 </Button>
 
-                <Button
-                    colorScheme="blue"
-                    onClick={
-                        activeStep <= children.length -2 ? handleNextClick : handleSaveClick
+                <div className="flex gap-2">
+                    {onDelete && activeStep > children.length -2 && 
+                        <ConfirmationPopover onYes={onDelete}>
+                            <Button variant='outline' colorScheme="red">
+                                Delete
+                            </Button>
+                        </ConfirmationPopover>
                     }
-                >
-                    {activeStep <= children.length -2 ? "Next" : "Save"}
-                </Button>
+
+                    {activeStep <= children.length -2 ?
+                        <Button
+                            colorScheme="blue"
+                            onClick={handleNextClick}
+                        >
+                            Next
+                        </Button>
+                        :
+                        
+                        !readonly && <Button
+                            colorScheme="blue"
+                            onClick={onSave}
+                        >
+                            Save
+                        </Button>
+                    }
+                </div>
             </div>
-
-
         </div>
     </div>);
 }

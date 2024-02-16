@@ -364,6 +364,20 @@
             , "_errorMessage": ""
             , "_helperMessage": ""
         }
+        , "agg": {
+            "_name": "agg"
+            , "_label": "Aggregate"
+            , "_type": "text"
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Provide an aggregate to your tag"
+            , "_helperMessage": "A tag's aggregate is a unique identifier"
+        }
         , "created_by": {
             "_name": "created_by"
             , "_label": "Created By"
@@ -385,6 +399,56 @@
                         , "read": true
                     }
                 }
+            }
+        }
+    }
+
+    , "tsys_keywords": {
+        "id_object": {
+            "_name": "id_object"
+            , "_label": ""
+            , "_type": "number"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "type": {
+            "_name": "type"
+            , "_label": ""
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "keyword": {
+            "_name": "keyword"
+            , "_label": "Keyword"
+            , "_type": "text"
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "Keywords help describe an object"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 30,
+                "regex": "^[a-zA-Z0-9]+$"
             }
         }
     }
@@ -530,7 +594,7 @@
             , "_required": true
             , "_editable": true
             , "_errorMessage": "Provide a name to your resource"
-            , "_helperMessage": "A resource is anything or anyone that can perform a task"
+            , "_helperMessage": ""
             , "_props": {
                 "minLength": 3,
                 "maxLength": 20,

@@ -156,8 +156,8 @@ export default function BasicForm({
                             isDisabled={isDisabled}
                             onChange={(e) => handleFieldChange(field, e)}
                         />
-
                         <FormErrorMessage>{field.errorMessage}</FormErrorMessage>
+                        <FormHelperText>{field.helperMessage}</FormHelperText>
                     </FormControl>
                 );
             case 'number':

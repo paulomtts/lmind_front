@@ -6,20 +6,22 @@ import {
 } from "@chakra-ui/react";
 
 
-export default function SimpleTag({
+export default function BasicBadge({
     label
+    , index
     , size = "sm"
     , variant = "solid"
     , colorScheme = "blackAlpha"
     , children
-    , onClose
+    , onDelete
 }: {
     label: string;
+    index: number;
     size?: "sm" | "md" | "lg";
     variant?: "subtle" | "solid" | "outline";
     colorScheme?: "whiteAlpha" | "blackAlpha" | "gray" | "red" | "orange" | "yellow" | "green" | "teal" | "blue" | "cyan" | "purple" | "pink" | "linkedin" | "facebook" | "messenger" | "whatsapp" | "twitter" | "telegram"
     children?: React.ReactNode;
-    onClose?: () => void;
+    onDelete?: (index: number) => void;
 }) {
 
     let closeButtonStyle: string = "";
@@ -40,6 +42,10 @@ export default function SimpleTag({
         closeButtonStyle += " bg-white text-black";
     }
 
+    const handleDelete = () => {
+        if (onDelete) onDelete(index);
+    }
+
     return (
         <Tag
             size={size}
@@ -50,7 +56,7 @@ export default function SimpleTag({
         >
             {children}
             <TagLabel>{label}</TagLabel>
-            {onClose && <TagCloseButton className={closeButtonStyle} onClick={onClose} />}
+            {onDelete && <TagCloseButton className={closeButtonStyle} onClick={handleDelete} tabIndex={-1} />}
         </Tag>
     )
 }
