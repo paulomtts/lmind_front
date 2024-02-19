@@ -5,10 +5,10 @@ import {
 
 import { useData, DataObject, DataRow } from '../../../providers/data/DataProvider';
 import BasicModal from '../../../components/BasicModal/BasicModal';
+import MultiStepForm, { MultiStepFormPage } from '../../../components/MultiStepForm/MultiStepForm';
 import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicForm';
 import KeywordInput from '../../../components/KeywordInput/KeywordInput';
-import VirtualizedTable from '../../../components/VirtualizedTable/VirtualizedTable';
-import MultiStepForm, { MultiStepFormPage } from '../../../components/MultiStepForm/MultiStepForm';
+import VTable, { VTableColumn } from '../../../components/VirtualizedTable/VirtualizedTable';
 // import SimpleTagInput from '../../../components/TagBox/SimpleTagInput';
 
 
@@ -74,7 +74,7 @@ export default function ResourcesAccordionItem() {
 
     async function retrieveKeywords(row: DataRow) {
         const id_resource = row.getField('id').value
-        console.log(id_resource)
+
         if (id_resource) {
             const { response, data: resourceKeywords } = await fetchData('tsys_keywords', {
                 notification: false
@@ -174,12 +174,14 @@ export default function ResourcesAccordionItem() {
         </div>
 
         {resourcesData && skillsData &&
-        <VirtualizedTable 
+        <VTable 
             data={resourcesData}
             fillScreen={false}
             onEditClick={handleEditClick} 
             onRefreshClick={handleRefreshClick} 
-        />}
+        >
+            <VTableColumn name="name" />
+        </VTable>}
 
         <BasicModal 
             title={mode === 'create' ? 'New Resource' : 'View Resource'}
@@ -221,7 +223,7 @@ export default function ResourcesAccordionItem() {
 
                 <MultiStepFormPage title="Skills" description="Abilities that enable a resource to perform tasks">
                     {skillsData && selectedSkills &&
-                    <VirtualizedTable 
+                    <VTable 
                         data={skillsData}
                         selectedData={selectedSkills}
                         fillScreen={false}
@@ -230,7 +232,10 @@ export default function ResourcesAccordionItem() {
                         selectable={true}
                         onSelectClick={handleSkillSelect}
                         onRefreshClick={handleRefreshClick} 
-                    />}
+                    >
+                        <VTableColumn name="name" />
+                        <VTableColumn name="description" />    
+                    </VTable>}
                 </MultiStepFormPage>
             </MultiStepForm>
         </BasicModal>

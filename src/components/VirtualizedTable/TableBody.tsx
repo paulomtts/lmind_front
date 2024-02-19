@@ -26,7 +26,7 @@ export default function TableBody({
     , onEditClick = undefined
     , onSelectClick = undefined
 }: {
-    data: DataObject
+    data: DataObject;
     selectedData?: DataRow[];
     sorters: Sorter[];
     containerRef: React.RefObject<HTMLDivElement>;
@@ -85,6 +85,7 @@ export default function TableBody({
             </Td>}
 
             {row.getVisible('read').map((field) => {
+                if(!sorters.some((sorter) => sorter.name === field.name)) return null;
                 return <Td key={field.label} className='text-wrap'>{String(field.value)}</Td>
             })}
         </Tr>

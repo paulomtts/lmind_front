@@ -5,11 +5,7 @@ import { DataField } from '../../providers/data/models';
 export default function BasicFormField({
     field
 } : {
-    field: DataField
+    field: DataField // reason: required in BasicForm.tsx (consumer)
 }) {
-
-    return (<>
-        {null}
-    </>);
-
+    return (<></>);
 }

@@ -17,6 +17,7 @@ export default function BasicModal({
     , size
     , width
     , height
+    , minHeight
     , blur = false
     , children
     , isOpen = false
@@ -27,6 +28,7 @@ export default function BasicModal({
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
     width?: string;
     height?: string;
+    minHeight?: string;
     blur?: boolean;
     isOpen?: boolean;
     className?: string;
@@ -51,7 +53,7 @@ export default function BasicModal({
     return (<Modal isOpen={isOpen} isCentered size={size ? size : 'xl'} onClose={() => {}}> {/* reason: prevent close when clicking outside Modal */}
         <ModalOverlay backdropFilter={blur ? 'blur(2px)' : 'none'} />
 
-        <ModalContent maxW={width ? width : undefined} width={width} height={height} className={className}>
+        <ModalContent maxW={width ? width : undefined} width={width} height={height} minHeight={minHeight} className={className}>
             <ModalCloseButton onClick={onClose}/>
             <ModalHeader color='gray.500'>
                 {title}

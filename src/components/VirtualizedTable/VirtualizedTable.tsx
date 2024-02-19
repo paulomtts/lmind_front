@@ -4,17 +4,19 @@ import { Box, Table, TableContainer } from "@chakra-ui/react";
 import TableToolbar from "./TableToolbar";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
+import VTableColumn from "./VirtualizedTableColumn";
 import { Sorter, Filter } from "./models";
 import { DataObject, DataRow, buildDataObjectFromRows } from "../../providers/data/models";
 
 
-export default function VirtualizedTable ({
+export default function VTable ({
     data
-    , selectedData
+    , selectedData = []
     , editable = true
     , selectable = false
     , refreshable = true
     , fillScreen = true
+    , children
     , onEditClick = () => {}
     , onSelectClick = () => {}
     , onRefreshClick = () => {}
@@ -25,13 +27,14 @@ export default function VirtualizedTable ({
     , selectable?: boolean
     , refreshable?: boolean
     , fillScreen?: boolean
+    , children?: React.ReactNode
     , onEditClick?: (row: DataRow) => void
     , onSelectClick?: (row: DataRow[]) => void
     , onRefreshClick?: () => void
 }) {
     
     const [state, setState] = React.useState<DataObject>(data);
-    const [selectedStates, setSelectedStates] = React.useState<DataRow[]>(selectedData || []);
+    const [selectedStates, setSelectedStates] = React.useState<DataRow[]>(selectedData);
     const [searchIn, setSearchIn] = React.useState<string>("All");
     const [searchFor, setSearchFor] = React.useState<string>("");
     const [sorters, setSorters] = React.useState<Sorter[]>([]);
@@ -42,23 +45,40 @@ export default function VirtualizedTable ({
 
     /* Effects */
     React.useEffect(() => {
+        if (!children) {
+            throw new Error('VTable needs at least one VTableColumn as a child');
+        }
+
+        React.Children.forEach(children, (child) => {
+            if (!React.isValidElement(child)) return;
+            if (child.type !== VTableColumn) {
+                throw new Error('VTable only accepts VTableColumn as children');
+            }
+        });
+
+        if (selectable && selectedData.length > 0) {
+            const newData = buildDataObjectFromRows(selectedData);
+            setState(newData);
+        }
+    }, []);
+    
+    React.useEffect(() => {
         if (Object.keys(data.json).length === 0) return;
+
+        const columns = React.Children.map(children, (child) => {
+            if (!React.isValidElement(child)) return;
+            return child.props.name;
+        });
 
         const newSorters = data.rows[0].getVisible('read').map((field) => {
             return new Sorter(field.name, field.label, 'none');
+        }).filter((sorter) => {
+            return columns?.includes(sorter.name);
         });
 
         setState(data);
         setSorters(newSorters);
     }, [data]);
-
-    React.useEffect(() => {
-        if (selectable && selectedData && selectedData.length > 0) {
-            const newData = buildDataObjectFromRows(selectedData);
-            setState(newData);
-        }
-    }, []);
-
 
     /* Functions */
     function filterRows(searchFor: string, searchIn: string) {
@@ -207,9 +227,7 @@ export default function VirtualizedTable ({
 
     return (<>
         <TableToolbar
-            labels={sorters.map((sorter) => {
-                return sorter.label;
-            })}
+            sorters={sorters}
             filters={filters}
             searchIn={searchIn}
             searchFor={searchFor}
@@ -227,13 +245,13 @@ export default function VirtualizedTable ({
             <TableContainer>
                 <Table size='sm' variant={'unstyled'}>
                     <TableHeader 
-                        sorters={sorters} 
+                        sorters={sorters}
                         onSortClick={handleSortClick} 
                         editable={editable} 
                         selectable={selectable}
                     />
                     <TableBody
-                        data={state} 
+                        data={state}
                         selectedData={selectedStates}
                         sorters={sorters} 
                         containerRef={containerRef} 
@@ -247,3 +265,5 @@ export default function VirtualizedTable ({
         </Box>
     </>);
 }
+
+export { VTableColumn };

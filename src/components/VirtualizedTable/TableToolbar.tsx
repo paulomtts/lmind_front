@@ -18,12 +18,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ClearableInput from "../ClearableInput/ClearableInput";
 import BasicPopover from "../BasicPopover/BasicPopover";
 import FilterBox from "./FilterBox";
-import { Filter } from "./models";
+import { Sorter, Filter } from "./models";
 import { DataRow } from "../../providers/data/models";
 
 
 export default function TableToolbar({
-    labels
+    sorters
     , filters
     , searchIn
     , searchFor
@@ -36,7 +36,7 @@ export default function TableToolbar({
     , onRefreshClick = () => {} 
     , onChangeFilters = () => {}
 }: {
-    labels: string[];
+    sorters: Sorter[];
     filters: Filter[];
     searchIn: string;
     searchFor: string;
@@ -97,9 +97,9 @@ export default function TableToolbar({
             <MenuList shadow={'1px 0px 5px 2px lightgray'} borderRadius={'0.5rem'} border={'1px solid lightgray'} >
                 
                 <MenuItem key={'All'} value={'All'} onClick={onSearchInClick}>All</MenuItem>
-                
-                {labels.map((column, index) => {
-                    return <MenuItem key={`${column}-${index}`} value={column} onClick={onSearchInClick}>{column}</MenuItem>
+
+                {sorters.map((sort, index) => {
+                    return <MenuItem key={`${sort.label}-${index}`} value={sort.name} onClick={onSearchInClick}>{sort.label}</MenuItem>
                 })}
                 
             </MenuList>

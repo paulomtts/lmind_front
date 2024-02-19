@@ -211,7 +211,7 @@ export default function BasicForm({
         }
     });
 
-    return (<div className='flex flex-col gap-4'>
+    return (<div className='flex flex-col gap-4 ml-2'>
 
         {fieldComponents}
 

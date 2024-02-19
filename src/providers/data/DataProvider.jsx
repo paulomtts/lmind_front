@@ -276,7 +276,6 @@ function DataProvider({ children }) {
 
         const tprod_resourcesUpsert = async (state, selectedSkills, keywordList) => {
             const idSkillsList = selectedSkills.map(skill => skill.json.id); 
-            console.log(keywordList)
 
             const payload = generatePayload({
                 method: 'POST'
@@ -318,11 +317,19 @@ function DataProvider({ children }) {
         }
 
 
-        const tprod_tasksUpsert = async (state) => {
+        const tprod_tasksUpsert = async (state, selectedSkills, keywordList) => {
+            const idSkillsList = selectedSkills.map(skill => skill.json.id);
+
             const payload = generatePayload({
                 method: 'POST'
-                , body: JSON.stringify(state.popEmpties())
+                , body: JSON.stringify({
+                    task: state.popEmpties()
+                    , id_skill_list: idSkillsList
+                    , keyword_list: keywordList
+                })
             });
+
+            console.log(JSON.parse(payload.body));
 
             const { response, content } =  await _makeRequest(url.custom.tasks.upsert, payload, true, true);
 

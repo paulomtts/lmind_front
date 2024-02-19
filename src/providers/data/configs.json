@@ -889,4 +889,35 @@
             , "_helperMessage": "This is here only to leverage the DataModel's capabilities"
         }
     }
+
+    , "tprod_taskskills": {
+        "id_task": {
+            "_name": "id_task"
+            , "_label": "Task"
+            , "_type": "select"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": false
+            , "_errorMessage": "This field should never be manipulated by the user"
+            , "_helperMessage": "This is here only to leverage the DataModel's capabilities"
+        }
+        , "id_skill": {
+            "_name": "id_skill"
+            , "_label": "Skill"
+            , "_type": "select"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": false
+            , "_errorMessage": "This field should never be manipulated by the user"
+            , "_helperMessage": "This is here only to leverage the DataModel's capabilities"
+        }
+    }
 }
