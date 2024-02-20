@@ -43,42 +43,35 @@ export default function VTable ({
     const containerRef = React.useRef<HTMLDivElement>(null!);
 
 
-    /* Effects */
+    /* Effects */    
     React.useEffect(() => {
-        if (!children) {
-            throw new Error('VTable needs at least one VTableColumn as a child');
-        }
-
-        React.Children.forEach(children, (child) => {
-            if (!React.isValidElement(child)) return;
-            if (child.type !== VTableColumn) {
-                throw new Error('VTable only accepts VTableColumn as children');
-            }
-        });
-
-        if (selectable && selectedData.length > 0) {
-            const newData = buildDataObjectFromRows(selectedData);
-            setState(newData);
-        }
-    }, []);
-    
-    React.useEffect(() => {
-        if (Object.keys(data.json).length === 0) return;
+        if (!children) throw new Error('VTable needs at least one VTableColumn as a child');
+        if (data.json.length === 0) return;
 
         const columns = React.Children.map(children, (child) => {
-            if (!React.isValidElement(child)) return;
+            if (!React.isValidElement(child) || child.type !== VTableColumn) throw new Error('VTable only accepts VTableColumn as children');
+
             return child.props.name;
         });
 
-        const newSorters = data.rows[0].getVisible('read').map((field) => {
-            return new Sorter(field.name, field.label, 'none');
-        }).filter((sorter) => {
-            return columns?.includes(sorter.name);
-        });
+        const visibleFieds = data.rows[0].getVisible('read');
+        const newSorters = visibleFieds.reduce((acc, field) => {
+            if (columns?.includes(field.name)) {
+                acc.push(new Sorter(field.name, field.label, 'none'));
+            }
+            return acc;
+        }, [] as Sorter[]);
 
-        setState(data);
+        if (selectedData.length > 0) {
+            const newState = buildDataObjectFromRows(selectedData);
+            setState(newState);
+        } else {
+            setState(data);
+        }
+
         setSorters(newSorters);
     }, [data]);
+
 
     /* Functions */
     function filterRows(searchFor: string, searchIn: string) {
@@ -108,7 +101,6 @@ export default function VTable ({
         });
 
         return new DataObject(data.tableName, newJson);
-
     }
 
     function multiSort(sorters: Sorter[]) {
