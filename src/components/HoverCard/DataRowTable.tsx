@@ -20,7 +20,7 @@ export default function DataRowTable({
                 {row.fields.map((field, index) => {
                     if (!field.visible.read) return null;
                     return (<Tr key={`field-${index}`}>
-                        <Th>{field.name}</Th>
+                        <Th>{field.label}</Th>
                         <Td>{String(field.value)}</Td>
                     </Tr>);
                 })}
