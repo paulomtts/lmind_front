@@ -33,7 +33,7 @@ export default function SelectBox({
         return (
             <HoverCard 
                 key={`option-${uuid}`}
-                scrollableContainerRef={scrollableRef}
+                scrollableRef={scrollableRef}
                 className="rounded-md bg-white border border-gray-300 shadow-md"
                 content={
                     <DataRowTable row={row} />
@@ -51,7 +51,6 @@ export default function SelectBox({
                     </p>
                 </SelectOption>
             </HoverCard>
-
         );
     }
 

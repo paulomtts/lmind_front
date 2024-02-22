@@ -32,6 +32,7 @@ export default function BasicForm({
     , onChange = () => {}
     , onSave = () => {}
     , onDelete = () => {}
+    , onValidityChange = () => {}
 }: { 
     row: DataRow
     , mode: 'create' | 'update'
@@ -41,15 +42,22 @@ export default function BasicForm({
     , onChange?: (state: DataRow) => void
     , onSave?: () => void
     , onDelete?: () => void
+    , onValidityChange?: (isValid: boolean) => void
 }) {
 
     const [state, setState] = React.useState(row);
 
 
+    /* Effects */
+    React.useEffect(() => {
+        const validity = checkValidity();
+        onValidityChange(validity);
+    }, [state]);
+
+
     /* Methods */
     const changeState = (field: DataField, value: any) => {
-        const newFormState = new DataRow(state.tableName, state.json);
-        
+        const newFormState = new DataRow(state.tableName, state.json, state.customConfig);
         newFormState.setValue(field, value);
 
         setState(newFormState);
@@ -59,8 +67,19 @@ export default function BasicForm({
     const checkValidity = () => {
         return state.fields.every((field: DataField) => {
             if (field.required) {
-                if (!field.value) {
-                    return false;
+                switch (field.type) {
+                    case 'number':
+                        if (isNaN(Number(field.value))) {
+                            return false;
+                        }
+                        if (Number(field.value) < field.props.min || Number(field.value) > field.props.max) {
+                            return false;
+                        }
+                        break;
+                    default:
+                        if (!field.value) {
+                            return false;
+                        }
                 }
             }
             return true;
@@ -173,7 +192,7 @@ export default function BasicForm({
                                 <NumberDecrementStepper onClick={() => handleStep(field, 'sub')} />
                             </NumberInputStepper>
                         </NumberInput>
-                        {mode === 'create' && <FormHelperText>Hold down CTRL + Arrow Up/Down to modify in increments of 10</FormHelperText>}
+                        {mode === 'create' && <FormHelperText>{field.helperMessage || "Hold down CTRL + Arrow Up/Down to modify in increments of 10"}</FormHelperText>}
                         <FormErrorMessage>{field.errorMessage}</FormErrorMessage>
                     </FormControl>
                 );

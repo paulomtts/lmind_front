@@ -8,44 +8,82 @@ import {
 } from "@chakra-ui/react";
 import BasicTagButton from "./BasicTagButton";
 import BasicForm, { BasicFormField } from "../BasicForm/BasicForm";
-import { useTag } from "../../hooks/useTag";
 import { DataRow } from "../../providers/data/models";
+import { useData } from "../../providers/data/DataProvider";
+import configs from "./configs.json"
 
-const tagModel = (tag: DataRow, tableName: string) => {
-    switch (tableName) {
-        case 'tprod_resources':
-            const codeAField = tag.getField('code_a');
 
-            codeAField.label = 'Code';
-            codeAField.required = true;
-            codeAField.errorMessage = 'This field is required';
-            codeAField.helperMessage = 'A letter that represents the tag';
-
+const tagModel = (tag: DataRow, objectType: string) => {
+    switch (objectType) {
+        case 'product':
             return [
-                <BasicFormField key={codeAField.name} field={codeAField} />
-            ];
+                <BasicFormField key={'code_a'} field={tag.getField('code_a')} />
+                , <BasicFormField key={'counter_a'} field={tag.getField('counter_a')} />
+            ]
         default:
             return null;
     }
 }
 
 
-export default function SimpleTagInput({
-    mode
+export default function BasicTagInput({
+    objectType
+    , mode
     , onSubmit
-}:
-{
+}: {
+    objectType: 'product'
     mode: 'create' | 'update';
     onSubmit: (row: DataRow) => void;
 }) {
 
-    const { tag, handleTagFormOnChange } = useTag();
+    const { 
+        tsys_tagsCheckAvailability 
+        , fetchData
+    } = useData();
+
+    const [tag, setTag] = React.useState<DataRow>(new DataRow('tsys_tags'));
+    const [partialTag, setPartialTag] = React.useState<DataRow>(new DataRow('', {}, configs[objectType]));
     const [value, setValue] = React.useState<string>('');
 
-    const handleSubmit = () => {
-        // call API here, get full object, and pass it to onSubmit, aggregate gets passed to setValue
-        setValue(String(tag.getField('code_a').value));
-        onSubmit(tag);
+    React.useEffect(() => {
+        retrieveTagCategories();
+    }, []);
+
+
+    /* Methods */
+    const retrieveTagCategories = async () => {
+        const selectFields = partialTag.fields.filter((field) => {
+            return field.type === 'select';
+        });
+
+        for (const field of selectFields) {
+            const { data } = await fetchData('tsys_tags', {
+                filters: field.props.filters
+                , notification: false
+                , overlay: false
+            });
+            field.props.data = data;
+        }
+    }
+
+    /* Handlers */
+    const handleOnChange = (newTag: DataRow) => {
+        console.log(newTag.json)
+        setPartialTag(newTag);
+    }
+
+    const handleSubmit = async () => {
+        for (const field of partialTag.fields) {
+            tag.setValue(field, field.value);
+        }
+
+        const { response, data } = await tsys_tagsCheckAvailability(tag, objectType);
+        const isAvailable = data.available;
+
+        if (response.ok && isAvailable) {
+            setValue(Object.values(tag.json).join(''));
+            onSubmit(tag);
+        }
     }
 
 
@@ -62,12 +100,12 @@ export default function SimpleTagInput({
                 {mode === 'create' &&
                 <BasicTagButton onSubmit={handleSubmit}>
                     <BasicForm 
-                        row={tag}
+                        row={partialTag}
                         mode={'create'}
                         defaultFooter={false}
-                        onChange={handleTagFormOnChange}
+                        onChange={handleOnChange}
                     >
-                        {tagModel(tag, 'tprod_resources')}
+                        {tagModel(partialTag, objectType)}
                     </BasicForm>
                 </BasicTagButton>}
             </div>

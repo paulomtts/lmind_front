@@ -38,7 +38,7 @@ export default function TableHeader({
                 {sorters.map((sort) => {
                     const icon = getIcon(sort.direction);
 
-                    return <Th key={sort.label}>
+                    return <Th key={sort.name}>
                         <Box display={'flex'} justifyContent={'space-between'}>
                             <span className='select-none'>{sort.label}</span>
                             <FontAwesomeIcon 

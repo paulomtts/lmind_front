@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/react';
 
 import BasicModal from '../../components/BasicModal/BasicModal';
 import BasicForm, { BasicFormField } from '../../components/BasicForm/BasicForm';
-import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
+import VTable, { VTableColumn } from '../../components/VirtualizedTable/VirtualizedTable';
 import { useData, DataObject, DataRow } from '../../providers/data/DataProvider';
 
 
@@ -47,7 +47,7 @@ export default function UnitsTab() {
     }
 
     const handleCreateClick = () => {
-        const field = initialState.getFieldObject('type');
+        const field = initialState.getField('type');
 
         if (field) {
             field.props.data = getState(field.props.tableName);
@@ -60,7 +60,7 @@ export default function UnitsTab() {
     }
     
     const handleEditClick = (newState: DataRow) => {
-        const field = initialState.getFieldObject('type');
+        const field = initialState.getField('type');
 
         if (field) {
             field.props.data = getState(field.props.tableName);
@@ -121,19 +121,23 @@ export default function UnitsTab() {
                 onSave={handleFormSaveClick}
                 onDelete={handleFormDeleteClick}
             >
-                <BasicFormField field={formState.getFieldObject('name')} />
-                <BasicFormField field={formState.getFieldObject('abbreviation')} />
-                <BasicFormField field={formState.getFieldObject('type')} />
+                <BasicFormField field={formState.getField('name')} />
+                <BasicFormField field={formState.getField('abbreviation')} />
+                <BasicFormField field={formState.getField('type')} />
             </BasicForm>
 
         </BasicModal>
 
 
-        <VirtualizedTable 
+        <VTable 
             data={data}
             editable
             onEditClick={handleEditClick} 
             onRefreshClick={handleRefreshClick} 
-        />
+        >
+            <VTableColumn name='name' />
+            <VTableColumn name='abbreviation' />
+            <VTableColumn name='type' />
+        </VTable>
     </div>)
 }

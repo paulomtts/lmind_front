@@ -18,7 +18,6 @@ export default function TasksAccordionItem() {
         , tprod_tasksDelete
     } = useData();
 
-    const initialData = new DataObject('tprod_tasks');
     const emptyTaskFormState = new DataRow('tprod_tasks');
 
     const [tasksData, setTasksData] = React.useState<DataObject>();
@@ -161,9 +160,9 @@ export default function TasksAccordionItem() {
 
         if (response.ok) {
             setTasksData(data);
+            setIsOpen(false);
         }
 
-        setIsOpen(false);
     }
 
 

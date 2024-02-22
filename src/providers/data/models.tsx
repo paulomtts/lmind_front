@@ -155,6 +155,7 @@ export class DataField {
 export class DataRow {
     private _tableName: string;
     private _json: Record<string, string | number | boolean | Date>;
+    private _customConfig: Record<string, any>;
     private _fields: DataField[];
     
     /**
@@ -162,21 +163,24 @@ export class DataRow {
      * @param tableName - The name of the table this row belongs to.
      * @param json - The JSON data for the row.
      */
-    constructor(tableName: string, json: Record<string, string | number | boolean | Date> = {}) {
+    constructor(tableName: string = '', json: Record<string, string | number | boolean | Date> = {}, customConfig: Record<string, any> = {}) {
         this._tableName = tableName;
+        this._customConfig = customConfig;
 
-        if (!configs[tableName]) throw new Error(`Table ${tableName} was not specified in dataConfigs.json`);
+        const cfg = configs[tableName] || customConfig;
+
+        if (!cfg) throw new Error(`Table ${tableName} was not specified in configs.json`);
 
         if (Object.keys(json).length === 0) {
-            Object.keys(configs[tableName]).forEach((key) => {
+            Object.keys(cfg).forEach((key) => {
                 let value: string | number | boolean | Date = '';
 
-                switch (configs[tableName][key].type) {
+                switch (cfg[key].type) {
                     case 'number':
-                        value = 0 || configs[tableName][key].props?.min;
+                        value = 0 || cfg[key].props?.min;
                         break;
                     case 'boolean':
-                        value = false || configs[tableName][key].props?.default;
+                        value = false || cfg[key].props?.default;
                         break;
                     case 'date':
                         value = new Date();
@@ -189,8 +193,8 @@ export class DataRow {
         this._json = json;
 
         this._fields = Object.keys(json).map((key) => {
-            if (!configs[tableName][key]) return null;
-            return new DataField(configs[tableName][key], json[key]);
+            if (!cfg[key]) return null;
+            return new DataField(cfg[key], json[key]);
         }).filter((field) => {
             return field !== null;
         }) as DataField[];
@@ -204,6 +208,10 @@ export class DataRow {
 
     get json() {
         return this._json;
+    }
+
+    get customConfig() {
+        return this._customConfig;
     }
 
     get fields() {

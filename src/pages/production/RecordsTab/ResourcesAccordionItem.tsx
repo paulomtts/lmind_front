@@ -9,7 +9,6 @@ import MultiStepForm, { MultiStepFormPage } from '../../../components/MultiStepF
 import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicForm';
 import KeywordInput from '../../../components/KeywordInput/KeywordInput';
 import VTable, { VTableColumn } from '../../../components/VirtualizedTable/VirtualizedTable';
-// import SimpleTagInput from '../../../components/TagBox/SimpleTagInput';
 
 
 export default function ResourcesAccordionItem() {
@@ -24,9 +23,7 @@ export default function ResourcesAccordionItem() {
     const [skillsData, setSkillsData] = React.useState<DataObject>();
     
     const emptyResourceFormState = new DataRow('tprod_resources');
-    // const emptyTagFormState = new DataRow('tsys_tags');
     const [state, setState] = React.useState<DataRow>(emptyResourceFormState);
-    // const [tag, setTag] = React.useState<DataRow>(emptyTagFormState);
     const [selectedSkills, setSelectedSkills] = React.useState<DataRow[]>([]);
     const [keywords, setKeywords] = React.useState<string[]>([]);
     
@@ -157,12 +154,6 @@ export default function ResourcesAccordionItem() {
         }
     }
 
-    // const handleTagFormSubmit = (row: DataRow) => {
-    //     console.log(row);
-    //     setTag(row);
-    // }
-
-
 
     return (<div className='flex flex-col gap-4'>
 
@@ -209,11 +200,6 @@ export default function ResourcesAccordionItem() {
                         <BasicFormField field={state.getField('updated_by')} />
                         <BasicFormField field={state.getField('updated_at')} />
                     </BasicForm>
-
-                    {/* <SimpleTagInput 
-                        mode={mode}
-                        onSubmit={handleTagFormSubmit}
-                    /> */}
                 </MultiStepFormPage>
 
                 <MultiStepFormPage title="Keywords" description="Words that categorize your resource">

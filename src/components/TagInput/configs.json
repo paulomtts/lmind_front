@@ -1,0 +1,88 @@
+{
+    "product-category": {
+        "code_a": {
+            "_name": "code_a"
+            , "_label": "Code"
+            , "_type": "text"
+            , "_visible": {
+                "create": true
+                , "update": false
+                , "read": true
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": "Insert a valid code"
+            , "_helperMessage": "This code will be used as a product category"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 255,
+                "regex": "^[a-zA-Z0-9]+$"
+            }
+        }
+        , "description": {
+            "_name": "description"
+            , "_label": "Description"
+            , "_type": "text"
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "A description helps users understand what this category is about"
+            , "_props": {
+                "minLength": 3,
+                "maxLength": 255
+            }
+        
+        }
+    }
+    , "product": {
+        "code_a": {
+            "_name": "code_a"
+            , "_label": "Code"
+            , "_type": "select"
+            , "_visible": {
+                "create": true
+                , "update": false
+                , "read": true
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "This is used as a product category"
+            , "_props": {
+                "tableName": "tsys_tags"
+                , "valueName": "code_a"
+                , "labelName": "code_a"
+                , "filters": {
+                    "and_": {
+                        "type": ["product-category"]
+                    }
+                }
+                , "data": {}
+                , "regex":"^[a-zA-Z0-9]+$"
+            }
+        }
+        , "counter_a": {
+            "_name": "counter_a"
+            , "_label": "Counter"
+            , "_type": "number"
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": "A serial number to differentiate products of the same category"
+            , "_props": {
+                "min": 1,
+                "max": 2147483647
+            }
+        }
+    }
+}

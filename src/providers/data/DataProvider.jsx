@@ -22,6 +22,9 @@ const addresses = {
         },
         custom: {
             user: `${baseURL}/tsys/users/me`,
+            tags: {
+                checkAvailability: `${baseURL}/tsys/tags/check-availability`
+            },
             units: {
                 insert: `${baseURL}/tsys/units/insert`,
                 delete: `${baseURL}/tsys/units/delete`,
@@ -125,7 +128,7 @@ function DataProvider({ children }) {
 
         if (overlay) await overlayContext.hide();
 
-        return { response, content };
+        return { response: response, content: content };
     };
 
     
@@ -199,6 +202,29 @@ function DataProvider({ children }) {
     /* Routes */
 
         // TSYS
+        const tsys_tagsCheckAvailability = async (state, type) => {
+            const agg = Object.values(state.json).join('');
+
+            const payload = generatePayload({
+                method: 'POST'
+                , body: JSON.stringify({
+                    agg: agg
+                    , type: type
+                })
+            });
+
+            const { response, content } =  await _makeRequest(url.custom.tags.checkAvailability, payload, true, true);
+ 
+            if (response.ok) {
+                const data = JSON.parse(content.data);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
+        }
+
+
         const tsys_unitsInsert = async (state) => {
             const payload = generatePayload({
                 method: 'POST'
@@ -329,8 +355,6 @@ function DataProvider({ children }) {
                 })
             });
 
-            console.log(JSON.parse(payload.body));
-
             const { response, content } =  await _makeRequest(url.custom.tasks.upsert, payload, true, true);
 
             if (response.ok) {
@@ -378,6 +402,7 @@ function DataProvider({ children }) {
         , deleteData
         , submitData
 
+        , tsys_tagsCheckAvailability
         , tsys_unitsInsert
         , tsys_unitsDelete
 

@@ -87,7 +87,7 @@ export default function TableToolbar({
         </BasicPopover> */}
 
         <Menu>
-            <MenuButton minW={150} as={Button} border={'1px solid rgba(107, 114, 128, 0.6)'} isDisabled={switchChecked}>
+            <MenuButton minW={150} as={Button} border={'1px solid rgba(107, 114, 128, 0.6)'} isDisabled={switchChecked || sorters.length <= 0}>
                 <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={'0.5rem'}>
                     {searchIn[0].toUpperCase() + searchIn.slice(1)}
                     <FontAwesomeIcon icon={faChevronDown}/>
@@ -109,7 +109,7 @@ export default function TableToolbar({
         <ClearableInput 
             placeholder="Start typing to search..." 
             value={searchFor} 
-            disabled={switchChecked}
+            disabled={switchChecked || sorters.length <= 0}
             onChange={onSearchForChange} 
             onClear={handleClearClick} 
         />

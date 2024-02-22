@@ -4,9 +4,11 @@ import BasicAccordion, { BasicAccordionItem } from "../../../components/BasicAcc
 import SkillsAccordionItem from "./SkillsAccordionItem";
 import ResourcesAccordionItem from "./ResourcesAccordionItem";
 import TasksAccordionItem from "./TasksAccordionItem";
+import BasicTagInput from "../../../components/TagInput/BasicTagInput";
 
 
 export default function RecordsTab({}: {}) {
+
     return (<>
         <BasicAccordion allowMultiple={false}>
             <BasicAccordionItem title="Skills" description="Skills are pieces of knowledge">
@@ -19,5 +21,7 @@ export default function RecordsTab({}: {}) {
                 <TasksAccordionItem />
             </BasicAccordionItem>
         </BasicAccordion>
+
+        <BasicTagInput objectType="product" mode={'create'} onSubmit={(row) => {}} />
     </>);
 }

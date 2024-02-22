@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import VirtualizedTable from '../../components/VirtualizedTable/VirtualizedTable';
+import VTable, { VTableColumn } from '../../components/VirtualizedTable/VirtualizedTable';
 import { useData, DataObject } from '../../providers/data/DataProvider';
 
 
@@ -40,9 +40,21 @@ export default function UnitsTab() {
             <span>Create, edit and visualize measurement units.</span>
         </div>
 
-        <VirtualizedTable 
+        <VTable 
             data={data}
             onRefreshClick={handleRefreshClick} 
-        />
+        >
+            <VTableColumn name='code_a' />
+            <VTableColumn name='counter_a' />  
+            <VTableColumn name='code_b' />
+            <VTableColumn name='counter_b' />
+            <VTableColumn name='code_c' />
+            <VTableColumn name='counter_c' />
+            <VTableColumn name='code_d' />
+            <VTableColumn name='counter_d' />
+            <VTableColumn name='code_e' />
+            <VTableColumn name='counter_e' />
+            <VTableColumn name='type' />
+        </VTable>
     </div>)
 }

@@ -50,7 +50,7 @@ export default function BasicTabs({
                 ))}
             </TabList>
 
-            <TabPanels>
+            <TabPanels height={'100vh'}>
                 {React.Children.map(children, (child, index) => {
                     return (
                         <TabPanel key={index} padding={padding}>

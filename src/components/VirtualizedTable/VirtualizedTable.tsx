@@ -46,7 +46,6 @@ export default function VTable ({
     /* Effects */    
     React.useEffect(() => {
         if (!children) throw new Error('VTable needs at least one VTableColumn as a child');
-        if (data.json.length === 0) return;
 
         const columns = React.Children.map(children, (child) => {
             if (!React.isValidElement(child) || child.type !== VTableColumn) throw new Error('VTable only accepts VTableColumn as children');
@@ -54,7 +53,7 @@ export default function VTable ({
             return child.props.name;
         });
 
-        const visibleFieds = data.rows[0].getVisible('read');
+        const visibleFieds = data.rows[0]?.getVisible('read')??[];
         const newSorters = visibleFieds.reduce((acc, field) => {
             if (columns?.includes(field.name)) {
                 acc.push(new Sorter(field.name, field.label, 'none'));
@@ -196,11 +195,16 @@ export default function VTable ({
     const handleRefreshClick = () => {
         setSearchIn("All");
         setSearchFor("");
-        setSorters(
-            data.rows[0].fields.map((field) => {
-                return new Sorter(field.name, field.label, 'none');
-            })
-        );
+
+        if (data.rows.length > 0) {
+            setSorters(
+                data.rows[0].fields.map((field) => {
+                    return new Sorter(field.name, field.label, 'none');
+                })
+            );
+        } else {
+            setSorters([]);
+        }
         setState(data);
 
         onRefreshClick();

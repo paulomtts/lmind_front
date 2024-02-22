@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import ReactDOM from "react-dom";
 
 import DataRowTable from "./DataRowTable.js";
 import { useMouse } from "../../providers/MouseProvider.jsx";
@@ -6,10 +7,10 @@ import { useMouse } from "../../providers/MouseProvider.jsx";
 
 export default function HoverCard({
     className = "rounded-md bg-white border border-gray-300 shadow-md p-2"
-    , zIndex = 1001
+    , zIndex = 5001
     , customX = 0
     , customY = 0
-    , scrollableContainerRef
+    , scrollableRef
     , content
     , children
 }: {
@@ -17,7 +18,7 @@ export default function HoverCard({
     , zIndex?: number
     , customX?: number
     , customY?: number
-    , scrollableContainerRef: React.RefObject<HTMLDivElement>
+    , scrollableRef: React.RefObject<HTMLDivElement>
     , content: React.ReactNode
     , children: React.ReactNode
 }) {
@@ -49,18 +50,18 @@ export default function HoverCard({
     }
 
     React.useEffect(() => {
-        if (scrollableContainerRef.current && optionRef.current) {
-            const scrollableContainer = scrollableContainerRef.current as HTMLElement;
+        if (scrollableRef.current && optionRef.current) {
+            const container = scrollableRef.current as HTMLElement;
             const option = optionRef.current as HTMLElement;
 
-            const scrollableContainerRect = scrollableContainer.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
             const optionRect = option.getBoundingClientRect();
 
             if (
-                position.x >= scrollableContainerRect.left
-                && position.x <= scrollableContainerRect.right
-                && position.y >= scrollableContainerRect.top
-                && position.y <= scrollableContainerRect.bottom
+                position.x >= containerRect.left
+                && position.x <= containerRect.right
+                && position.y >= containerRect.top
+                && position.y <= containerRect.bottom
                 && position.x >= optionRect.left
                 && position.x <= optionRect.right
                 && position.y >= optionRect.top
@@ -71,15 +72,14 @@ export default function HoverCard({
                 setShow(false);
             }
         }
-        
     }, [position]);
 
     return (<>
-
         <div ref={optionRef}>
             {children}
         </div>
 
+        {ReactDOM.createPortal(
         <div
             className={`${className} ${show ? 'opacity-100' : 'opacity-0'} fixed`}
             ref={cardRef}
@@ -90,9 +90,8 @@ export default function HoverCard({
             }}
         >
             {content}
-        </div>
-    </>
-    )
+        </div>, document.body)}
+    </>)
 }
 
 export { DataRowTable }
