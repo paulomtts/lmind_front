@@ -11,6 +11,7 @@ export default function SelectDropdown({
     , children
     , disabled = false
     , onClick = () => {}
+    , onBlur = () => {}
 }: {
     value?: string
     , placeholder?: string
@@ -18,6 +19,7 @@ export default function SelectDropdown({
     , children: React.ReactNode
     , disabled?: boolean
     , onClick?: () => void
+    , onBlur?: () => void
 }) {
 
     return (
@@ -38,8 +40,9 @@ export default function SelectDropdown({
                 
                 ${isInvalid ? 'border-2 border-required' : 'border border-slate-200'} rounded-md
             `}
-            onClick={onClick}
             disabled={disabled}
+            onClick={onClick}
+            onBlur={onBlur}
         >
             {!!value ? <p className="ml-2">{value}</p> : <p className="ml-2 text-slate-400">{placeholder}</p>}
 

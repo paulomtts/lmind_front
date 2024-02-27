@@ -11,11 +11,13 @@ export default function VirtualizedSelect({
     , data
     , disabled = false
     , onOptionClick = () => { }
+    , onBlur = () => { }
 }: {
     field: DataField
     data: DataObject
     disabled?: boolean
     onOptionClick?: (field: DataField, option: DataField) => void
+    onBlur?: () => void
 }) {
 
     const componentRef = React.useRef<HTMLDivElement>(null);
@@ -108,6 +110,7 @@ export default function VirtualizedSelect({
         isInvalid={field.required && !field.value}
         disabled={disabled}
         onClick={handleButtonClick}
+        onBlur={onBlur}
     >
         {<div className={`flex flex-col absolute z-50 rounded-md`}
             style={{

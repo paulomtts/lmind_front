@@ -78,7 +78,7 @@ export default function ResourcesAccordionItem() {
                 , filters: {
                     and_: {
                         id_object: [id_resource]
-                        , type: ['resource']
+                        , reference: ['resource']
                     }
                 }
             });

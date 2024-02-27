@@ -49,10 +49,14 @@ export default function BasicForm({
 
 
     /* Effects */
+    // React.useEffect(() => {
+    //     const validity = checkValidity();
+    //     onValidityChange(validity);
+    // }, [state]);
+
     React.useEffect(() => {
-        const validity = checkValidity();
-        onValidityChange(validity);
-    }, [state]);
+        setState(row);
+    }, [row]);
 
 
     /* Methods */
@@ -136,6 +140,10 @@ export default function BasicForm({
         changeState(field, option.value);
     }
     
+    const handleBlur = () => {
+        const validity = checkValidity();
+        onValidityChange(validity);    
+    }
 
     const fieldComponents = state.fields.map((field: DataField, index: number) => {
         const childrenFields = React.Children.map(children, (child: any) => child.props.field);
@@ -174,6 +182,7 @@ export default function BasicForm({
                             placeholder='Type...' 
                             isDisabled={isDisabled}
                             onChange={(e) => handleFieldChange(field, e)}
+                            onBlur={handleBlur}
                         />
                         <FormErrorMessage>{field.errorMessage}</FormErrorMessage>
                         <FormHelperText>{field.helperMessage}</FormHelperText>
@@ -186,7 +195,7 @@ export default function BasicForm({
                     <FormControl id={identifier} key={identifier} isRequired={field.required} isInvalid={isInvalid}>
                         <FormLabel>{field.label}</FormLabel>
                         <NumberInput value={value} min={field.props.min} isDisabled={isDisabled} bg={'wwhite'}>
-                            <NumberInputField onChange={(e) => handleFieldChange(field, e)} onKeyDown={(e) => handleOnKeyDown(field, e)}/>
+                            <NumberInputField onChange={(e) => handleFieldChange(field, e)} onKeyDown={(e) => handleOnKeyDown(field, e)} onBlur={handleBlur} />
                             <NumberInputStepper>
                                 <NumberIncrementStepper onClick={() => handleStep(field, 'sum')} />
                                 <NumberDecrementStepper onClick={() => handleStep(field, 'sub')} />
@@ -224,6 +233,7 @@ export default function BasicForm({
                             data={field.props.data}
                             disabled={isDisabled}
                             onOptionClick={handleOptionClick}
+                            onBlur={handleBlur}
                         />
                     </FormFieldWrapper>
                 );

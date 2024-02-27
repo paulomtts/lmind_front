@@ -22,9 +22,6 @@ const addresses = {
         },
         custom: {
             user: `${baseURL}/tsys/users/me`,
-            tags: {
-                checkAvailability: `${baseURL}/tsys/tags/check-availability`
-            },
             units: {
                 insert: `${baseURL}/tsys/units/insert`,
                 delete: `${baseURL}/tsys/units/delete`,
@@ -41,6 +38,9 @@ const addresses = {
                 upsert: `${baseURL}/tprod/tasks/upsert`,
                 delete: `${baseURL}/tprod/tasks/delete`,
             },
+            products: {
+                tagCheckAvailability: `${baseURL}/tprod/products/tag-check-availability`
+            }
         }
     }
 };
@@ -202,29 +202,6 @@ function DataProvider({ children }) {
     /* Routes */
 
         // TSYS
-        const tsys_tagsCheckAvailability = async (state, type) => {
-            const agg = Object.values(state.json).join('');
-
-            const payload = generatePayload({
-                method: 'POST'
-                , body: JSON.stringify({
-                    agg: agg
-                    , type: type
-                })
-            });
-
-            const { response, content } =  await _makeRequest(url.custom.tags.checkAvailability, payload, true, true);
- 
-            if (response.ok) {
-                const data = JSON.parse(content.data);
-
-                return { response, data };
-            }
-
-            return { response, data: [] };
-        }
-
-
         const tsys_unitsInsert = async (state) => {
             const payload = generatePayload({
                 method: 'POST'
@@ -386,6 +363,27 @@ function DataProvider({ children }) {
         }
 
 
+        const tprod_productTagsCheckAvailability = async (state) => {
+            const payload = generatePayload({
+                method: 'POST'
+                , body: JSON.stringify({
+                    category: state.json.category
+                    , registry_counter: state.json.registry_counter
+                })
+            });
+
+            const { response, content } =  await _makeRequest(url.custom.products.tagCheckAvailability, payload, false, true);
+ 
+            if (response.ok) {
+                const data = JSON.parse(content.data);
+
+                return { response, data };
+            }
+
+            return { response, data: [] };
+        }
+
+
     /* Effects */
     React.useEffect(() => {
         fetchData('tsys_categories', {notification: false, overlay: false});
@@ -402,7 +400,7 @@ function DataProvider({ children }) {
         , deleteData
         , submitData
 
-        , tsys_tagsCheckAvailability
+        , tprod_productTagsCheckAvailability
         , tsys_unitsInsert
         , tsys_unitsDelete
 

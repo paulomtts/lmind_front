@@ -25,24 +25,16 @@ export default function SelectOption({
 
 
         const parent = e.currentTarget.parentElement
-        if (e.key === 'ArrowDown') {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
             e.preventDefault();
             
-            const nextSibling = parent?.nextElementSibling?.nextElementSibling?.firstChild as HTMLButtonElement;
-            // const nextSibling = e.currentTarget.nextElementSibling as HTMLButtonElement;
+            const nextSibling = e.key === 'ArrowDown' ?
+                parent?.nextElementSibling?.firstChild as HTMLButtonElement
+                : 
+                parent?.previousElementSibling?.firstChild as HTMLButtonElement
 
             if (!nextSibling) return;
             nextSibling.focus();
-        }
-        
-        if (e.key === 'ArrowUp') {
-            e.preventDefault();
-
-            const prevSibling = parent?.previousElementSibling?.previousElementSibling?.firstChild as HTMLButtonElement;
-            // const prevSibling = e.currentTarget.previousElementSibling as HTMLButtonElement;
-
-            if (!prevSibling) return;
-            prevSibling.focus();
         }
     }
 

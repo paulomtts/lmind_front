@@ -17,8 +17,8 @@ const tagModel = (tag: DataRow, objectType: string) => {
     switch (objectType) {
         case 'product':
             return [
-                <BasicFormField key={'code_a'} field={tag.getField('code_a')} />
-                , <BasicFormField key={'counter_a'} field={tag.getField('counter_a')} />
+                <BasicFormField key={'category'} field={tag.getField('category')} />
+                , <BasicFormField key={'registry_counter'} field={tag.getField('registry_counter')} />
             ]
         default:
             return null;
@@ -37,53 +37,81 @@ export default function BasicTagInput({
 }) {
 
     const { 
-        tsys_tagsCheckAvailability 
+        tprod_productTagsCheckAvailability 
         , fetchData
     } = useData();
 
-    const [tag, setTag] = React.useState<DataRow>(new DataRow('tsys_tags'));
+    const [tag, setTag] = React.useState<DataRow>(new DataRow('tprod_producttags'));
     const [partialTag, setPartialTag] = React.useState<DataRow>(new DataRow('', {}, configs[objectType]));
+
+    const [message, setMessage] = React.useState<string>('');
+    const [isAvailable, setIsAvailable] = React.useState<boolean>(false);
+    const [isDisabledSubmit, setIsDisabledSubmit] = React.useState<boolean>(true);
+
     const [value, setValue] = React.useState<string>('');
 
     React.useEffect(() => {
-        retrieveTagCategories();
+        retrieveCategories();
     }, []);
 
 
     /* Methods */
-    const retrieveTagCategories = async () => {
+    const retrieveCategories = async () => {
         const selectFields = partialTag.fields.filter((field) => {
             return field.type === 'select';
         });
 
         for (const field of selectFields) {
-            const { data } = await fetchData('tsys_tags', {
-                filters: field.props.filters
-                , notification: false
+            const { data } = await fetchData(field.props.tableName, {
+                notification: false
                 , overlay: false
             });
+
             field.props.data = data;
         }
     }
 
+
     /* Handlers */
     const handleOnChange = (newTag: DataRow) => {
-        console.log(newTag.json)
         setPartialTag(newTag);
     }
 
-    const handleSubmit = async () => {
-        for (const field of partialTag.fields) {
-            tag.setValue(field, field.value);
+    const handleValidityChange = async (isValid: boolean) => {
+        if (isValid === false) {
+            setMessage('');
+            return;
         }
 
-        const { response, data } = await tsys_tagsCheckAvailability(tag, objectType);
+        const { response, data } = await tprod_productTagsCheckAvailability(partialTag);
         const isAvailable = data.available;
-
-        if (response.ok && isAvailable) {
-            setValue(Object.values(tag.json).join(''));
-            onSubmit(tag);
+        
+        if (response.ok) {
+            setIsDisabledSubmit(false);
+            setIsAvailable(isAvailable);
+            setMessage(data.message);
         }
+    }
+
+    const handleSubmit = async () => {
+        // const newTag = new DataRow('tsys_tags');
+
+        // for (const field of partialTag.fields) {
+        //     newTag.setValue(field, field.value);
+        // }
+
+        // const { response, data } = await tsys_tagsCheckAvailability(newTag, objectType);
+        // const isAvailable = data.available;
+
+        // if (response.ok && isAvailable) {
+
+        //     setValue(Object.values(newTag.json).join(''));
+        //     onSubmit(tag);
+
+        //     const newPartialTag = new DataRow('', {}, configs[objectType]);
+        //     setPartialTag(newPartialTag);
+        //     setTag(newTag);
+        // }
     }
 
 
@@ -98,12 +126,13 @@ export default function BasicTagInput({
                     isDisabled={true}
                 />
                 {mode === 'create' &&
-                <BasicTagButton onSubmit={handleSubmit}>
+                <BasicTagButton onSubmit={handleSubmit} row={partialTag} message={message} isAvailable={isAvailable} isDisabledSubmit={isDisabledSubmit}>
                     <BasicForm 
                         row={partialTag}
                         mode={'create'}
                         defaultFooter={false}
                         onChange={handleOnChange}
+                        onValidityChange={handleValidityChange}
                     >
                         {tagModel(partialTag, objectType)}
                     </BasicForm>
