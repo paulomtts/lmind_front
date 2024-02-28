@@ -6,6 +6,7 @@ import {
     , FormHelperText
     , Input
 } from "@chakra-ui/react";
+
 import BasicTagButton from "./BasicTagButton";
 import BasicForm, { BasicFormField } from "../BasicForm/BasicForm";
 import { DataRow } from "../../providers/data/models";
@@ -27,28 +28,20 @@ const tagModel = (tag: DataRow, objectType: string) => {
 
 
 export default function BasicTagInput({
-    objectType
+    type
     , mode
     , onSubmit
 }: {
-    objectType: 'product'
+    type: 'product'
     mode: 'create' | 'update';
     onSubmit: (row: DataRow) => void;
 }) {
 
-    const { 
-        tprod_productTagsCheckAvailability 
-        , fetchData
-    } = useData();
+    const { fetchData } = useData();
 
-    const [tag, setTag] = React.useState<DataRow>(new DataRow('tprod_producttags'));
-    const [partialTag, setPartialTag] = React.useState<DataRow>(new DataRow('', {}, configs[objectType]));
-
-    const [message, setMessage] = React.useState<string>('');
-    const [isAvailable, setIsAvailable] = React.useState<boolean>(false);
-    const [isDisabledSubmit, setIsDisabledSubmit] = React.useState<boolean>(true);
-
+    const [tag, setTag] = React.useState<DataRow>(new DataRow('', {}, configs[type]));
     const [value, setValue] = React.useState<string>('');
+
 
     React.useEffect(() => {
         retrieveCategories();
@@ -57,7 +50,7 @@ export default function BasicTagInput({
 
     /* Methods */
     const retrieveCategories = async () => {
-        const selectFields = partialTag.fields.filter((field) => {
+        const selectFields = tag.fields.filter((field) => {
             return field.type === 'select';
         });
 
@@ -74,44 +67,20 @@ export default function BasicTagInput({
 
     /* Handlers */
     const handleOnChange = (newTag: DataRow) => {
-        setPartialTag(newTag);
+        setTag(newTag);
     }
 
-    const handleValidityChange = async (isValid: boolean) => {
-        if (isValid === false) {
-            setMessage('');
+
+    const handleSubmit = async (row: DataRow, isAvailable: boolean) => {
+        if (isAvailable === false) {
+            setTag(row);
             return;
         }
 
-        const { response, data } = await tprod_productTagsCheckAvailability(partialTag);
-        const isAvailable = data.available;
+        const newValue = Object.values(tag.json).join('');
         
-        if (response.ok) {
-            setIsDisabledSubmit(false);
-            setIsAvailable(isAvailable);
-            setMessage(data.message);
-        }
-    }
-
-    const handleSubmit = async () => {
-        // const newTag = new DataRow('tsys_tags');
-
-        // for (const field of partialTag.fields) {
-        //     newTag.setValue(field, field.value);
-        // }
-
-        // const { response, data } = await tsys_tagsCheckAvailability(newTag, objectType);
-        // const isAvailable = data.available;
-
-        // if (response.ok && isAvailable) {
-
-        //     setValue(Object.values(newTag.json).join(''));
-        //     onSubmit(tag);
-
-        //     const newPartialTag = new DataRow('', {}, configs[objectType]);
-        //     setPartialTag(newPartialTag);
-        //     setTag(newTag);
-        // }
+        setValue(newValue);
+        onSubmit(row);
     }
 
 
@@ -126,15 +95,14 @@ export default function BasicTagInput({
                     isDisabled={true}
                 />
                 {mode === 'create' &&
-                <BasicTagButton onSubmit={handleSubmit} row={partialTag} message={message} isAvailable={isAvailable} isDisabledSubmit={isDisabledSubmit}>
+                <BasicTagButton onSubmit={handleSubmit} row={tag} type={type}>
                     <BasicForm 
-                        row={partialTag}
+                        row={tag}
                         mode={'create'}
                         defaultFooter={false}
                         onChange={handleOnChange}
-                        onValidityChange={handleValidityChange}
                     >
-                        {tagModel(partialTag, objectType)}
+                        {tagModel(tag, type)}
                     </BasicForm>
                 </BasicTagButton>}
             </div>

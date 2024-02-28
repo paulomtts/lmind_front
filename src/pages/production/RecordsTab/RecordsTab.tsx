@@ -22,6 +22,6 @@ export default function RecordsTab({}: {}) {
             </BasicAccordionItem>
         </BasicAccordion>
 
-        <BasicTagInput objectType="product" mode={'create'} onSubmit={(row) => {}} />
+        <BasicTagInput type="product" mode={'create'} onSubmit={(row) => {}} />
     </>);
 }

@@ -32,7 +32,7 @@ export default function BasicForm({
     , onChange = () => {}
     , onSave = () => {}
     , onDelete = () => {}
-    , onValidityChange = () => {}
+    , onBlur = () => {}
 }: { 
     row: DataRow
     , mode: 'create' | 'update'
@@ -42,18 +42,13 @@ export default function BasicForm({
     , onChange?: (state: DataRow) => void
     , onSave?: () => void
     , onDelete?: () => void
-    , onValidityChange?: (isValid: boolean) => void
+    , onBlur?: () => void
 }) {
 
     const [state, setState] = React.useState(row);
 
 
     /* Effects */
-    // React.useEffect(() => {
-    //     const validity = checkValidity();
-    //     onValidityChange(validity);
-    // }, [state]);
-
     React.useEffect(() => {
         setState(row);
     }, [row]);
@@ -63,13 +58,13 @@ export default function BasicForm({
     const changeState = (field: DataField, value: any) => {
         const newFormState = new DataRow(state.tableName, state.json, state.customConfig);
         newFormState.setValue(field, value);
-
+        
         setState(newFormState);
         onChange(newFormState);
     }
 
-    const checkValidity = () => {
-        return state.fields.every((field: DataField) => {
+    const checkValidity = (newState: DataRow) => {
+        return newState.fields.every((field: DataField) => {
             if (field.required) {
                 switch (field.type) {
                     case 'number':
@@ -141,8 +136,7 @@ export default function BasicForm({
     }
     
     const handleBlur = () => {
-        const validity = checkValidity();
-        onValidityChange(validity);    
+        onBlur();
     }
 
     const fieldComponents = state.fields.map((field: DataField, index: number) => {
@@ -253,7 +247,7 @@ export default function BasicForm({
             <Button 
                 colorScheme="blue" 
                 onClick={onSave} 
-                isDisabled={!checkValidity() || (mode === 'update' && !allowUpdates)}
+                isDisabled={!checkValidity(state) || (mode === 'update' && !allowUpdates)}
             >
                 Save
             </Button>

@@ -15,34 +15,59 @@ import { faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { DataRow } from "../../providers/data/models";
+import { useData } from "../../providers/data/DataProvider";
+import configs from "./configs.json";
 
 
 export default function BasicTagButton({
     row
     , title = "New Tag"
     , label = "New Tag"
-    , message = ""
-    , isAvailable
-    , isDisabledSubmit
+    , type
     , children
-    , onSubmit
+    , onSubmit = () => {}
 }: {
     row: DataRow
     title?: string
     label?: string
-    message?: string
-    isAvailable: boolean
-    isDisabledSubmit: boolean
+    type: 'product' | 'order'
     children?: React.ReactNode;
-    onSubmit: () => void;
+    onSubmit?: (row: DataRow, isAvailable: boolean) => void;
 }) {
 
-
+    const { tprod_productTagsCheckAvailability } = useData();
+    const map = {
+        product: tprod_productTagsCheckAvailability
+    }
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const handleSubmitClick = () => {
-        onSubmit();
-        onClose();
+    const [isAvailable, setIsAvailable] = React.useState<boolean>(false);
+    const [message, setMessage] = React.useState<string>('');
+    const [memoryTag, setMemoryTag] = React.useState<string>('');
+
+    const handleSubmitClick = async () => {
+        const newMemoryTag = Object.values(row.json).join('');
+        setMemoryTag(newMemoryTag);
+
+        const checkAvailability = map[type];
+
+        const { response, data } = await checkAvailability(row);
+        const isAvailable = data.available;
+        
+        if (response.ok) {
+            setIsAvailable(isAvailable);
+            setMessage(data.message);
+
+            if (isAvailable === false) {
+                const newTag = new DataRow('', data.object, configs[type]);
+                onSubmit(newTag, isAvailable);
+            } else {
+                onSubmit(row, isAvailable);
+            }
+
+        }
+        
+        if (isAvailable) onClose();
     }
 
 
@@ -81,7 +106,7 @@ export default function BasicTagButton({
                             flex flex-col gap-4
                         ">
                             <p className={`${isAvailable ? ' text-green-800' : 'text-gray-500'} text-sm text-center`}>
-                                <Kbd style={{fontSize: '0.9rem'}}>{Object.values(row.json).join('')}</Kbd> {message}
+                                <Kbd style={{fontSize: '0.9rem'}}>{memoryTag}</Kbd> {message}
                             </p>
                         </div>}
 
@@ -89,7 +114,7 @@ export default function BasicTagButton({
                             <Button variant='outline' colorScheme="red" size="sm" onClick={onClose}>
                                 Cancel
                             </Button>
-                            <Button colorScheme="blue" size="sm" onClick={handleSubmitClick} isDisabled={isDisabledSubmit}>
+                            <Button colorScheme="blue" size="sm" onClick={handleSubmitClick}>
                                 Submit
                             </Button>
                         </div>

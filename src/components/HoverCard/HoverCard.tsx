@@ -81,7 +81,7 @@ export default function HoverCard({
 
         {ReactDOM.createPortal(
         <div
-            className={`${className} ${show ? 'opacity-100' : 'opacity-0'} fixed`}
+            className={`${className} ${show ? 'opacity-100' : 'opacity-0'} fixed shadow-md`}
             ref={cardRef}
             style={{   
                 zIndex: zIndex

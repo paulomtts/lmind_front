@@ -62,7 +62,7 @@ export default function SelectBox({
 
     return (
     <div 
-        className={`absolute z-50 bg-white border rounded border-slate-300`}
+        className={`absolute z-50 bg-white border border-slate-300 rounded shadow-md`}
         style={{width: '100%'}}
         ref={containerRef}
     >

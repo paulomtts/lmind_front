@@ -13,7 +13,6 @@ function App() {
     const auth = useAuth();
 
     const [content, setContent] = useState("Home");
-    const [currentItem, setCurrentItem] = useState("Home");
 
     useEffect(() => {
         if (auth.isAuthenticated) {
@@ -23,7 +22,6 @@ function App() {
 
     const handleSidebarItemClick = (title) => {
         setContent(title);
-        setCurrentItem(title);
     }
 
     return (<div className="flex gap-2">

@@ -12,7 +12,7 @@
             , "_required": true
             , "_editable": true
             , "_errorMessage": ""
-            , "_helperMessage": "Describes a set of similar characteristics for a product"
+            , "_helperMessage": "The name given to a group of characteristics for a product"
             , "_props": {
                 "tableName": "tsys_categories"
                 , "valueName": "name"
