@@ -7,16 +7,13 @@ import MultiStepForm, { MultiStepFormPage } from '../../../components/MultiStepF
 import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicForm';
 import KeywordInput from '../../../components/KeywordInput/KeywordInput';
 import VTable, { VTableColumn } from '../../../components/VirtualizedTable/VirtualizedTable';
+import { TProdTasks } from '../../../providers/data/routes/TProd';
 
 
 
 export default function TasksAccordionItem() {
 
-    const { 
-        fetchData
-        , tprod_tasksUpsert
-        , tprod_tasksDelete
-    } = useData();
+    const { fetchData } = useData();
 
     const emptyTaskFormState = new DataRow('tprod_tasks');
 
@@ -148,7 +145,8 @@ export default function TasksAccordionItem() {
     }
 
     const handleSaveClick = async () => {
-        const { response, data } = await tprod_tasksUpsert(state, selectedSkills, keywords);
+        const { response, data } = await TProdTasks.upsert(state, selectedSkills, keywords);
+
         if (response.ok) {
             setTasksData(data);
             setIsOpen(false);
@@ -156,7 +154,7 @@ export default function TasksAccordionItem() {
     }
 
     const handleDeleteClick = async () => {
-        const { response, data } = await tprod_tasksDelete(state);
+        const { response, data } = await TProdTasks.delete(state);
 
         if (response.ok) {
             setTasksData(data);

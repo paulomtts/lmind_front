@@ -15,8 +15,8 @@ import { faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { DataRow } from "../../providers/data/models";
-import { useData } from "../../providers/data/DataProvider";
 import configs from "./configs.json";
+import { TProdProductTags } from "../../providers/data/routes/TProd";
 
 
 export default function BasicTagButton({
@@ -35,10 +35,10 @@ export default function BasicTagButton({
     onSubmit?: (row: DataRow, isAvailable: boolean) => void;
 }) {
 
-    const { tprod_productTagsCheckAvailability } = useData();
     const map = {
-        product: tprod_productTagsCheckAvailability
+        product: TProdProductTags.checkAvailability
     }
+
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const [isAvailable, setIsAvailable] = React.useState<boolean>(false);

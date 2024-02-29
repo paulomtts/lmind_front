@@ -1,7 +1,5 @@
 import React from 'react';
-import { 
-    Button
-} from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 
 import { useData, DataObject, DataRow } from '../../../providers/data/DataProvider';
 import BasicModal from '../../../components/BasicModal/BasicModal';
@@ -9,14 +7,11 @@ import MultiStepForm, { MultiStepFormPage } from '../../../components/MultiStepF
 import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicForm';
 import KeywordInput from '../../../components/KeywordInput/KeywordInput';
 import VTable, { VTableColumn } from '../../../components/VirtualizedTable/VirtualizedTable';
+import { TProdResources } from '../../../providers/data/routes/TProd';
 
 
 export default function ResourcesAccordionItem() {
-    const { 
-        fetchData
-        , tprod_resourcesUpsert 
-        , tprod_resourcesDelete
-    } = useData();
+    const { fetchData } = useData();
 
 
     const [resourcesData, setResourcesData] = React.useState<DataObject>();
@@ -134,24 +129,24 @@ export default function ResourcesAccordionItem() {
     const handleSkillSelect = (rows: DataRow[]) => {
         setSelectedSkills(rows);
     }
+    
+    const handleSaveClick = async () => {
+        const { response, data } = await TProdResources.upsert(state, selectedSkills, keywords);
+
+        if (response.ok) {
+            setResourcesData(data);
+            setIsOpen(false);
+        }
+    }
 
     const handleDeleteClick = async () => {
-        const { response, data } = await tprod_resourcesDelete(state);
+        const { response, data } = await TProdResources.delete(state);
 
         if (response.ok) {
             setResourcesData(data);
         }
 
         setIsOpen(false);
-    }
-
-    const handleSaveClick = async () => {
-
-        const { response, data } = await tprod_resourcesUpsert(state, selectedSkills, keywords);
-        if (response.ok) {
-            setResourcesData(data);
-            setIsOpen(false);
-        }
     }
 
 

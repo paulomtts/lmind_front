@@ -1,15 +1,15 @@
 /* Foreign dependencies */
-import React, { useState, useContext, createContext } from 'react';
+import React from 'react';
 import { Spinner } from '@chakra-ui/react'
 
 
-const OverlayContext = createContext();
-const baseOpacity = 0.5;
+export const OverlayContext = React.createContext(null);
 
 export function OverlayProvider({ children }) {
-
-    const [enabled, setEnabled] = useState(false)
-    const [opacity, setOpacity] = useState(baseOpacity)
+    
+    const baseOpacity = 0.5;
+    const [enabled, setEnabled] = React.useState(false)
+    const [opacity, setOpacity] = React.useState(baseOpacity)
 
     const style = {
         position: 'fixed',
@@ -45,5 +45,10 @@ export function OverlayProvider({ children }) {
 }
 
 export const useOverlay = () => {
-    return useContext(OverlayContext);
+    const context = React.useContext(OverlayContext);
+
+    if (!context) {
+        throw new Error('useOverlay must be used within a OverlayProvider');
+    }
+    return context; 
 };

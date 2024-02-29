@@ -1,19 +1,24 @@
 /* Foreign dependencies */
-import React, { useContext, createContext } from 'react';
+import React from 'react';
 import { useToast } from '@chakra-ui/react'
 
 
-export class ToastModel {
+export default class Toast {
+    static success: 'success' = 'success';
+    static info: 'info' = 'info';
+    static warning: 'warning' = 'warning';
+    static error: 'error' = 'error';
+
     title: string;
     description: string;
-    status: 'info' | 'warning' | 'success' | 'error' | undefined;
+    status: 'info' | 'warning' | 'success' | 'error'
     duration: number;
     isClosable: boolean;
     
     constructor(
-        title: string = 'Success'
-        , description: string = 'Operation succeeded.'
-        , status: 'info' | 'warning' | 'success' | 'error' | undefined = 'success'
+        title: string
+        , description: string
+        , status: 'info' | 'warning' | 'success' | 'error'
         , duration: number = 4000
         , isClosable: boolean = true
     ) {
@@ -25,46 +30,26 @@ export class ToastModel {
     }
 }
 
-type NotificationContextType = {
-    spawnToast: (model: ToastModel) => void;
-    successModel: ToastModel;
-    infoModel: ToastModel;
-    warningModel: ToastModel;
-    errorModel: ToastModel;
-};
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+export const NotificationContext = React.createContext<any>(null);
 
 export function NotificationProvider({ children }) {
     
     const toast = useToast();
-    const successModel = new ToastModel();
-    const infoModel = new ToastModel('Info', 'Operation completed with one or more notes.', 'info');
-    const warningModel = new ToastModel('Warning', '', 'warning');
-    const errorModel = new ToastModel('Error', 'Operation failed.', 'error');
 
-    const spawnToast = (model: ToastModel) => {
+    const spawn = (model: Toast) => {
         toast(model);
     }
 
-    const values = {
-        spawnToast,
-        successModel,
-        infoModel,
-        warningModel,
-        errorModel,
-        ToastModel,
-    }
-
     return (
-        <NotificationContext.Provider value={values}>
+        <NotificationContext.Provider value={{ spawn }}>
             {children}
         </NotificationContext.Provider>
     );
 }
 
 export const useNotification = () => {
-    const context = useContext(NotificationContext);
+    const context = React.useContext(NotificationContext);
     if (!context) {
         throw new Error('useNotification must be used within a NotificationProvider');
     }

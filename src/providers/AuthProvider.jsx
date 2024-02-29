@@ -2,9 +2,10 @@
 import React, { useState, useContext, createContext, useEffect } from 'react';
 
 /* Local dependencies */
-import { useData, url } from './data/DataProvider';
+import { useData } from './data/DataProvider';
 import { useOverlay } from './OverlayProvider';
-import { useNotification } from './NotificationProvider';
+import BackendConnector from './data/BackendConnector';
+import Toast, { useNotification } from './NotificationProvider';
 import LoginPage from '../pages/Login/LoginPage';
 
 
@@ -13,9 +14,10 @@ const { Provider } = AuthContext;
 
 export function AuthProvider({ children }) {
 
-    const { spawnToast, warningModel } = useNotification();
-    const overlay = useOverlay();
-    const api = useData();
+    const { spawn } = useNotification();
+    const { show, hide } = useOverlay();
+    const { customRoute } = useData();
+    const url = BackendConnector.addresses;
     
     const [inProcess, setInProcess] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,25 +26,7 @@ export function AuthProvider({ children }) {
     
     /* Effects */
     useEffect(() => {
-        overlay.show(1);
-
-        const payload = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
-        }
-
-        fetch(url.auth.validate, payload)
-        .then((response) => {
-            if (response.ok) {
-                setIsAuthenticated(true);
-            } else {
-                setIsAuthenticated(false);
-            }
-            return response;
-        });
-        
-        overlay.hide(500);
+        validate();
     }, []);
 
 
@@ -50,21 +34,35 @@ export function AuthProvider({ children }) {
         const params = new URLSearchParams(window.location.search);
     
         if(params.get('login') === 'false' && !isAuthenticated) {
-            const model = warningModel;
-            model.description = 'Login failed';
-            spawnToast(model);
+            spawn(new Toast('Warning', 'Login failed', Toast.warning));
         }
     }, [isAuthenticated]);
 
 
     /* Methods */
+    const validate = async () => {
+        if (inProcess) return;
+
+        setInProcess(true);
+        const payload = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        }
+
+        const { response } = await customRoute(url.auth.validate, payload, false, true);
+        setIsAuthenticated(response.ok);
+        setInProcess(false);
+    }
+
+
     const login = async () => {
         if (inProcess) return;
 
-        overlay.show();
+        show();
         setInProcess(true);
 
-        const { response, content } = await api.customRoute(
+        const { response, content } = await customRoute(
             url.auth.login
             , {method: 'GET', credentials: 'include'}
             , false
@@ -73,17 +71,17 @@ export function AuthProvider({ children }) {
 
         if (response.ok) window.location.href = content.url;
 
-        overlay.hide(2000);
+        hide(2000);
         setInProcess(false);
     }
 
     const logout = async () => {
         if (inProcess) return;
 
-        overlay.show();
+        show();
         setInProcess(true);
 
-        const { response } = await api.customRoute(
+        const { response } = await customRoute(
             url.auth.logout
             , {method: 'GET', credentials: 'include'}
             , true
@@ -94,7 +92,7 @@ export function AuthProvider({ children }) {
             setIsAuthenticated(false);
         }
 
-        overlay.hide(500);
+        hide(500);
         setInProcess(false);
     }
 

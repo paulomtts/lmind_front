@@ -5,16 +5,13 @@ import BasicModal from '../../../components/BasicModal/BasicModal';
 import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicForm';
 import VTable, { VTableColumn } from '../../../components/VirtualizedTable/VirtualizedTable';
 import { useData, DataObject, DataRow } from '../../../providers/data/DataProvider';
+import { TProdSkills } from '../../../providers/data/routes/TProd';
 
 
 
 export default function SkillsAccordionItem() {
 
-    const { 
-        fetchData
-        , tprod_skillsUpsert 
-        , tprod_skillsDelete
-    } = useData();
+    const { fetchData } = useData();
 
     const initialData = new DataObject('tprod_skills');
     const initialState = new DataRow('tprod_skills');
@@ -65,7 +62,7 @@ export default function SkillsAccordionItem() {
     }
 
     const handleFormSaveClick = async () => {
-        const { response, data } = await tprod_skillsUpsert(state);
+        const { response, data } = await TProdSkills.upsert(state);
 
         if (response.ok) {
             setData(data);
@@ -75,7 +72,7 @@ export default function SkillsAccordionItem() {
     }
 
     const handleFormDeleteClick = async () => {
-        const { response, data } = await tprod_skillsDelete(state);
+        const { response, data } = await TProdSkills.delete(state);
 
         if (response.ok) {
             setData(data);
