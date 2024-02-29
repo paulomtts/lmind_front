@@ -75,7 +75,7 @@ export default function TasksAccordionItem() {
                 , filters: {
                     and_: {
                         id_object: [id_task]
-                        , type: ['task']
+                        , reference: ['tprod_tasks']
                     }
                 }
             });
