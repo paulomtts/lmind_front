@@ -42,13 +42,15 @@ function Flow() {
     );
 
     return (
-        <div style={{ height: "100%" }}>
+        // <div style={{ height: "90vh" }}>
             <ReactFlow
                 nodes={nodes}
                 onNodesChange={onNodesChange}
                 edges={edges}
                 onEdgesChange={onEdgesChange}
                 fitView
+
+                style={{ height: "50vh" }}
             >
                 <Background />
                 <Controls />
@@ -57,7 +59,7 @@ function Flow() {
                     <TaskPanel />
                 </Panel>
             </ReactFlow>
-        </div>
+        // </div>
     );
 }
 

@@ -39,7 +39,7 @@ export default function RoutesTab({
     }, [setEdges]);
 
     return (<>
-        <div style={{ width: '100%', height: '95vh', borderRadius: '0.25rem' }} className="shadow-lg border-gray-200 border-2">
+        <div style={{ width: '100%', height: '90vh', borderRadius: '0.25rem' }} className="shadow-lg border-gray-200 border-2">
             <ReactFlow 
                 nodes={nodes} 
                 edges={edges} 
