@@ -4,7 +4,7 @@ import React, { useState, useContext, createContext, useEffect } from 'react';
 /* Local dependencies */
 import { useData } from './data/DataProvider';
 import { useOverlay } from './OverlayProvider';
-import BackendConnector from './data/BackendConnector';
+import Connector from './data/Connector';
 import Toast, { useNotification } from './NotificationProvider';
 import LoginPage from '../pages/Login/LoginPage';
 
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     const { spawn } = useNotification();
     const { show, hide } = useOverlay();
     const { customRoute } = useData();
-    const url = BackendConnector.addresses;
+    const url = Connector.addresses;
     
     const [inProcess, setInProcess] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);

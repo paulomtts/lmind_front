@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useNotification } from '../NotificationProvider';
 import { useOverlay } from '../OverlayProvider';
-import BackendConnector from './BackendConnector';
+import Connector from './Connector';
 import { DataObject, DataRow, DataField } from './models';
 import { CRUD } from '../data/routes/CRUD';
 
@@ -15,7 +15,7 @@ function DataProvider({ children }) {
     const notificationContext = useNotification();
     const overlayContext = useOverlay();
 
-    React.useRef(new BackendConnector(notificationContext, overlayContext));
+    React.useRef(new Connector(notificationContext, overlayContext));
         
     const [tsys_categoriesData, setTsys_CategoriesData] = React.useState([]);
 
@@ -48,7 +48,7 @@ function DataProvider({ children }) {
     
     /* Standard Routes */
     const customRoute = async (url, payload = {}, notification = true, overlay = true) => {
-        const { response, content } = await BackendConnector.request(url, payload, notification, overlay);
+        const { response, content } = await Connector.request(url, payload, notification, overlay);
         return { response, content };
     };
 

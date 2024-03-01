@@ -45,14 +45,14 @@ const addresses = (baseURL: string) => {
     }
 };
 
-export default class BackendConnector {
+export default class Connector {
     static addresses = addresses('http://localhost:8000');    
     static notification: NotificationProviderInterface;
     static overlay: OverlayProviderInterface;
 
     constructor(notification: NotificationProviderInterface, overlay: OverlayProviderInterface) {
-        BackendConnector.notification = notification;
-        BackendConnector.overlay = overlay;
+        Connector.notification = notification;
+        Connector.overlay = overlay;
     }
 
     static build ({
@@ -70,7 +70,7 @@ export default class BackendConnector {
     };
 
     static async request (url: string, payload: PayloadInterface, showNotification: boolean = true, showOverlay: boolean = true) {
-        if (showOverlay) BackendConnector.overlay?.show();
+        if (showOverlay) Connector.overlay?.show();
 
         const response = await fetch(url, payload as RequestInit);
         const content = await response.json();
@@ -95,8 +95,8 @@ export default class BackendConnector {
                 break;
         }
 
-        if (showNotification) BackendConnector.notification?.spawn(toast);
-        if (showOverlay) BackendConnector.overlay?.hide();
+        if (showNotification) Connector.notification?.spawn(toast);
+        if (showOverlay) Connector.overlay?.hide();
 
         return { response: response, content: content };
     };

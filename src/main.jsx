@@ -8,6 +8,7 @@ import { NotificationProvider } from './providers/NotificationProvider'
 import { OverlayProvider } from './providers/OverlayProvider'
 import { DataProvider } from './providers/data/DataProvider'
 import { AuthProvider } from './providers/AuthProvider'
+import { ReactFlowProvider } from 'reactflow'
 
 import './index.css'
 
@@ -19,7 +20,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <OverlayProvider>
             <DataProvider>
               <AuthProvider>
-                <App />
+                <ReactFlowProvider>
+                  <App />
+                </ReactFlowProvider>
               </AuthProvider>
             </DataProvider>
           </OverlayProvider>

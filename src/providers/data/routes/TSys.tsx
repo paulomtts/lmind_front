@@ -1,28 +1,28 @@
 import { DataRow } from "../models";
-import BackendConnector from "../BackendConnector";
+import Connector from "../Connector";
 
 
 class TSysUnits {
-    static url = BackendConnector.addresses.custom.units;
+    static url = Connector.addresses.custom.units;
 
     static insert = async (state: DataRow) => {
-        const payload = BackendConnector.build({
+        const payload = Connector.build({
             method: 'POST'
             , body: JSON.stringify(state.popEmpties())
         });
     
-        const { response, content } = await BackendConnector.request(TSysUnits.url.insert, payload);
-        return BackendConnector.parse(response, content, 'tsys_units');
+        const { response, content } = await Connector.request(TSysUnits.url.insert, payload);
+        return Connector.parse(response, content, 'tsys_units');
     }
 
     static delete = async (state: DataRow) => {
-        const payload = BackendConnector.build({
+        const payload = Connector.build({
             method: 'DELETE'
             , body: JSON.stringify(state.json)
         });
     
-        const { response, content } = await BackendConnector.request(TSysUnits.url.delete, payload);
-        return BackendConnector.parse(response, content, 'tsys_units');
+        const { response, content } = await Connector.request(TSysUnits.url.delete, payload);
+        return Connector.parse(response, content, 'tsys_units');
     }
 }
 

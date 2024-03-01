@@ -1,29 +1,13 @@
 import React from "react";
 import ReactFlow, {
-    Background
-    , Controls
+    Controls
     , MiniMap
-    , useNodesState
-    , useEdgesState
-    , addEdge
-    , Connection
-    , Edge
 } from "reactflow";
 import 'reactflow/dist/style.css';
 
-import TaskNode from "../../../components/Flow/TaskNode";
+import { useFlow, nodeTypes } from "../../../providers/FlowProvider";
+import { DataRow } from "../../../providers/data/models";
 
-
-const initialNodes = [
-    { id: '1', position: { x: 0, y: 0 }, data: { label: 'Task A' } },
-    { id: '2', position: { x: 0, y: 100 }, type: 'task', data: { label: 'Task B' } },
-  ];
-const initialEdges = [
-    { id: 'e1-2', source: '1', target: '2', label: 'wow' }
-];
-
-
-const nodeTypes = { 'task': TaskNode };
 
 export default function RoutesTab({
 
@@ -31,15 +15,35 @@ export default function RoutesTab({
 
 }) {
 
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const { 
+        nodes, onNodesChange
+        , edges, onEdgesChange
+        , onConnect 
 
-    const onConnect = React.useCallback( (params: Connection | Edge) => {
-        setEdges((eds) => addEdge(params, eds))
-    }, [setEdges]);
+        , insertNode
+        , updateNode
+        , removeNode
+        , insertEdge
+        , removeEdge
+
+        , arrangeNodes
+    } = useFlow();
+
+    React.useEffect(() => {
+        if (nodes.length > 0) return;
+        if (edges.length > 0) return;
+
+        const newNodeA = insertNode({ label: 'A', state: new DataRow('', {}) });
+        const newNodeB = insertNode({ label: 'B', state: new DataRow('', {}) }, [newNodeA]);
+        const newNodeC = insertNode({ label: 'C', state: new DataRow('', {}) }, [newNodeB]);
+        const newNodeD = insertNode({ label: 'D', state: new DataRow('', {}) }, [newNodeA]);
+        const newNodeE = insertNode({ label: 'E', state: new DataRow('', {}) }, [newNodeD, newNodeB]);
+    }, []);
+
+
 
     return (<>
-        <div style={{ width: '100%', height: '90vh', borderRadius: '0.25rem' }} className="shadow-lg border-gray-200 border-2">
+        <div style={{ height: '65vh', maxHeight: '100%', borderRadius: '0.25rem' }} className="shadow-lg border-gray-200 border-2">
             <ReactFlow 
                 nodes={nodes} 
                 edges={edges} 
@@ -47,13 +51,10 @@ export default function RoutesTab({
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 nodeTypes={nodeTypes}
-
+                style={{ borderRadius: '0.25rem', height: '100%' }}
                 fitView
-
-                style={{ borderRadius: '0.25rem' }}
             >
-                <Controls />
-                {/* <Background className="bg-gray-200" color="transparent" /> */}
+                <Controls onFitView={arrangeNodes} />
                 <MiniMap pannable inversePan maskColor="rgb(100,100,100)" nodeBorderRadius={15} />
             </ReactFlow>
         </div>

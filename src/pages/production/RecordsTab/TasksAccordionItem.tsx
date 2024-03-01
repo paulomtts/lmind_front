@@ -8,6 +8,7 @@ import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicFo
 import KeywordInput from '../../../components/KeywordInput/KeywordInput';
 import VTable, { VTableColumn } from '../../../components/VirtualizedTable/VirtualizedTable';
 import { TProdTasks } from '../../../providers/data/routes/TProd';
+import RoutesTab from '../RoutesTab/RoutesTab';
 
 
 
@@ -223,6 +224,10 @@ export default function TasksAccordionItem() {
 
                 <MultiStepFormPage title="Keywords" description="Words that categorize your task">
                     <KeywordInput className="min-w-120 min-h-10 max-h-72" data={keywords} onSubmit={handleKeywordSubmit} />
+                </MultiStepFormPage>
+
+                <MultiStepFormPage title="Nodes" description="A test of ReactFlows performance within a modal">
+                    <RoutesTab />
                 </MultiStepFormPage>
 
                 <MultiStepFormPage title="Skills" description="Abilities required to perform a task">
