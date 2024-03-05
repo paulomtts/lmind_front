@@ -104,7 +104,7 @@ export default function VirtualizedSelect({
         onOptionClick(field, valueOption);
     }
 
-    return (<div ref={componentRef}>
+    return (<div ref={componentRef} className="w-full">
     <SelectDropdown
         value={label}
         isInvalid={field.required && !field.value}

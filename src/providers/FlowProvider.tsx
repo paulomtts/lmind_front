@@ -24,9 +24,9 @@ interface NodeInterface {
     };
     type: string;
     data: {
-        label: string;
-        state: DataRow;
-    };
+        nodeState: DataRow;
+        nodeData: DataRow;
+    }
 }
 
 interface EdgeInterface {
@@ -35,7 +35,7 @@ interface EdgeInterface {
     target: string;
 }
 
-const nodeTypes = { 'tprod_tasks': TaskNode };
+const nodeTypes = { 'task': TaskNode };
 
 const FlowContext = React.createContext<any>(true);
 
@@ -52,14 +52,14 @@ function FlowProvider({ children }: { children: React.ReactNode }) {
 
 
     /* Methods */
-    const insertEdge = (source: Node, target: Node) => {
+    const insertEdge = (source_uuid: string, target_uuid: string) => {
         const uuid = v4();
 
         const newEdge: EdgeInterface = {
             id: uuid,
-            source: source.id,
-            target: target.id,
-        };
+            source: source_uuid,
+            target: target_uuid
+        } as EdgeInterface;
 
         setEdges((eds) => [...eds, newEdge as Edge]);
     }
@@ -69,26 +69,26 @@ function FlowProvider({ children }: { children: React.ReactNode }) {
     }
 
     const insertNode = (
-        { label, state }: { label: string, state: DataRow }
+        state: DataRow
         , parents: Node[] = []
         , children: Node[] = []
     ) => {
         const uuid = v4();
 
         const newNode = {
-            id: uuid,
+            id: state.getField('uuid').value || uuid,
             position: { x: 0, y: 0 },
-            type: state.tableName,
+            type: state.getField('type').value,
             data: {
-                label: label,
-                state: state
+                nodeState: state
+                , nodeData: new DataRow('tsys_nodes')
             }
         } as NodeInterface;
 
         setNodes((nds) => [...nds, newNode as Node]);
 
-        parents.forEach((p) => insertEdge(p, newNode));
-        children.forEach((c) => insertEdge(newNode, c));
+        parents.forEach((p) => insertEdge(p.id, newNode.id));
+        children.forEach((c) => insertEdge(newNode.id, c.id));
 
         return newNode;
     }
@@ -113,7 +113,7 @@ function FlowProvider({ children }: { children: React.ReactNode }) {
     dagreGraph.setDefaultEdgeLabel(() => ({}));
     dagreGraph.setGraph({ rankdir: 'TB' });
 
-    const nodeWidth = 216;
+    const nodeWidth = 256;
     const nodeHeight = 72;
 
     const { fitView } = useReactFlow();
@@ -147,16 +147,14 @@ function FlowProvider({ children }: { children: React.ReactNode }) {
     };
 
     const arrangeNodes = async () => {
-        await buildLayout();
+        if (nodes.length > 0) await buildLayout();
         fitView();
     }
 
 
     const values = {
-        nodes, 
-        onNodesChange,
-        edges, 
-        onEdgesChange,
+        nodes, setNodes, onNodesChange,
+        edges, setEdges, onEdgesChange,
         onConnect,
 
         insertNode,

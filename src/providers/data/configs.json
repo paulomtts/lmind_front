@@ -218,6 +218,194 @@
         }
     }
 
+    , "tsys_edges": {
+        "id": {
+            "_name": "id"
+            , "_label": "ID"
+            , "_type": "number"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "id_object": {
+            "_name": "id_object"
+            , "_label": "Object"
+            , "_type": "number"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        },
+        "reference": {
+            "_name": "reference"
+            , "_label": "Reference"
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "source_uuid": {
+            "_name": "source_uuid"
+            , "_label": "Source"
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "target_uuid": {
+            "_name": "target_uuid"
+            , "_label": "Target"
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "type": {
+            "_name": "type"
+            , "_label": "Type"
+            , "_type": "select"
+            , "_visible": {
+                "create": true
+                , "update": true
+                , "read": true
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+    }
+
+    , "tsys_nodes": {
+        "id": {
+            "_name": "id"
+            , "_label": "ID"
+            , "_type": "number"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": false
+            , "_editable": false
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "id_object": {
+            "_name": "id_object"
+            , "_label": "Object"
+            , "_type": "number"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "reference": {
+            "_name": "reference"
+            , "_label": "Reference"
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "type": {
+            "_name": "type"
+            , "_label": "Type"
+            , "_type": "select"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "uuid": {
+            "_name": "uuid"
+            , "_label": "UUID"
+            , "_type": "text"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": true
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "layer": {
+            "_name": "layer"
+            , "_label": "Layer"
+            , "_type": "number"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+        , "quantity": {
+            "_name": "quantity"
+            , "_label": "Quantity"
+            , "_type": "number"
+            , "_visible": {
+                "create": false
+                , "update": false
+                , "read": false
+            }
+            , "_required": false
+            , "_editable": true
+            , "_errorMessage": ""
+            , "_helperMessage": ""
+        }
+    }
+
 
     , "tprod_skills": {
         "id": {
@@ -452,9 +640,20 @@
             , "_errorMessage": "Provide a name to your task"
             , "_helperMessage": ""
             , "_props": {
-                "minLength": 3,
-                "maxLength": 20,
-                "regex": "^[a-zA-Z0-9]+$"
+                "minLength": 3
+                , "maxLength": 60
+                , "regex": "^[a-zA-Z0-9]+$"
+                , "tableName": "tprod_tasks"
+                , "valueName": "id"
+                , "labelName": "name"
+                , "visibleColumns": [
+                    "name"
+                    , "description"
+                    , "duration"
+                    , "unit"
+                ]
+                , "filters": {}
+                , "data": {}
             }
         }
         , "description": {

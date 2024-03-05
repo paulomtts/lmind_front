@@ -11,7 +11,7 @@ class CRUD {
         return { response, content };
     }
 
-    static select = async (tableName: string, {filters = {}, lambdaKwargs = {}, notification = true, overlay = true}) => {
+    static select = async (tableName: string, {filters = {}, lambdaKwargs = {}, notification = true, overlay = true} = {}) => {
         const address = Connector.addresses.crud.select + '?table_name=' + tableName;
         const payload = Connector.build({ 
             method: 'POST'

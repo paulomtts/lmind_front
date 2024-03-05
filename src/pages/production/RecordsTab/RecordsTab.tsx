@@ -6,8 +6,6 @@ import ResourcesAccordionItem from "./ResourcesAccordionItem";
 import TasksAccordionItem from "./TasksAccordionItem";
 import BasicTagInput from "../../../components/TagInput/BasicTagInput";
 
-import { FlowProvider } from "../../../providers/FlowProvider";
-
 
 export default function RecordsTab({}: {}) {
 
@@ -20,12 +18,10 @@ export default function RecordsTab({}: {}) {
                 <ResourcesAccordionItem />
             </BasicAccordionItem>
             <BasicAccordionItem title="Tasks" description="Tasks are units of work">
-                <FlowProvider>
-                    <TasksAccordionItem />
-                </FlowProvider>
+                <TasksAccordionItem />
             </BasicAccordionItem>
         </BasicAccordion>
 
-        <BasicTagInput type="product" mode={'create'} onSubmit={(row) => {}} />
+        {/* <BasicTagInput type="product" mode={'create'} onSubmit={(row) => {}} /> */}
     </>);
 }

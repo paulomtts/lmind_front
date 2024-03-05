@@ -26,17 +26,16 @@ export default function SelectBox({
     /* Builders */
     const rowBuilder = (row: DataRow) => {
         const uuid = v4();
-        
         const labelOption = row.getField(field.props.labelName);
         const valueOption = row.getField(field.props.valueName);
 
         return (
-            <HoverCard 
+            <HoverCard
                 key={`option-${uuid}`}
                 scrollableRef={scrollableRef}
                 className="rounded-md bg-white border border-gray-300 shadow-md"
                 content={
-                    <DataRowTable row={row} />
+                    <DataRowTable row={row} columns={field.props.visibleColumns} />
                 }
             >
                 <SelectOption

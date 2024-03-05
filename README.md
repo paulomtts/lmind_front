@@ -4,6 +4,7 @@
 - Backend regex is not working
 - VirtualizedTable refresh button not working when the database has no data in the corresponding table
 - VirtualizedTable show selected only checkbox is still available when there are is no selected data
+- Select + Flow: when you press arrowUp or arrowDown, it triggers the node's default behavior of moving, as well as the Selects behavior of switching the selected option
 
 ## Future changes
 - tsys_units: 'type' column will be changed to 'category'

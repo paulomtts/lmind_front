@@ -237,7 +237,9 @@ export class DataRow {
             return field.name === name;
         });
 
-        if (!field) return new DataField(configs[this.tableName][name]);
+        if(!field) throw new Error(`Field <${name}> was not found in ${this.tableName}`);
+        // if (!field) return new DataField(configs[this.tableName][name]);
+        
         return field;
     }
 
