@@ -22,7 +22,7 @@ import { NodeObject } from "./models";
 import { useToggle } from "../../hooks/useToggle";
 
 
-const nodeTypes = { 'task': TaskNode };
+const nodeTypes = { 'tasks': TaskNode };
 const FlowContext = React.createContext<any>(true);
 
 
@@ -32,12 +32,13 @@ function Flow({
     , onChange
 }: {
     nodeObjects: NodeObject[];
-    edgeObjects: DataRow[];
+    edgeObjects?: DataRow[];
     onChange: (nodes: Node[], edges: Edge[]) => void;
 }) {
 
     const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+    const [arrangeOnInsert, setArrangeOnInsert] = React.useState<boolean>(true);
 
     const onConnect = React.useCallback( (params: Connection | Edge) => {
         if (params.source === params.target) return;
@@ -64,6 +65,7 @@ function Flow({
     }, [nodeObjects]);
 
     React.useEffect(() => {
+        if (!edgeObjects) return;
         if (edgeObjects.length > 0) {
             setEdges([]);
 
@@ -73,6 +75,10 @@ function Flow({
             });
         }
     }, [edgeObjects]);
+
+    // React.useEffect(() => {
+    //     console.log('Nodes:', nodes);
+    // }, [nodes]);
 
 
     /* Methods */
@@ -95,7 +101,7 @@ function Flow({
     const insertNode = (node: NodeObject, parents: NodeObject[] = [], children: NodeObject[] = []) => {
         setNodes((nds) => [...nds, node as Node]);
 
-        toggleStatus();
+        if (arrangeOnInsert) toggleStatus();
 
         parents.forEach((p) => insertEdge(p.id, node.id));
         children.forEach((c) => insertEdge(node.id, c.id));
@@ -183,9 +189,32 @@ function Flow({
         arrangeNodes
     };
 
+
+    /* Flow dimensioning */
+    const flowRef = React.useRef<HTMLDivElement>(null);
+    const [height, setHeight] = React.useState<number>(0);
+
+    React.useEffect(() => {
+        const handleResize = () => {
+            if (flowRef.current) {
+                const availableHeight = flowRef.current.parentElement?.parentElement?.parentElement?.clientHeight || 0;
+                const navbarHeight = flowRef.current.parentElement?.parentElement?.parentElement?.parentElement?.children[0].clientHeight || 0;
+                const twoRem = 2 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+                
+                setHeight(availableHeight - navbarHeight - twoRem - 2);
+            }
+        };
+    
+        handleResize();
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+
     return (
         <FlowContext.Provider value={values}>
-            <div style={{ height: '80vh', borderRadius: '0.25rem' }} className="shadow-lg border-gray-200 border-2">
+            <div ref={flowRef} style={{ height: `${height}px`, borderRadius: '0.25rem' }} className="shadow-lg border-gray-200 border-2">
                 <ReactFlow 
                     nodes={nodes} 
                     edges={edges} 
@@ -194,6 +223,7 @@ function Flow({
                     onConnect={onConnect}
                     nodeTypes={nodeTypes}
                     style={{ borderRadius: '0.25rem', height: '100%' }}
+                    disableKeyboardA11y
                     fitView
                 >
                     <Controls onFitView={arrangeNodes} />
@@ -214,4 +244,4 @@ const useFlow = () => {
 };
 
 
-export { Flow as FlowProvider, useFlow, nodeTypes };
+export { Flow, useFlow, nodeTypes };

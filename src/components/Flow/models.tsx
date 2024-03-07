@@ -13,12 +13,16 @@ export class NodeObject {
         , methods: {
             onStateChange?: (id: string, state: Record<string, DataRow>) => void // reason: dependency injection for state change
             , insertNode?: (node: NodeObject, parents: NodeObject[], children: NodeObject[]) => void // reason: dependency injection for adding child nodes
-            , addChild?: () => void // reason: used by the TaskNode component to add a child node
+            , addChild?: () => NodeObject // reason: used by the TaskNode component to add a child node
         }
+        , level: number
     };
+    selected: boolean;
 
     constructor(
         type: string
+        , position: { x: number, y: number }
+        , level: number
         , state: Record<string, DataRow>
         , nodeJson: TSysNodeInterface = { 
             id_object: undefined
@@ -27,14 +31,15 @@ export class NodeObject {
             , uuid: v4() 
         }
         , uuid: string = v4()
-        , position: { x: number, y: number } = { x: 0, y: 0 }
+        , selected: boolean = false
     ) {
         this.id = uuid;
         this.position = position;
         this.type = type;
+        this.selected = selected;
 
         const newNode = new DataRow('tsys_nodes', {...nodeJson});
-        this.data = { node: newNode, state: {...state}, methods: {}};
+        this.data = { node: newNode, state: {...state}, methods: {}, level: level};
 
         this.data.methods.addChild = this.addChild;
     }
@@ -49,10 +54,20 @@ export class NodeObject {
             , uuid: v4()
         } as TSysNodeInterface;
 
+        const type = this.type;
+        const newState = {...this.data.state}; // shallow copies keep references in nested objects
+        Object.values(newState).forEach((state: DataRow) => {
+            newState[type] = new DataRow(state.tableName) // replace top-level object, keeps nested references
+        });
+
+        const currPosition = {...this.position};
+
         const newChild = new NodeObject(
-            String(this.type),
-            this.data.state,
-            newNodeJson
+            type
+            , { x: currPosition.x, y: currPosition.y + 288 }
+            , this.data.level + 1
+            , {...newState}
+            , newNodeJson
         );
 
         newChild.data.methods = {
@@ -62,5 +77,7 @@ export class NodeObject {
         };
         
         this.data.methods.insertNode(newChild, [this], []);
+
+        return newChild;
     }
 }

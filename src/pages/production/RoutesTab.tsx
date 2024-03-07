@@ -1,7 +1,7 @@
 import React from "react";
 import { Node, Edge } from "reactflow";
 
-import { FlowProvider } from "../../components/Flow/Flow";
+import { Flow } from "../../components/Flow/Flow";
 import { DataRow } from "../../providers/data/models";
 import { CRUD } from "../../providers/data/routes/CRUD";
 import { NodeObject } from "../../components/Flow/models";
@@ -32,36 +32,45 @@ export default function RoutesTab({
 
     const handleFlowChange = (nodes: Node[], edges: Edge[]) => {
         nodes.forEach(node => {
-            console.log('Node:', node.data.state.tasks.json.id, node.position);
+            console.log('Node:', node);
         });
         console.log('Edges:', edges);
     }
 
     // Nodes
-    const nodeA = React.useRef(new NodeObject('task', {tasks: task}));
-    const nodeB = React.useRef(new NodeObject('task', {tasks: task}));
-    const nodeC = React.useRef(new NodeObject('task', {tasks: task}));
+    const nodeA = React.useRef<NodeObject>();
+    
+    React.useEffect(() => {
+        nodeA.current = new NodeObject('tasks', { x: 0, y: 0 }, 0, {tasks: task});
 
-    // if(nodeB.current && nodeA.current.data.methods.insertNode) nodeA.current.data.methods.insertNode(nodeB.current, [], []);
 
+        setTimeout(() => {
+            let currentNode = nodeA.current;
+            for (let i = 0; i < 2; i++) {
+                currentNode = currentNode?.addChild();
+            }
+        }, 100);
+
+    }, [task]);
+    
     // Edges
-    const eAB = new DataRow('tsys_edges', {
-        id_object: 1
-        , reference: 'tprod_producttags'
-        , type: 'task'
-        , source_uuid: nodeA.current.id
-        , target_uuid: nodeB.current.id
-    });
+    // const eAB = new DataRow('tsys_edges', {
+    //     id_object: 1
+    //     , reference: 'tprod_producttags'
+    //     , type: 'task'
+    //     , source_uuid: nodeA.current.id
+    //     , target_uuid: nodeB.current.id
+    // });
 
-    const eAC = new DataRow('tsys_edges', {
-        id_object: 1
-        , reference: 'tprod_producttags'
-        , type: 'task'
-        , source_uuid: nodeA.current.id
-        , target_uuid: nodeC.current.id
-    });
+    // const eAC = new DataRow('tsys_edges', {
+    //     id_object: 1
+    //     , reference: 'tprod_producttags'
+    //     , type: 'task'
+    //     , source_uuid: nodeA.current.id
+    //     , target_uuid: nodeC.current.id
+    // });
 
     return (<>
-        <FlowProvider nodeObjects={[nodeA.current, nodeB.current, nodeC.current]} edgeObjects={[eAB, eAC]} onChange={handleFlowChange} />
+        {nodeA.current && <Flow nodeObjects={[nodeA.current]} edgeObjects={[]} onChange={handleFlowChange} />}
     </>);
 }

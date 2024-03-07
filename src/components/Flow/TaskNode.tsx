@@ -13,9 +13,11 @@ import { DataRow, DataField } from "../../providers/data/models";
 
 export default function TaskNode({
     id
+    , selected
     , data
 }: {
     id: string;
+    selected: boolean;
     data: {
         state: Record<string, DataRow>;
         methods: {
@@ -36,21 +38,28 @@ export default function TaskNode({
         onStateChange(id, {...state, tasks: row});
     }
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'arrowUp' || e.key === 'arrowDown') {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+
 
     return (
-        <div className="
+        <div className={`
             w-72
             bg-white 
             border-1 border-gray-300 rounded-md shadow-lg
 
-            active:ring-2 active:ring-teal-500 active:border-transparent
-            focus:ring-2 focus:ring-teal-500 focus:border-transparent
-            
-        ">       
+            ${selected ? "ring-2 ring-teal-500 border-transparent" : ""}
+        `}
+            onKeyDown={handleKeyDown}
+        >       
             <Handle
                 type="target"
                 position={Position.Top}
-                className="w-2 h-2"
+                className="w-2 h-2 rounded-none bg-gray-500"
                 isValidConnection={ (connection) => connection.source !== id }
             />
 
@@ -124,8 +133,8 @@ export default function TaskNode({
             <Handle
                 type="source"
                 position={Position.Bottom}
+                className="w-2 h-2 bg-gray-500"
                 isValidConnection={ (connection) => connection.target !== id }
-                className="w-2 h-2 rounded-none"
             />
         </div>
     )
