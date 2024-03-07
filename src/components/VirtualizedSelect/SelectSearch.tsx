@@ -3,6 +3,7 @@ import {
     InputGroup
     , Input
     , InputRightElement
+    , Button
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -38,7 +39,7 @@ export default function SelectSearch({
             onKeyDown={handleInputKeyPress}
         />
         <InputRightElement>
-            <FontAwesomeIcon className="text-slate-500 text-sm" icon={faSearch} />
+            <FontAwesomeIcon className="text-slate-500 text-sm mt-2" icon={faSearch} />
         </InputRightElement>
     </InputGroup>
     );

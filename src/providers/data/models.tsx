@@ -223,8 +223,8 @@ export class DataRow {
         return JSON.stringify(this.json) === JSON.stringify(other.json);
     }
 
-    setValue(field: DataField, value: string | number | boolean | Date) {
-        const ownedField = this.getField(field.name);
+    setValue(name: string, value: string | number | boolean | Date) {
+        const ownedField = this.getField(name);
 
         if (ownedField) {
             ownedField.value = value;
@@ -238,7 +238,6 @@ export class DataRow {
         });
 
         if(!field) throw new Error(`Field <${name}> was not found in ${this.tableName}`);
-        // if (!field) return new DataField(configs[this.tableName][name]);
         
         return field;
     }

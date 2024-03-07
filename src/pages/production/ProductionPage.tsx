@@ -3,7 +3,6 @@ import React from "react";
 import BasicTabs from "../../components/BasicTabs/BasicTabs";
 import RecordsTab from "./RecordsTab/RecordsTab";
 import RoutesTab from "./RoutesTab";
-import { FlowProvider } from "../../providers/FlowProvider";
 
 export default function RegistryPage({
     selectedTab
@@ -12,10 +11,7 @@ export default function RegistryPage({
     return (
     <BasicTabs labels={['Records', 'Routes']} initialTab={selectedTab}>
         <RecordsTab />
-
-        <FlowProvider>
-            <RoutesTab />
-        </FlowProvider>
+        <RoutesTab />
     </BasicTabs>
     );
 }

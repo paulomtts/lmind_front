@@ -10,13 +10,15 @@ import { DataField, DataObject, DataRow } from "../../providers/data/models";
 export default function SelectBox({
     data
     , field
+    , fixedWidth
     , children
     , handleOptionClick = () => {}
 }: {
     data: DataObject
     field: DataField
+    fixedWidth: number
     children: React.ReactNode
-    handleOptionClick?: (label: DataField, field: DataField) => void
+    handleOptionClick?: (label: DataField, field: DataField, row: DataRow) => void
 }) {
 
     const containerRef = React.useRef<HTMLDivElement>(null);
@@ -39,6 +41,7 @@ export default function SelectBox({
                 }
             >
                 <SelectOption
+                    row={row}
                     className={`${labelOption && field.value === labelOption.value ? 'bg-slate-300' : ''}`}
                     key={`option-${uuid}`}
                     labelOption={labelOption}
@@ -59,10 +62,12 @@ export default function SelectBox({
         , postHeight
     ] = useVirtualizedList(data.rows, rowBuilder, () => true, containerRef, [], 32, 10, 5);
 
+
     return (
     <div 
         className={`absolute z-50 bg-white border border-slate-300 rounded shadow-md`}
-        style={{width: '100%'}}
+        style={
+            fixedWidth ? { minWidth: fixedWidth, maxWidth: fixedWidth } : { width: '100%' } }
         ref={containerRef}
     >
         {children}

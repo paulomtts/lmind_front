@@ -57,7 +57,7 @@ export default function BasicForm({
     /* Methods */
     const changeState = (field: DataField, value: any) => {
         const newFormState = new DataRow(state.tableName, state.json, state.customConfig);
-        newFormState.setValue(field, value);
+        newFormState.setValue(field.name, value);
         
         setState(newFormState);
         onChange(newFormState);
@@ -131,7 +131,7 @@ export default function BasicForm({
         } 
     }
 
-    const handleOptionClick = (field: DataField, option: DataField) => {
+    const handleOptionClick = (field: DataField, option: DataField, _: DataRow) => {
         changeState(field, option.value);
     }
     

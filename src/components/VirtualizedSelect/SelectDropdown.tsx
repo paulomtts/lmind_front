@@ -29,6 +29,7 @@ export default function SelectDropdown({
                 flex items-center justify-between
                 px-2 py-1.6 w-full
                 cursor-pointer
+                bg-white
 
                 hover:bg-slate-50
                 active:bg-slate-100

@@ -3,20 +3,24 @@ import React from "react";
 import SelectDropdown from "./SelectDropdown";
 import SelectSearch from "./SelectSearch";
 import SelectBox from "./SelectBox";
-import { DataObject, DataField } from "../../providers/data/models";
+import { DataObject, DataField, DataRow } from "../../providers/data/models";
 
 
-export default function VirtualizedSelect({
+export default function VSelect({
     field
     , data
+    , width = 0
+    , showInvalid = true
     , disabled = false
     , onOptionClick = () => { }
     , onBlur = () => { }
 }: {
     field: DataField
     data: DataObject
+    width?: number
+    showInvalid?: boolean
     disabled?: boolean
-    onOptionClick?: (field: DataField, option: DataField) => void
+    onOptionClick?: (field: DataField, option: DataField, row: DataRow) => void
     onBlur?: () => void
 }) {
 
@@ -60,7 +64,7 @@ export default function VirtualizedSelect({
             const fieldValue = row[field.props.labelName];
             
             if (!fieldValue) return false;
-            if (!String(fieldValue).includes(value)) return false;
+            if (!String(fieldValue).toLowerCase().includes(value.toLowerCase())) return false;
 
             return true
         });
@@ -90,24 +94,29 @@ export default function VirtualizedSelect({
             const firstValue = compData.rows[0].getField(field.props.valueName);
 
             if (!firstLabel || !firstValue) return;
-            handleOptionClick(firstLabel, firstValue);
+
+            const row = compData.rows.find((row) => {
+                return row.getField(field.props.labelName)?.value === firstLabel.value
+                    && row.getField(field.props.valueName)?.value === firstValue.value;
+            });
+            handleOptionClick(firstLabel, firstValue, row!);
         }
     }
     
-    const handleOptionClick = (labelOption: DataField, valueOption: DataField) => {
+    const handleOptionClick = (labelOption: DataField, valueOption: DataField, row: DataRow) => {
         setCompData(data);
         setLabel(String(labelOption.value));
 
         setInputValue('');
         setIsOpen(false);
 
-        onOptionClick(field, valueOption);
+        onOptionClick(field, valueOption, row);
     }
 
     return (<div ref={componentRef} className="w-full">
     <SelectDropdown
         value={label}
-        isInvalid={field.required && !field.value}
+        isInvalid={field.required && !field.value && showInvalid}
         disabled={disabled}
         onClick={handleButtonClick}
         onBlur={onBlur}
@@ -117,7 +126,7 @@ export default function VirtualizedSelect({
                 width: `${componentRef.current && componentRef.current.getBoundingClientRect().width}px`
             }}
         >
-            {isOpen && <SelectBox field={field} data={compData} handleOptionClick={handleOptionClick}>
+            {isOpen && <SelectBox fixedWidth={width} field={field} data={compData} handleOptionClick={handleOptionClick}>
                 <SelectSearch
                     value={inputValue}
                     onChange={handleInputChange}
