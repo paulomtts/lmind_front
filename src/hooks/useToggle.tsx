@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from "react";
 
 /**
  * Toggles a state between two values. If a list of values is provided, the 
@@ -7,15 +7,30 @@ import { useState } from 'react';
  * @param {string} initialStatus - The initial value of the state. (default: false)
  * @param {Array} valueList - The list of values to toggle between. (default: [] - toggle between true and false)
  */
-export const useToggle = (
-    initialStatus = false
-    , valueList = []
-) => {
-    const [status, setStatus] = useState(initialStatus);
+
+interface ToggleOptions<T> {
+    initialStatus?: T;
+    valueList?: T[];
+    callback?: () => void;
+}
+
+export function useToggle<T = boolean>({
+    initialStatus = false as T,
+    valueList = [] as T[],
+    callback = () => {}
+}: ToggleOptions<T> = {}): {
+    status: T;
+    toggleStatus: () => void;
+} {
+    const [status, setStatus] = React.useState<T>(initialStatus);
+
+    React.useEffect(() => {
+        callback();
+    }, [status]);
     
     const toggleStatus = () => {
         if(valueList.length === 0){
-            setStatus(prevState => !prevState);
+            setStatus(prevState => !prevState as T);
         } else {
             setStatus(prevState => {
                 const index = valueList.indexOf(prevState);
@@ -28,5 +43,5 @@ export const useToggle = (
         }
     }
 
-    return { status, toggleStatus, setStatus };
+    return { status, toggleStatus };
 }

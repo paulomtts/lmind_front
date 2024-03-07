@@ -19,6 +19,7 @@ import { DataRow } from "../../providers/data/models";
 import TaskNode from "./TaskNode";
 import { EdgeInterface } from "./interfaces";
 import { NodeObject } from "./models";
+import { useToggle } from "../../hooks/useToggle";
 
 
 const nodeTypes = { 'task': TaskNode };
@@ -94,6 +95,8 @@ function Flow({
     const insertNode = (node: NodeObject, parents: NodeObject[] = [], children: NodeObject[] = []) => {
         setNodes((nds) => [...nds, node as Node]);
 
+        toggleStatus();
+
         parents.forEach((p) => insertEdge(p.id, node.id));
         children.forEach((c) => insertEdge(node.id, c.id));
     }
@@ -132,6 +135,11 @@ function Flow({
 
     const { fitView } = useReactFlow();
 
+    const arrangeNodes = async () => {
+        if (nodes.length > 0) await buildLayout();
+        fitView();
+    }
+
     const buildLayout = async () => {
         const newNodes = nodes.map((node) => {
             dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
@@ -160,11 +168,7 @@ function Flow({
         setEdges(newEdges);
     };
 
-    const arrangeNodes = async () => {
-        if (nodes.length > 0) await buildLayout();
-        fitView();
-    }
-
+    const { toggleStatus } = useToggle({callback: arrangeNodes});
 
     const values = {
         nodes, setNodes, onNodesChange,

@@ -38,7 +38,6 @@ export class NodeObject {
 
         this.data.methods.addChild = this.addChild;
     }
-    
 
     addChild = () => {
         if (!this.data.methods.insertNode) throw new Error('Nodebjects not initialized within Flow component cannot create children.');
@@ -51,12 +50,17 @@ export class NodeObject {
         } as TSysNodeInterface;
 
         const newChild = new NodeObject(
-            String(this.type)
-            , this.data.state
-            , newNodeJson
+            String(this.type),
+            this.data.state,
+            newNodeJson
         );
-        newChild.data.methods = this.data.methods;
 
-        this.data.methods.insertNode(newChild, [this], []);  
+        newChild.data.methods = {
+            insertNode: this.data.methods.insertNode,
+            onStateChange: this.data.methods.onStateChange,
+            addChild: newChild.data.methods.addChild?.bind(newChild)
+        };
+        
+        this.data.methods.insertNode(newChild, [this], []);
     }
 }
