@@ -167,7 +167,8 @@ export class DataRow {
         this._tableName = tableName;
         this._customConfig = customConfig;
 
-        const cfg = configs[tableName] || customConfig;
+        // const cfg = configs[tableName] || customConfig;
+        const cfg = JSON.parse(JSON.stringify(configs[tableName])) || customConfig; // avoid circular referencing via the configs.json file
 
         if (!cfg) throw new Error(`Table ${tableName} was not specified in configs.json`);
 
@@ -255,7 +256,32 @@ export class DataRow {
             }
             return acc;
         }, {} as Record<string, string | number | boolean | Date>);
-    }   
+    }
+
+    /**
+     * Creates a deep clone of the DataRow instance.
+     * 
+     * @returns A new DataRow instance that is a deep clone of the current instance.
+     */
+    clone(resetValues: boolean = false) {
+        const newTableName = String(this.tableName);
+
+        const newJson = JSON.parse(JSON.stringify(this.json));
+        if (resetValues) {
+            Object.keys(newJson).forEach((key) => {
+                newJson[key] = '';
+            });
+        }
+
+        const newCustomConfig = JSON.parse(JSON.stringify(this.customConfig));
+
+        const newClone = new DataRow(newTableName, newJson, newCustomConfig);
+        newClone.fields.forEach((field) => {
+            field.props.data = this.getField(field.name).props.data;
+        });
+
+        return newClone;
+    }
 }
 
 

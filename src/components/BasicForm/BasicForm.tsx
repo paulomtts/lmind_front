@@ -56,7 +56,7 @@ export default function BasicForm({
 
     /* Methods */
     const changeState = (field: DataField, value: any) => {
-        const newFormState = new DataRow(state.tableName, state.json, state.customConfig);
+        const newFormState = state.clone();
         newFormState.setValue(field.name, value);
         
         setState(newFormState);

@@ -18,7 +18,6 @@ import dagre from "@dagrejs/dagre";
 import { DataRow } from "../../providers/data/models";
 import TaskNode from "./TaskNode";
 import { EdgeInterface } from "./interfaces";
-import { NodeObject } from "./models";
 import { useToggle } from "../../hooks/useToggle";
 
 
@@ -31,14 +30,14 @@ function Flow({
     , edgeObjects
     , onChange
 }: {
-    nodeObjects: NodeObject[];
+    nodeObjects: Record<string, any>[];
     edgeObjects?: DataRow[];
     onChange: (nodes: Node[], edges: Edge[]) => void;
 }) {
 
     const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
-    const [arrangeOnInsert, setArrangeOnInsert] = React.useState<boolean>(true);
+    const [arrangeOnInsert, setArrangeOnInsert] = React.useState<boolean>(false);
 
     const onConnect = React.useCallback( (params: Connection | Edge) => {
         if (params.source === params.target) return;
@@ -52,13 +51,7 @@ function Flow({
             setNodes([]);
 
             nodeObjects.forEach(obj => {
-                obj.data.methods = {
-                    ...obj.data.methods,
-                    insertNode: insertNode,
-                    onStateChange: onStateChange
-                }; // reason: dependency injection
-
-                insertNode(obj);
+                insertNode(obj as Node);
             });
             arrangeNodes();
         }
@@ -75,10 +68,6 @@ function Flow({
             });
         }
     }, [edgeObjects]);
-
-    // React.useEffect(() => {
-    //     console.log('Nodes:', nodes);
-    // }, [nodes]);
 
 
     /* Methods */
@@ -97,14 +86,52 @@ function Flow({
     const removeEdge = (id: string) => {
         setEdges((eds) => eds.filter((e) => e.id !== id));
     }
-
-    const insertNode = (node: NodeObject, parents: NodeObject[] = [], children: NodeObject[] = []) => {
+    
+    const insertNode = (node: Node, parents: Node[] = [], children: Node[] = []) => {
         setNodes((nds) => [...nds, node as Node]);
 
         if (arrangeOnInsert) toggleStatus();
 
         parents.forEach((p) => insertEdge(p.id, node.id));
         children.forEach((c) => insertEdge(node.id, c.id));
+    }
+
+    const addChild = (parentId: string) => {
+        setNodes((nds) => {
+            const parent = nds.find((n) => n.id === parentId) as Node;
+            if (!parent) return nds;
+
+            const uuid = v4();
+
+            const newState = Object.keys(parent.data.state).reduce((acc, key) => {
+                if (key == 'node') {
+                    acc[key] = new DataRow('tsys_nodes', {
+                        id_object: parent.data.state.node.getField('id_object').value
+                        , reference: parent.data.state.node.getField('reference').value
+                        , type: parent.data.state.node.getField('type').value
+                        , uuid: uuid
+                        , layer: Number(parent.data.state.node.getField('layer').value) + 1
+                        , quantity: 1
+                    });
+                } else {
+                    acc[key] = parent.data.state[key].clone(true);
+                }
+                return acc;
+            }, {} as Record<string, DataRow>);
+
+            const newChild = {
+                id: uuid
+                , type: parent.type
+                , position: { x: parent.position.x, y: parent.position.y + 288 }
+                , data: {
+                    ...parent.data
+                    , state: newState
+                }
+            } as Node;
+
+            insertEdge(parentId, uuid);
+            return [...nds, newChild];
+        });
     }
 
     const removeNode = (id: string) => {
@@ -122,6 +149,7 @@ function Flow({
                 if (node.id === id) {
                     node.data.state = state;
                 }
+
                 return node;
             });
 
@@ -180,6 +208,9 @@ function Flow({
         nodes, setNodes, onNodesChange,
         edges, setEdges, onEdgesChange,
         onConnect,
+
+        addChild,
+        onStateChange,
 
         insertNode,
         removeNode,

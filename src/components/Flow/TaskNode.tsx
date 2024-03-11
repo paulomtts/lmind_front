@@ -8,7 +8,8 @@ import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import VSelect from "../VirtualizedSelect/VirtualizedSelect";
-import { DataRow, DataField } from "../../providers/data/models";
+import { DataRow, DataField } from "../../providers/data/models"
+import { useFlow } from "./Flow";
 
 
 export default function TaskNode({
@@ -19,30 +20,21 @@ export default function TaskNode({
     id: string;
     selected: boolean;
     data: {
-        state: Record<string, DataRow>;
-        methods: {
-            onStateChange: (id: string, state: Record<string, DataRow>) => void;
-            addChild: () => void;
-        }
-    
+        state: Record<string, DataRow>;    
     }
 }) {
 
-    const { state } = data;
-    const { onStateChange, addChild } = data.methods;
+    const { tasks } = data.state;
+    const { onStateChange, addChild } = useFlow();
 
-    const [row, setRow] = React.useState<DataRow>(state.tasks);
+    const [row, setRow] = React.useState<DataRow>(tasks);
 
-    const handleOptionClick = (_: DataField, __: DataField, row: DataRow) => {
+    
+    /* Handlers */
+    const handleOptionClick = (labelOption: DataField, _: DataField, row: DataRow) => {
+        row.getField(labelOption.name).props.data = tasks.getField(labelOption.name).props.data;
         setRow(row);
-        onStateChange(id, {...state, tasks: row});
-    }
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'arrowUp' || e.key === 'arrowDown') {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+        onStateChange(id, {...data.state, tasks: row});
     }
 
 
@@ -53,24 +45,22 @@ export default function TaskNode({
             border-1 border-gray-300 rounded-md shadow-lg
 
             ${selected ? "ring-2 ring-teal-500 border-transparent" : ""}
-        `}
-            onKeyDown={handleKeyDown}
-        >       
+        `}>       
             <Handle
                 type="target"
                 position={Position.Top}
                 className="w-2 h-2 rounded-none bg-gray-500"
                 isValidConnection={ (connection) => connection.source !== id }
             />
-
+            {row &&
             <div className="flex flex-col">
                 <div className="
                     p-2 rounded-t-md 
                     bg-gradient-to-r from-slate-400 via-teal-600 to-slate-400
                 ">
                     <VSelect 
-                        field={state.tasks.getField('name')} 
-                        data={state.tasks.getField('name').props.data} 
+                        field={tasks.getField('name')} 
+                        data={tasks.getField('name').props.data} 
                         width={270}
                         showInvalid={false}
                         onOptionClick={handleOptionClick}
@@ -122,13 +112,13 @@ export default function TaskNode({
                             size="xs"
                             variant="outline"
                             title="Click to add a child"
-                            onClick={addChild}
+                            onClick={() => addChild(id)}
                         >
                             <FontAwesomeIcon icon={faAdd} />
                         </Button>
-                        </div>
-                        </div>
                     </div>
+                </div>
+            </div>}
     
             <Handle
                 type="source"

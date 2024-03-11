@@ -79,7 +79,6 @@ export default function VSelect({
 
         if (!isOpen) {
             setInputValue('');
-            setCompData(data);
         }
     }
 
@@ -102,9 +101,9 @@ export default function VSelect({
             handleOptionClick(firstLabel, firstValue, row!);
         }
     }
-    
+
     const handleOptionClick = (labelOption: DataField, valueOption: DataField, row: DataRow) => {
-        setCompData(data);
+        // row.getField(field.name).props.data = new DataObject(data.tableName, data.json); // pass the data to the field
         setLabel(String(labelOption.value));
 
         setInputValue('');
