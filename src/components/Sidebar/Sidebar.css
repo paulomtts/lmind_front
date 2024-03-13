@@ -5,6 +5,7 @@
     w-fit h-screen p-2
     /* border border-r-1.5 border-gray-300 border-solid */
     bg-slate-200
+    /* bg-gradient-to-b from-slate-200 to-teal-600 from-70% */
 }
 
 .SidebarItem {

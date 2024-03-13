@@ -12,9 +12,7 @@ interface FieldConfig {
     _props: Record<string, any>;
 }
 
-/**
- * Represents a field in a row.
- */
+
 export class DataField {
     private _name: string;
     private _label: string;
@@ -149,9 +147,6 @@ export class DataField {
 }
 
 
-/**
- * Represents a row from a table.
- */
 export class DataRow {
     private _tableName: string;
     private _json: Record<string, string | number | boolean | Date>;
@@ -285,9 +280,6 @@ export class DataRow {
 }
 
 
-/**
- * Represents a table of data.
- */
 export class DataObject {
     private _tableName: string;
     private _json: Record<string, string | number | boolean | Date>[] = [];

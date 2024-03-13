@@ -28,7 +28,9 @@ export default function VSelect({
 
     const [compData, setCompData] = React.useState<DataObject>(data);
     
-    const [label, setLabel] = React.useState<string>(String(field.value));
+
+
+    const [label, setLabel] = React.useState<string>('');
     const [inputValue, setInputValue] = React.useState<string>('');
     const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
@@ -37,6 +39,17 @@ export default function VSelect({
     React.useEffect(() => {
         setCompData(data);
     }, [data]);
+
+    React.useEffect(() => {
+        if (Object.keys(field.props.data).length === 0) return;
+        
+        const currRow = field.props.data.rows.find((row: DataRow) => {
+            return row.getField(field.props.valueName).value === field.value;
+        });
+
+        const newLabel = currRow?.getField(field.props.labelName).value;
+        if (newLabel) setLabel(String(newLabel));
+    }, [field]); // reason: field type can be incompatible with field.props.data.labelName
 
     React.useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -103,11 +116,11 @@ export default function VSelect({
     }
 
     const handleOptionClick = (labelOption: DataField, valueOption: DataField, row: DataRow) => {
-        // row.getField(field.name).props.data = new DataObject(data.tableName, data.json); // pass the data to the field
         setLabel(String(labelOption.value));
 
         setInputValue('');
         setIsOpen(false);
+        setCompData(data); // reason: reset filtered data
 
         onOptionClick(field, valueOption, row);
     }

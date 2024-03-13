@@ -8,6 +8,7 @@ import BasicForm, { BasicFormField } from '../../../components/BasicForm/BasicFo
 import KeywordInput from '../../../components/KeywordInput/KeywordInput';
 import VTable, { VTableColumn } from '../../../components/VirtualizedTable/VirtualizedTable';
 import { TProdTasks } from '../../../providers/data/routes/TProd';
+import _ from 'lodash';
 
 
 export default function TasksAccordionItem() {
@@ -25,6 +26,13 @@ export default function TasksAccordionItem() {
 
     const [mode, setMode] = React.useState<'create' | 'update'>('create');
     const [isOpen, setIsOpen] = React.useState<boolean>(false);
+
+
+    /* Effects */
+    React.useEffect(() => {
+        retrieveTasks();
+        retrieveSkills();
+    }, []);
 
 
     /* Methods */
@@ -86,21 +94,8 @@ export default function TasksAccordionItem() {
         }
     }
 
-
-    /* Effects */
-    React.useEffect(() => {
-        retrieveTasks();
-        retrieveSkills();
-    }, []);
-
-
-    /* Handlers */
-    const handleRefreshClick = () => {
-        retrieveTasks();
-    }
-
-    const handleCreateClick = async () => {
-        const field = emptyTaskFormState.getField('id_unit');
+    async function _setUnitData(state: DataRow) {
+        const field = state.getField('id_unit');
 
         if (field) {
             const { data } = await fetchData('tsys_units', {
@@ -110,24 +105,35 @@ export default function TasksAccordionItem() {
                 , overlay: false
             });
             field.props.data = data;
+            field.props.labelValue = state.getField('unit').value;
         }
+    }
 
+
+    /* Handlers */
+    const handleRefreshClick = () => {
+        retrieveTasks();
+    }
+
+    const handleCreateClick = async () => {
+        await _setUnitData(emptyTaskFormState);
         await retrieveTasks();
+
         setSelectedSkills([]);
         setKeywords([]);
         setState(emptyTaskFormState);
         setMode('create');
-
         setIsOpen(true);
     }
     
     const handleEditClick = async (newState: DataRow) => {
+        await _setUnitData(newState);
         await retrieveSkills();
         await retrieveSelectedSkills(newState);
         await retrieveKeywords(newState);
+
         setState(newState);
         setMode('update');
-
         setIsOpen(true);
     }
 

@@ -4,7 +4,7 @@ import {
     , Position
 } from 'reactflow';
 import { Button, Switch } from "@chakra-ui/react";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faRemove } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import VSelect from "../VirtualizedSelect/VirtualizedSelect";
@@ -14,27 +14,25 @@ import { useFlow } from "./Flow";
 
 export default function TaskNode({
     id
-    , selected
     , data
+    , selected
 }: {
     id: string;
+    data: Record<string, any>;
     selected: boolean;
-    data: {
-        state: Record<string, DataRow>;    
-    }
 }) {
 
-    const { tasks } = data.state;
-    const { onStateChange, addChild } = useFlow();
+    const { task } = data.state;
+    const { onStateChange, addChild, removeNode } = useFlow();
 
-    const [row, setRow] = React.useState<DataRow>(tasks);
+    const [row, setRow] = React.useState<DataRow>(task);
 
     
     /* Handlers */
     const handleOptionClick = (labelOption: DataField, _: DataField, row: DataRow) => {
-        row.getField(labelOption.name).props.data = tasks.getField(labelOption.name).props.data;
+        row.getField(labelOption.name).props.data = task.getField(labelOption.name).props.data;
         setRow(row);
-        onStateChange(id, {...data.state, tasks: row});
+        onStateChange(id, {...data.state, task: row});
     }
 
 
@@ -59,8 +57,8 @@ export default function TaskNode({
                     bg-gradient-to-r from-slate-400 via-teal-600 to-slate-400
                 ">
                     <VSelect 
-                        field={tasks.getField('name')} 
-                        data={tasks.getField('name').props.data} 
+                        field={task.getField('name')} 
+                        data={task.getField('name').props.data} 
                         width={270}
                         showInvalid={false}
                         onOptionClick={handleOptionClick}
@@ -81,7 +79,6 @@ export default function TaskNode({
                             </span>
 
                             <div className="flex gap-2 items-center">
-
                                 <span className="pb-1 ">Interruptible?</span>
                                 <Switch 
                                     id="interruptible"
@@ -106,7 +103,7 @@ export default function TaskNode({
 
                     </div>}
 
-                    <div className="flex justify-center">
+                    <div className="flex justify-center gap-2">
                         <Button
                             colorScheme="teal"
                             size="xs"
@@ -116,6 +113,18 @@ export default function TaskNode({
                         >
                             <FontAwesomeIcon icon={faAdd} />
                         </Button>
+
+                        {/* {node.getField('layer').value > 0 && */}
+                        <Button
+                            colorScheme="red"
+                            size="xs"
+                            variant="outline"
+                            title="Click to add a child"
+                            onClick={() => removeNode(id)}
+                        >
+                            <FontAwesomeIcon icon={faRemove} />
+                        </Button>
+                        {/* } */}
                     </div>
                 </div>
             </div>}

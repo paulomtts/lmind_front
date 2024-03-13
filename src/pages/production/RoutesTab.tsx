@@ -1,10 +1,10 @@
 import React from "react";
 import { Node, Edge } from "reactflow";
+import { v4 } from "uuid";
 
-import { Flow } from "../../components/Flow/Flow";
 import { DataRow } from "../../providers/data/models";
 import { CRUD } from "../../providers/data/routes/CRUD";
-import { v4 } from "uuid";
+import Flow from "../../components/Flow/Flow";
 
 
 export default function RoutesTab({
@@ -33,33 +33,35 @@ export default function RoutesTab({
 
     const handleFlowChange = (nodes: Node[], edges: Edge[]) => {
         nodes.forEach(node => {
-            console.log('Node:', node.data.state.tasks.json);
+            console.log('Node:', node);
         });
-        console.log('Edges:', edges);
+        // console.log('Edges:', edges);
     }
 
+    const uuid = v4()
+    const baseState = {
+        node: new DataRow('tsys_nodes', {
+            id_object: 999
+            , reference: 'tprod_producttags'
+            , type: 'tprod_tasks'
+            , uuid: uuid
+            , layer: 0
+            , quantity: 1
+        })
+        , task: task
+    }
 
     const nodeA = React.useRef({
-        id: v4()
-        , type: 'tasks'
+        id: uuid
+        , type: 'task'
         , position: { x: 0, y: 0 }
         , data: {
-            state: {
-                node: new DataRow('tsys_nodes', {
-                    id_object: 999
-                    , reference: 'tprod_producttags'
-                    , type: 'tprod_tasks'
-                    , uuid: v4()
-                    , layer: 0
-                    , quantity: 1
-                })
-                , tasks: task
-            }
-            , methods: {}
+            state: baseState
+            , ancestors: []
         }
     });
 
     return (<>
-        {nodeA.current && <Flow nodeObjects={[nodeA.current]} edgeObjects={[]} onChange={handleFlowChange} />}
+        {nodeA.current && <Flow baseState={baseState} nodeObjects={[nodeA.current]} edgeObjects={[]} onChange={handleFlowChange} />}
     </>);
 }
