@@ -234,8 +234,7 @@ export default function BasicForm({
         }
     });
 
-    return (<div className='flex flex-col gap-4 ml-2'>
-
+    return (<div className='flex flex-col ml-2 gap-4'>
         {fieldComponents}
 
         {defaultFooter && <div className={`flex ${mode === 'create' ? 'justify-end' : 'justify-between'}`}>

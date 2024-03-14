@@ -47,7 +47,7 @@ export default function TaskNode({
             <Handle
                 type="target"
                 position={Position.Top}
-                className="w-2 h-2 rounded-none bg-gray-500"
+                className="w-3 h-3 rounded-none bg-gray-500"
                 isValidConnection={ (connection) => connection.source !== id }
             />
             {row &&
@@ -114,7 +114,6 @@ export default function TaskNode({
                             <FontAwesomeIcon icon={faAdd} />
                         </Button>
 
-                        {/* {node.getField('layer').value > 0 && */}
                         <Button
                             colorScheme="red"
                             size="xs"
@@ -124,7 +123,6 @@ export default function TaskNode({
                         >
                             <FontAwesomeIcon icon={faRemove} />
                         </Button>
-                        {/* } */}
                     </div>
                 </div>
             </div>}
@@ -132,7 +130,7 @@ export default function TaskNode({
             <Handle
                 type="source"
                 position={Position.Bottom}
-                className="w-2 h-2 bg-gray-500"
+                className="w-3 h-3 bg-gray-500"
                 isValidConnection={ (connection) => connection.target !== id }
             />
         </div>

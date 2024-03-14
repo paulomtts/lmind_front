@@ -32,23 +32,24 @@ export default function RoutesTab({
     }
 
     const handleFlowChange = (nodes: Node[], edges: Edge[]) => {
-        nodes.forEach(node => {
-            console.log('Node:', node);
-        });
-        // console.log('Edges:', edges);
+        console.log('----------------------------------------')
+        nodes.forEach(nd => {
+            const newNode = new DataRow('tsys_nodes', {
+                id_object: 1 // tag id
+                , reference: 'tprod_producttags' // tag table
+                , type: 'tprod_tasks' // contained object table
+                , uuid: nd.id
+                , layer: nd.data.layer
+                , quantity: 1
+                , position: JSON.parse(JSON.stringify(nd.position))
+            })
+            console.log(newNode.json);
+        }); 
     }
 
     const uuid = v4()
     const baseState = {
-        node: new DataRow('tsys_nodes', {
-            id_object: 999
-            , reference: 'tprod_producttags'
-            , type: 'tprod_tasks'
-            , uuid: uuid
-            , layer: 0
-            , quantity: 1
-        })
-        , task: task
+        task: task
     }
 
     const nodeA = React.useRef({
@@ -58,6 +59,7 @@ export default function RoutesTab({
         , data: {
             state: baseState
             , ancestors: []
+            , layer: 0
         }
     });
 

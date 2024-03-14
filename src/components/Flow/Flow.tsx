@@ -15,7 +15,7 @@ import ReactFlow, {
     , Viewport
 } from "reactflow";
 import 'reactflow/dist/style.css';
-import { Button, Switch, Select } from "@chakra-ui/react";
+import { Button, Switch, Select, Kbd } from "@chakra-ui/react";
 import { faAdd, faDiagramProject, faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dagre from "@dagrejs/dagre";
@@ -56,19 +56,20 @@ export default function Flow({
 
     const [arrangeIsDisabled, setArrangeIsDisabled] = React.useState<boolean>(false);
 
-    const [currentType, setCurrentType] = React.useState<string | null>(null); // ['task', 'decision', 'start', 'end'
+    const [currentType, setCurrentType] = React.useState<string>(''); // ['task', 'decision', 'start', 'end'
     const [arrangeOnChange, setArrangeOnChange] = React.useState<boolean>(false);
     const [fitOnChange, setFitOnChange] = React.useState<boolean>(false);
 
+
     const onConnect = React.useCallback( (params: Connection | Edge) => {
         if (params.source === params.target) return; // reason: prevent self-connections
-        
-        // const source = nodes.find((nd: Node) => nd.id === params.source) as Node;
-        // if (source.data.ancestors.includes(params.target)) return; // reason: prevent circular references
+
+        const source = nodes.find((nd: Node) => nd.id === params.source) as Node;
+        if (source.data.ancestors.includes(params.target)) return; // reason: prevent circular references
 
         setEdges((eds) => addEdge(params, eds))
-        adoptBranch(params as Edge);
-    }, [setEdges]);
+        adoptChild(params as Edge);
+    }, [edges, nodes]);
 
 
     /* Effects */
@@ -115,19 +116,13 @@ export default function Flow({
         if (arrangeOnChange && nodes.length > 0) arrangeNodes();
         if (fitOnChange) {
             setTimeout(() => {
-                fitView();
+                fitView({padding: 0.5});
             }, 25);
         }
     }, [nodes.length]);
 
 
     /* Methods */
-    const _calculateLayer = (ancestors: string[]) => {
-        const ancestorNodes = nodes.filter((nd: Node) => ancestors.includes(nd.id));
-        const layers = ancestorNodes.map((nd: Node) => nd.data.state.node.getField('layer').value);
-        return Math.max(...layers) + 1;
-    };
-
     const insertEdge = (source_uuid: string, target_uuid: string) => {
         const uuid = v4();
 
@@ -147,7 +142,6 @@ export default function Flow({
     const insertNode = (node: Node, parents: Node[] = [], children: Node[] = []) => {
         setNodes((nds) => [...nds, node as Node]);
 
-
         parents.forEach((p) => insertEdge(p.id, node.id));
         children.forEach((c) => insertEdge(node.id, c.id));
     };
@@ -162,8 +156,8 @@ export default function Flow({
 
             const toRemove = [...parent.data.ancestors, parent.id];
             children.forEach((child: Node) => {
-                child.data.ancestors = [... new Set(child.data.ancestors.filter((a: string) => toRemove.includes(a) === false))]
-                child.data.state.node.setValue('layer', _calculateLayer(child.data.ancestors));
+                child.data.ancestors = child.data.ancestors.filter((a: string) => toRemove.includes(a) === false)
+                child.data.layer = child.data.ancestors.length;
                 console.log(child)
             });
 
@@ -174,7 +168,7 @@ export default function Flow({
         });
     };
 
-    const addChild = (parentId: string) => {
+    const insertChild = (parentId: string) => {
         setNodes((nds) => {
             const parent = nds.find((n) => n.id === parentId) as Node;
             if (!parent) return nds;
@@ -182,18 +176,7 @@ export default function Flow({
             const uuid = v4();
 
             const newState = Object.keys(parent.data.state).reduce((acc, key) => {
-                if (key == 'node') {
-                    acc[key] = new DataRow('tsys_nodes', {
-                        id_object: parent.data.state.node.getField('id_object').value
-                        , reference: parent.data.state.node.getField('reference').value
-                        , type: parent.data.state.node.getField('type').value
-                        , uuid: uuid
-                        , layer: Number(parent.data.state.node.getField('layer').value) + 1
-                        , quantity: 1
-                    });
-                } else {
-                    acc[key] = parent.data.state[key].clone(true);
-                }
+                acc[key] = parent.data.state[key].clone(true);
                 return acc;
             }, {} as Record<string, DataRow>);
 
@@ -205,6 +188,7 @@ export default function Flow({
                     ...parent.data
                     , state: newState
                     , ancestors: [...parent.data.ancestors, parent.id]
+                    , layer: parent.data.layer + 1
                 }
             } as Node;
 
@@ -213,7 +197,7 @@ export default function Flow({
         });
     };
 
-    const adoptBranch = (edge: Edge) => {
+    const adoptChild = (edge: Edge) => {
         setNodes((currentNodes) => {
 
             const parent = currentNodes.find((n) => n.id === edge.source) as Node;
@@ -225,8 +209,8 @@ export default function Flow({
             const toAdopt = [child, ...descendants];
 
             toAdopt.forEach((nd: Node) => {
-                nd.data.ancestors = new Set([...parent.data.ancestors, parent.id, ...nd.data.ancestors])
-                nd.data.state.node.setValue('layer', _calculateLayer(nd.data.ancestors));
+                nd.data.ancestors = [...parent.data.ancestors, parent.id, ...nd.data.ancestors]
+                nd.data.layer = nd.data.ancestors.length;
             });
 
             onChange(currentNodes, edges);
@@ -302,8 +286,9 @@ export default function Flow({
             type: currentType,
             position: { x: -(viewport.x/viewport.zoom) + 100/viewport.zoom, y: -(viewport.y/viewport.zoom) + 100/viewport.zoom },
             data: {
-                state: baseState,
-                ancestors: []
+                state: baseState
+                , ancestors: []
+                , layer: 0
             },
         } as Node;
 
@@ -317,7 +302,7 @@ export default function Flow({
         edges, setEdges, onEdgesChange,
         onConnect,
 
-        addChild,
+        addChild: insertChild,
         onStateChange,
 
         insertNode,
@@ -354,7 +339,7 @@ export default function Flow({
                                 colorScheme="teal"
                                 variant={"outline"}
                                 title="Click to arrange nodes in a tree-like structure"
-                                isDisabled={arrangeIsDisabled}
+                                isDisabled={currentType === ''}
                                 onClick={() => onInsertClick()}
                             >
                                 <FontAwesomeIcon icon={faAdd} />
@@ -380,19 +365,6 @@ export default function Flow({
                             colorScheme="teal"
                             variant={"outline"}
                             title="Click to arrange nodes in a tree-like structure"
-                            onClick={() => fitView({padding: 0.5})}
-                        >
-                            <FontAwesomeIcon icon={faExpand} />
-                            Fit view
-                        </Button>
-
-                        <Button 
-                            aria-label="Arrange nodes"
-                            size="sm"
-                            className="w-full gap-2"
-                            colorScheme="teal"
-                            variant={"outline"}
-                            title="Click to arrange nodes in a tree-like structure"
                             isDisabled={arrangeIsDisabled}
                             onClick={arrangeNodes}
                         >
@@ -405,19 +377,34 @@ export default function Flow({
                             colorScheme="teal"
                             isChecked={arrangeOnChange}
                             size={'sm'}
+                            className="ml-1"
                             onChange={() => setArrangeOnChange(!arrangeOnChange)}
                         >
-                            Arrange on change
+                            Auto arrange
                         </Switch>
+
+                        <Button 
+                            aria-label="Arrange nodes"
+                            size="sm"
+                            className="w-full gap-2"
+                            colorScheme="teal"
+                            variant={"outline"}
+                            title="Click to arrange nodes in a tree-like structure"
+                            onClick={() => fitView({padding: 0.5})}
+                        >
+                            <FontAwesomeIcon icon={faExpand} />
+                            Fit view
+                        </Button>
 
                         <Switch 
                             id="arrangeOnInsert"
                             colorScheme="teal"
                             isChecked={fitOnChange}
                             size={'sm'}
+                            className="ml-1"
                             onChange={() => setFitOnChange(!fitOnChange)}
                         >
-                            Fit on change
+                            Auto fit
                         </Switch>
                     </Panel>
 

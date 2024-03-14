@@ -9,7 +9,7 @@ export default function MultiStepFormPage({
     , description: string
     , children: any
 }) {
-    return (<div className="flex flex-col gap-4">
+    return (<>
         {children}
-    </div>);
+    </>);
 }

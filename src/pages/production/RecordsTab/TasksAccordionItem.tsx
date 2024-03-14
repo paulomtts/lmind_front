@@ -205,25 +205,23 @@ export default function TasksAccordionItem() {
                 onDelete={mode === 'update' ? handleDeleteClick : undefined}
             >
                 <MultiStepFormPage title='Task' description='The smallest unit of work'>
-                    <div style={{maxHeight: '67vh', height: 'fit-content'}} className='overflow-y-auto pr-2'>
-                        <BasicForm 
-                            row={state}
-                            mode={mode}
-                            defaultFooter={false}
-                            onChange={handleFormOnChange}
-                        >
-                            <BasicFormField field={state.getField('name')} />
-                            <BasicFormField field={state.getField('description')} />
-                            <BasicFormField field={state.getField('duration')} />
-                            <BasicFormField field={state.getField('id_unit')} />
-                            <BasicFormField field={state.getField('interruptible')} />
-                            <BasicFormField field={state.getField('error_margin')} />
-                            <BasicFormField field={state.getField('created_by')} />  
-                            <BasicFormField field={state.getField('created_at')} />
-                            <BasicFormField field={state.getField('updated_by')} />
-                            <BasicFormField field={state.getField('updated_at')} />
-                        </BasicForm>
-                    </div>
+                    <BasicForm 
+                        row={state}
+                        mode={mode}
+                        defaultFooter={false}
+                        onChange={handleFormOnChange}
+                    >
+                        <BasicFormField field={state.getField('name')} />
+                        <BasicFormField field={state.getField('description')} />
+                        <BasicFormField field={state.getField('duration')} />
+                        <BasicFormField field={state.getField('id_unit')} />
+                        <BasicFormField field={state.getField('interruptible')} />
+                        <BasicFormField field={state.getField('error_margin')} />
+                        <BasicFormField field={state.getField('created_by')} />  
+                        <BasicFormField field={state.getField('created_at')} />
+                        <BasicFormField field={state.getField('updated_by')} />
+                        <BasicFormField field={state.getField('updated_at')} />
+                    </BasicForm>
                 </MultiStepFormPage>
 
                 <MultiStepFormPage title="Keywords" description="Words that categorize your task">

@@ -24,7 +24,9 @@ export default function MultiStepForm({
     onDelete?: () => void
 }) {
 
+    const thisRef = React.useRef<HTMLDivElement>(null);
 
+    const [height, setHeight] = React.useState<number>(0);
     const [activeStep, setActiveStep] = React.useState(0);
 
 
@@ -44,7 +46,24 @@ export default function MultiStepForm({
     }
 
 
-    return (<div className="flex gap-8 h-full">
+    /* Effects */
+    React.useEffect(() => {
+        const handleResize = () => {
+            if (thisRef.current) {
+                const newHeight = thisRef.current?.parentElement?.parentElement?.clientHeight;
+                setHeight(newHeight??0);
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, [thisRef]);
+
+
+    return (
+    <div className="flex gap-8 h-full" ref={thisRef} style={{maxHeight: height - 90}}>
 
         <div className="sticky">
             <BasicStepper currentIndex={activeStep} orientation={'vertical'}>
@@ -59,15 +78,17 @@ export default function MultiStepForm({
         </div>
 
 
-        <div className={`flex flex-col justify-between flex-grow gap-4 ${className}`}>
+        <div className={`flex flex-col flex-grow justify-between gap-4${className}`}>
             
             {React.Children.map(children, (child, index) => {
-                return <div className={` ${index === activeStep ? '' : 'hidden'}`}>
-                    {child}
+                return <div className={` ${index === activeStep ? 'overflow-y-auto' : 'hidden'}`}>
+                    <div className="mr-2">
+                        {child}
+                    </div>
                 </div>
             })}
 
-            <div className="flex justify-between items-center ">
+            <div className="flex justify-between items-center">
                 <Button
                     colorScheme="blue"
                     variant="outline"
