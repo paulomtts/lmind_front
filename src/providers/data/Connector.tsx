@@ -40,6 +40,10 @@ const addresses = (baseURL: string) => {
             },
             products: {
                 tagCheckAvailability: `${baseURL}/tprod/products/tag-check-availability`
+            },
+            routes: {
+                upsert: `${baseURL}/tprod/routes/upsert`,
+                delete: `${baseURL}/tprod/routes/delete`,
             }
         }
     }

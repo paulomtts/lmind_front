@@ -23,7 +23,7 @@ export default function TaskNode({
 }) {
 
     const { task } = data.state;
-    const { onStateChange, addChild, removeNode } = useFlow();
+    const { onStateChange, insertChild, removeNode } = useFlow();
 
     const [row, setRow] = React.useState<DataRow>(task);
 
@@ -109,7 +109,7 @@ export default function TaskNode({
                             size="xs"
                             variant="outline"
                             title="Click to add a child"
-                            onClick={() => addChild(id)}
+                            onClick={() => insertChild(id)}
                         >
                             <FontAwesomeIcon icon={faAdd} />
                         </Button>

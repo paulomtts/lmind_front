@@ -112,4 +112,26 @@ class TProdProductTags {
 }
 
 
+class TProdRoutes {
+    static url = Connector.addresses.custom.routes;
+
+    static upsert = async (tasks: DataRow[], nodes: DataRow[], edges: DataRow[]) => {
+        
+
+        const payload = Connector.build({
+            method: 'POST'
+            , body: JSON.stringify({
+                tasks: tasks
+                , nodes: nodes
+                , edges: edges
+            })
+        });
+
+        const { response, content } =  await Connector.request(TProdRoutes.url.upsert, payload, true, true);
+        return Connector.parse(response, content, 'tprod_routes');
+    }
+
+}
+
+
 export { TProdSkills, TProdResources, TProdTasks, TProdProductTags }

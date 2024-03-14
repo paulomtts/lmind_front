@@ -15,7 +15,7 @@ import ReactFlow, {
     , Viewport
 } from "reactflow";
 import 'reactflow/dist/style.css';
-import { Button, Switch, Select, Kbd } from "@chakra-ui/react";
+import { Button, Switch, Select } from "@chakra-ui/react";
 import { faAdd, faDiagramProject, faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dagre from "@dagrejs/dagre";
@@ -30,15 +30,15 @@ const FlowContext = React.createContext<any>(true);
 
 
 export default function Flow({
-    baseState
+    baseStates
     , nodeObjects
     , edgeObjects
-    , onChange
+    , onChange = () => {}
 }: {
-    baseState: Record<string, DataRow>;
+    baseStates: Record<string, Record<string, DataRow>>;
     nodeObjects: Record<string, any>[];
     edgeObjects?: DataRow[];
-    onChange: (nodes: Node[], edges: Edge[]) => void;
+    onChange?: (nodes: Node[], edges: Edge[]) => void;
 }) {
 
     const containerRef = React.useRef<HTMLDivElement>(null);
@@ -168,7 +168,7 @@ export default function Flow({
         });
     };
 
-    const insertChild = (parentId: string) => {
+    const insertChild = (parentId: string, type: string | null = null) => {
         setNodes((nds) => {
             const parent = nds.find((n) => n.id === parentId) as Node;
             if (!parent) return nds;
@@ -182,7 +182,7 @@ export default function Flow({
 
             const newChild = {
                 id: uuid
-                , type: parent.type
+                , type: type??parent.type
                 , position: { x: parent.position.x, y: parent.position.y + 288 }
                 , data: {
                     ...parent.data
@@ -217,6 +217,12 @@ export default function Flow({
             return currentNodes;
         });
     };
+
+    const _toCamelCase = (str: string) => {
+        return str.replace(/([-_][a-z])/gi, ($1) => {
+          return $1.toUpperCase().replace('-', '').replace('_', '');
+        });
+    }
 
 
     /* Layout */
@@ -286,9 +292,15 @@ export default function Flow({
             type: currentType,
             position: { x: -(viewport.x/viewport.zoom) + 100/viewport.zoom, y: -(viewport.y/viewport.zoom) + 100/viewport.zoom },
             data: {
-                state: baseState
-                , ancestors: []
+                ancestors: []
                 , layer: 0
+                , quantity: 1
+
+                , state: baseStates[_toCamelCase(currentType)]
+                , sources: { 
+                    node: new DataRow('tsys_nodes') 
+                    , object: null
+                }
             },
         } as Node;
 
@@ -302,7 +314,7 @@ export default function Flow({
         edges, setEdges, onEdgesChange,
         onConnect,
 
-        addChild: insertChild,
+        insertChild,
         onStateChange,
 
         insertNode,

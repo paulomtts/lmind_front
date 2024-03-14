@@ -1,69 +1,65 @@
 import React from "react";
 import { Node, Edge } from "reactflow";
-import { v4 } from "uuid";
 
 import { DataRow } from "../../providers/data/models";
 import { CRUD } from "../../providers/data/routes/CRUD";
 import Flow from "../../components/Flow/Flow";
+import { FlowParser } from "../../components/Flow/FlowParser";
 
 
-export default function RoutesTab({
-
-}: {
-
-}) {
+export default function RoutesTab({}: {}) {
 
     const [task, setTask] = React.useState<DataRow>(new DataRow('tprod_tasks'));
+    
+    const baseStates = {
+        task: { 
+            task: task 
+        }
+    }
+    const nodeA = React.useRef(FlowParser.inputNode('task', null, null, baseStates.task));
 
     React.useEffect(() => {
+        const retrieveTasksData = async () => {
+            const { response, data } = await CRUD.select('tprod_tasks', {notification: false});
+    
+            if (response.ok) {
+                const field = task.getField('name');
+    
+                field.props.data = data;
+                setTask(task);
+            }
+        }
+
         retrieveTasksData();
     }, []);
    
-    
-    const retrieveTasksData = async () => {
-        const { response, data } = await CRUD.select('tprod_tasks', {notification: false});
 
-        if (response.ok) {
-            const field = task.getField('name');
+    const handleFlowChange = (nodes: Node[], edges: Edge[]) => {       
+        const upsertNodes = nodes.map(nd => {
+            return FlowParser.outputNode(nd);
+        });
 
-            field.props.data = data;
-            setTask(task);
-        }
+        const upsertEdges = edges.map(ed => {
+            return FlowParser.outputEdge(ed, 1, 'tprod_producttags');
+        });
+
+        const upsertRoutes = nodes.map(nd => {
+            return FlowParser.outputRoute(nd);
+        });
+
+
+        
+        upsertNodes.forEach((nd) => {
+            console.log(nd);
+        });
+        upsertRoutes.forEach((nd) => {
+            console.log(nd);
+        });
+
     }
 
-    const handleFlowChange = (nodes: Node[], edges: Edge[]) => {
-        console.log('----------------------------------------')
-        nodes.forEach(nd => {
-            const newNode = new DataRow('tsys_nodes', {
-                id_object: 1 // tag id
-                , reference: 'tprod_producttags' // tag table
-                , type: 'tprod_tasks' // contained object table
-                , uuid: nd.id
-                , layer: nd.data.layer
-                , quantity: 1
-                , position: JSON.parse(JSON.stringify(nd.position))
-            })
-            console.log(newNode.json);
-        }); 
-    }
-
-    const uuid = v4()
-    const baseState = {
-        task: task
-    }
-
-    const nodeA = React.useRef({
-        id: uuid
-        , type: 'task'
-        , position: { x: 0, y: 0 }
-        , data: {
-            state: baseState
-            , ancestors: []
-            , layer: 0
-        }
-    });
 
     return (<>
-        {nodeA.current && <Flow baseState={baseState} nodeObjects={[nodeA.current]} edgeObjects={[]} onChange={handleFlowChange} />}
+        {nodeA.current && <Flow baseStates={baseStates} nodeObjects={[nodeA.current]} edgeObjects={[]} onChange={handleFlowChange} />}
     </>);
 }
