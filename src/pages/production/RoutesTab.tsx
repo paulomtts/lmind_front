@@ -12,11 +12,11 @@ export default function RoutesTab({}: {}) {
     const [task, setTask] = React.useState<DataRow>(new DataRow('tprod_tasks'));
     
     const baseStates = {
-        task: { 
+        route: { 
             task: task 
         }
     }
-    const nodeA = React.useRef(FlowParser.inputNode('task', null, null, baseStates.task));
+    const nodeA = React.useRef(FlowParser.inputNode('task', null, baseStates.route));
 
     React.useEffect(() => {
         const retrieveTasksData = async () => {
@@ -40,21 +40,22 @@ export default function RoutesTab({}: {}) {
         });
 
         const upsertEdges = edges.map(ed => {
-            return FlowParser.outputEdge(ed, 1, 'tprod_producttags');
+            return FlowParser.outputEdge(ed);
         });
 
         const upsertRoutes = nodes.map(nd => {
             return FlowParser.outputRoute(nd);
         });
-
-
         
-        upsertNodes.forEach((nd) => {
-            console.log(nd);
-        });
-        upsertRoutes.forEach((nd) => {
-            console.log(nd);
-        });
+        // upsertNodes.forEach((nd) => {
+        //     console.log(nd);
+        // });
+        // upsertEdges.forEach((nd) => {
+        //     console.log(nd);
+        // });
+        // upsertRoutes.forEach((nd) => {
+        //     console.log(nd);
+        // });
 
     }
 

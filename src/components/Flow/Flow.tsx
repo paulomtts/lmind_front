@@ -23,6 +23,7 @@ import { v4 } from "uuid";
 
 import { DataRow } from "../../providers/data/models";
 import TaskNode from "./TaskNode";
+import { FlowParser } from "./FlowParser";
 
 
 const nodeTypes = { 'task': TaskNode };
@@ -98,7 +99,7 @@ export default function Flow({
                 insertNode(obj as Node);
             });
         }
-    }, [nodeObjects]);
+    }, [nodeObjects]); // reason: insert initial nodes
 
     React.useEffect(() => {
         if (!edgeObjects) return;
@@ -110,7 +111,7 @@ export default function Flow({
                 insertEdge(String(source_uuid), String(target_uuid));
             });
         }
-    }, [edgeObjects]);
+    }, [edgeObjects]); // reason: insert initial edges
 
     React.useEffect(() => {
         if (arrangeOnChange && nodes.length > 0) arrangeNodes();
@@ -119,18 +120,12 @@ export default function Flow({
                 fitView({padding: 0.5});
             }, 25);
         }
-    }, [nodes.length]);
+    }, [nodes.length]); // reason: auto-arrange nodes on change
 
 
     /* Methods */
     const insertEdge = (source_uuid: string, target_uuid: string) => {
-        const uuid = v4();
-
-        const newEdge = {
-            id: uuid,
-            source: source_uuid,
-            target: target_uuid
-        } as Edge;
+        const newEdge = FlowParser.inputEdge(source_uuid, target_uuid);
 
         setEdges((eds) => [...eds, newEdge as Edge]);
     };
@@ -218,12 +213,6 @@ export default function Flow({
         });
     };
 
-    const _toCamelCase = (str: string) => {
-        return str.replace(/([-_][a-z])/gi, ($1) => {
-          return $1.toUpperCase().replace('-', '').replace('_', '');
-        });
-    }
-
 
     /* Layout */
     const nodeWidth = 256;
@@ -296,8 +285,8 @@ export default function Flow({
                 , layer: 0
                 , quantity: 1
 
-                , state: baseStates[_toCamelCase(currentType)]
-                , sources: { 
+                , state: baseStates[currentType]
+                , src: { 
                     node: new DataRow('tsys_nodes') 
                     , object: null
                 }
@@ -315,12 +304,8 @@ export default function Flow({
         onConnect,
 
         insertChild,
-        onStateChange,
-
-        insertNode,
         removeNode,
-        insertEdge,
-        removeEdge,
+        onStateChange,
     };
 
     return (
@@ -334,10 +319,10 @@ export default function Flow({
                     onEdgesChange={onEdgesChange}
                     onConnect={onConnect}
                     nodeTypes={nodeTypes}
-                    style={{ borderRadius: '0.25rem', height: '100%' }}
                     disableKeyboardA11y
                     fitView
                     minZoom={0.05}
+                    style={{ borderRadius: '0.25rem', height: '100%' }}
                 >
                     <MiniMap pannable inversePan maskColor="rgba(100,100,100, 0.25)" nodeBorderRadius={15} />
                     <Background className="bg-slate-100" gap={16} />
@@ -364,7 +349,7 @@ export default function Flow({
                                 placeholder="Select a node type"
                                 onChange={(e) => setCurrentType(e.target.value)}
                             >
-                                <option value="task">Task</option>
+                                <option value="tsys_task">Task</option>
                             </Select>
                         </div>
 
