@@ -15,7 +15,6 @@ import { faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { DataRow } from "../../providers/data/models";
-import configs from "./configs.json";
 import { TProdProductTags } from "../../providers/data/routes/TProd";
 
 
@@ -23,20 +22,20 @@ export default function BasicTagButton({
     row
     , title = "New Tag"
     , label = "New Tag"
-    , type
+    , tableName
     , children
     , onSubmit = () => {}
 }: {
     row: DataRow
     title?: string
     label?: string
-    type: 'product' | 'order'
+    tableName: 'tprod_producttags'
     children?: React.ReactNode;
     onSubmit?: (row: DataRow, isAvailable: boolean) => void;
 }) {
 
     const map = {
-        product: TProdProductTags.checkAvailability
+        tprod_producttags: TProdProductTags.checkAvailability
     }
 
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,7 +48,7 @@ export default function BasicTagButton({
         const newMemoryTag = Object.values(row.json).join('');
         setMemoryTag(newMemoryTag);
 
-        const checkAvailability = map[type];
+        const checkAvailability = map[tableName];
 
         const { response, data } = await checkAvailability(row);
         const isAvailable = data.available;
@@ -59,7 +58,7 @@ export default function BasicTagButton({
             setMessage(data.message);
 
             if (isAvailable === false) {
-                const newTag = new DataRow('', data.object, configs[type]);
+                const newTag = new DataRow(tableName, data.object);
                 onSubmit(newTag, isAvailable);
             } else {
                 onSubmit(row, isAvailable);

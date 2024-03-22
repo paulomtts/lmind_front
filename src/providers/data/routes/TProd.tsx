@@ -1,6 +1,9 @@
 import { DataRow } from "../models";
 import Connector from "../Connector";
 
+import { ProductTagInterface } from "./interfaces";
+import { NodeInterface, EdgeInterface, RouteInterface } from "../../../components/Flow/interfaces";
+
 
 class TProdSkills {
     static url = Connector.addresses.custom.skills;
@@ -11,7 +14,7 @@ class TProdSkills {
             , body: JSON.stringify(state.popEmpties())
         });
 
-        const { response, content } = await Connector.request(TProdSkills.url.upsert, payload);
+        const { response, content } = await Connector.request(this.url.upsert, payload);
         return Connector.parse(response, content, 'tprod_skills');
     }
 
@@ -21,7 +24,7 @@ class TProdSkills {
             , body: JSON.stringify(state.json)
         });
     
-        const { response, content } = await Connector.request(TProdSkills.url.delete, payload);
+        const { response, content } = await Connector.request(this.url.delete, payload);
         return Connector.parse(response, content, 'tprod_skills');
     }
 }
@@ -42,7 +45,7 @@ class TProdResources {
             })
         });
 
-        const { response, content } =  await Connector.request(TProdResources.url.upsert, payload, true, true);
+        const { response, content } =  await Connector.request(this.url.upsert, payload, true, true);
         return Connector.parse(response, content, 'tprod_resources');
     }
 
@@ -52,7 +55,7 @@ class TProdResources {
             , body: JSON.stringify(state.json)
         });
 
-        const { response, content } =  await Connector.request(TProdResources.url.delete, payload, true, true);
+        const { response, content } =  await Connector.request(this.url.delete, payload, true, true);
         return Connector.parse(response, content, 'tprod_resources');
     }
 }
@@ -73,7 +76,7 @@ class TProdTasks {
             })
         });
 
-        const { response, content } =  await Connector.request(TProdTasks.url.upsert, payload, true, true);
+        const { response, content } =  await Connector.request(this.url.upsert, payload, true, true);
         return Connector.parse(response, content, 'tprod_tasks');
     }
 
@@ -83,13 +86,15 @@ class TProdTasks {
             , body: JSON.stringify(state.json)
         });
 
-        const { response, content } =  await Connector.request(TProdTasks.url.delete, payload, true, true);
+        const { response, content } =  await Connector.request(this.url.delete, payload, true, true);
         return Connector.parse(response, content, 'tprod_tasks');
     }
 }
 
 
 class TProdProductTags {
+    static url = Connector.addresses.custom.products;
+
     static checkAvailability = async (state) => {
         const payload = Connector.build({
             method: 'POST'
@@ -99,7 +104,7 @@ class TProdProductTags {
             })
         });
 
-        const { response, content } =  await Connector.request(Connector.addresses.custom.products.tagCheckAvailability, payload, false, true);
+        const { response, content } =  await Connector.request(this.url.tagCheckAvailability, payload, false, true);
 
         if (response.ok) {
             const data = JSON.parse(content.data);
@@ -115,23 +120,21 @@ class TProdProductTags {
 class TProdRoutes {
     static url = Connector.addresses.custom.routes;
 
-    static upsert = async (tasks: DataRow[], nodes: DataRow[], edges: DataRow[]) => {
-        
-
+    static upsert = async (tag: ProductTagInterface | Record<string, any>, nodes: NodeInterface[], edges: EdgeInterface[], routesData: Record<string, Number | String>[]) => {
         const payload = Connector.build({
             method: 'POST'
             , body: JSON.stringify({
-                tasks: tasks
+                tag: tag
                 , nodes: nodes
                 , edges: edges
+                , routes_data: routesData
             })
         });
 
-        const { response, content } =  await Connector.request(TProdRoutes.url.upsert, payload, true, true);
+        const { response, content } =  await Connector.request(this.url.upsert, payload, true, true);
         return Connector.parse(response, content, 'tprod_routes');
     }
-
 }
 
 
-export { TProdSkills, TProdResources, TProdTasks, TProdProductTags }
+export { TProdSkills, TProdResources, TProdTasks, TProdProductTags, TProdRoutes }

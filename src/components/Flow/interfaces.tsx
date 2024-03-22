@@ -24,6 +24,7 @@ interface RouteInterface {
     id?: number | null;
     id_tag: number | null;
     id_task: number;
+    id_node: number;
     quantity: number;
 }
 

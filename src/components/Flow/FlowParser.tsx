@@ -6,9 +6,11 @@ import { EdgeInterface, NodeInterface, RouteInterface } from "./interfaces";
 export class FlowParser {
 
     static parseOutput(object: any) {
-        if (object.id !== undefined && object.id === '') {
-            delete object.id;
-        }
+        Object.keys(object).forEach(key => {
+            if (object[key] === '') {
+                delete object[key];
+            }
+        });
         
         return object;
     }
@@ -36,22 +38,21 @@ export class FlowParser {
         return FlowParser.parseOutput(newEdge);
     }
 
-    static inputNode (type: string, node: DataRow | null = null, state: Record<string, DataRow>) {
-        const uuid = node?.json.uuid??v4()
+    static inputNode (type: string, nodeJson: Record<string, any> | null = null, state: Record<string, DataRow>) {
+        const uuid = nodeJson?.uuid??v4()
         
         return {
             id: uuid
             , type: type
-            , position: node?.json.position??{ x: 0, y: 0 }
+            , position: nodeJson?.position??{ x: 0, y: 0 }
             , data: {
                 src: {
-                    id: node ? node.json.id : ''
-                    , id_object: node ? node.json.id_object : ''
-                    , reference: node ? node.json.reference : ''
+                    id: nodeJson ? nodeJson.id : ''
+                    , id_object: nodeJson ? nodeJson.id_object : ''
+                    , reference: nodeJson ? nodeJson.reference : ''
                 } // reason: avoid each node holding a big data structure
-                , ancestors: node ? node.json.ancestors : []
-                , layer: node ? node.json.layer : 0
-                , quantity: node ? node.json.quantity : 1
+                , ancestors: nodeJson ? nodeJson.ancestors : []
+                , layer: nodeJson ? nodeJson.layer : 0
                 , state: state
             }
         } as Node;
@@ -72,21 +73,5 @@ export class FlowParser {
         } as NodeInterface;
 
         return FlowParser.parseOutput(newNode);
-    }
-
-
-    /* Specific */
-    static outputRoute (node: Node) {
-        const source = node.data.src;
-        const task = node.data.state.task.json;
-
-        const newRoute = {
-            id: source.id
-            , id_tag: source.id_object
-            , id_task: task.id
-            , quantity: node.data.quantity
-        } as RouteInterface;
-
-        return FlowParser.parseOutput(newRoute);
     }
 }

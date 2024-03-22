@@ -11,12 +11,11 @@ import BasicTagButton from "./BasicTagButton";
 import BasicForm, { BasicFormField } from "../BasicForm/BasicForm";
 import { DataRow } from "../../providers/data/models";
 import { useData } from "../../providers/data/DataProvider";
-import configs from "./configs.json"
 
 
 const tagModel = (tag: DataRow, objectType: string) => {
     switch (objectType) {
-        case 'product':
+        case 'tprod_producttags':
             return [
                 <BasicFormField key={'category'} field={tag.getField('category')} />
                 , <BasicFormField key={'registry_counter'} field={tag.getField('registry_counter')} />
@@ -28,18 +27,18 @@ const tagModel = (tag: DataRow, objectType: string) => {
 
 
 export default function BasicTagInput({
-    type
+    tableName
     , mode
     , onSubmit
 }: {
-    type: 'product'
+    tableName: 'tprod_producttags'
     mode: 'create' | 'update';
     onSubmit: (row: DataRow) => void;
 }) {
 
     const { fetchData } = useData();
 
-    const [tag, setTag] = React.useState<DataRow>(new DataRow('', {}, configs[type]));
+    const [tag, setTag] = React.useState<DataRow>(new DataRow(tableName));
     const [value, setValue] = React.useState<string>('');
 
 
@@ -95,14 +94,14 @@ export default function BasicTagInput({
                     isDisabled={true}
                 />
                 {mode === 'create' &&
-                <BasicTagButton onSubmit={handleSubmit} row={tag} type={type}>
+                <BasicTagButton onSubmit={handleSubmit} row={tag} tableName={tableName}>
                     <BasicForm 
                         row={tag}
                         mode={'create'}
                         defaultFooter={false}
                         onChange={handleOnChange}
                     >
-                        {tagModel(tag, type)}
+                        {tagModel(tag, tableName)}
                     </BasicForm>
                 </BasicTagButton>}
             </div>

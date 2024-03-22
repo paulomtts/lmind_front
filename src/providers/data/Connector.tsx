@@ -42,8 +42,7 @@ const addresses = (baseURL: string) => {
                 tagCheckAvailability: `${baseURL}/tprod/products/tag-check-availability`
             },
             routes: {
-                upsert: `${baseURL}/tprod/routes/upsert`,
-                delete: `${baseURL}/tprod/routes/delete`,
+                upsert: `${baseURL}/tprod/routes/upsert`
             }
         }
     }
@@ -108,7 +107,17 @@ export default class Connector {
     static parse = (response: Response, content: any, tableName: string) => {
         if (response.ok) {
             const json = JSON.parse(content.data);
-            const data = new DataObject(tableName, json);
+
+            let data: DataObject | Record<string, DataObject> = {};
+            if (Array.isArray(json)) {
+                data = new DataObject(tableName, json);
+            } else {
+                Object.keys(json).forEach(key => {
+                    var obj = json[key];
+                    if (!Array.isArray(obj)) obj = [obj];
+                    data[key] = new DataObject(key, obj);
+                });
+            }
     
             return { response, data };
         }

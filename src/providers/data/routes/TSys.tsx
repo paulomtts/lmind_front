@@ -11,7 +11,7 @@ class TSysUnits {
             , body: JSON.stringify(state.popEmpties())
         });
     
-        const { response, content } = await Connector.request(TSysUnits.url.insert, payload);
+        const { response, content } = await Connector.request(this.url.insert, payload);
         return Connector.parse(response, content, 'tsys_units');
     }
 
@@ -21,7 +21,7 @@ class TSysUnits {
             , body: JSON.stringify(state.json)
         });
     
-        const { response, content } = await Connector.request(TSysUnits.url.delete, payload);
+        const { response, content } = await Connector.request(this.url.delete, payload);
         return Connector.parse(response, content, 'tsys_units');
     }
 }

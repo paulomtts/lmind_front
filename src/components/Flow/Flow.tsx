@@ -31,12 +31,12 @@ const FlowContext = React.createContext<any>(true);
 
 
 export default function Flow({
-    baseStates
+    baseState
     , nodeObjects
     , edgeObjects
     , onChange = () => {}
 }: {
-    baseStates: Record<string, Record<string, DataRow>>;
+    baseState: Record<string, DataRow>;
     nodeObjects: Record<string, any>[];
     edgeObjects?: DataRow[];
     onChange?: (nodes: Node[], edges: Edge[]) => void;
@@ -168,26 +168,19 @@ export default function Flow({
             const parent = nds.find((n) => n.id === parentId) as Node;
             if (!parent) return nds;
 
-            const uuid = v4();
-
-            const newState = Object.keys(parent.data.state).reduce((acc, key) => {
-                acc[key] = parent.data.state[key].clone(true);
-                return acc;
-            }, {} as Record<string, DataRow>);
-
-            const newChild = {
-                id: uuid
-                , type: type??parent.type
+            const newNodeJson = {
+                id: ''
+                , id_object: ''
+                , reference: parent.data.src.reference
+                , uuid: v4()
+                , layer: parent.data.layer + 1
                 , position: { x: parent.position.x, y: parent.position.y + 288 }
-                , data: {
-                    ...parent.data
-                    , state: newState
-                    , ancestors: [...parent.data.ancestors, parent.id]
-                    , layer: parent.data.layer + 1
-                }
-            } as Node;
+                , ancestors: [...parent.data.ancestors, parent.id]
+            }
 
-            insertEdge(parentId, uuid);
+            const newChild = FlowParser.inputNode((type??parent.type)!, newNodeJson, baseState); // this is a rare exception of '!' usage
+
+            insertEdge(parentId, newChild.id);
             return [...nds, newChild];
         });
     };
@@ -275,24 +268,8 @@ export default function Flow({
 
     const onInsertClick = () => {
         if (!currentType) return;
-
-        const newNode = {
-            id: v4(),
-            type: currentType,
-            position: { x: -(viewport.x/viewport.zoom) + 100/viewport.zoom, y: -(viewport.y/viewport.zoom) + 100/viewport.zoom },
-            data: {
-                ancestors: []
-                , layer: 0
-                , quantity: 1
-
-                , state: baseStates[currentType]
-                , src: { 
-                    node: new DataRow('tsys_nodes') 
-                    , object: null
-                }
-            },
-        } as Node;
-
+        
+        const newNode = FlowParser.inputNode(currentType, null, baseState);
         insertNode(newNode);
     };
 
@@ -349,7 +326,7 @@ export default function Flow({
                                 placeholder="Select a node type"
                                 onChange={(e) => setCurrentType(e.target.value)}
                             >
-                                <option value="tsys_task">Task</option>
+                                <option value="task">Task</option>
                             </Select>
                         </div>
 

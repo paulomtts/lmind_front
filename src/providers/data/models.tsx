@@ -162,8 +162,7 @@ export class DataRow {
         this._tableName = tableName;
         this._customConfig = customConfig;
 
-        // const cfg = configs[tableName] || customConfig;
-        const cfg = JSON.parse(JSON.stringify(configs[tableName])) || customConfig; // avoid circular referencing via the configs.json file
+        const cfg = JSON.parse(JSON.stringify(configs[tableName]??'')) || customConfig; // avoid circular referencing via the configs.json file
 
         if (!cfg) throw new Error(`Table ${tableName} was not specified in configs.json`);
 
