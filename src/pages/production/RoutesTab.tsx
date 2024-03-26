@@ -18,8 +18,8 @@ export default function RoutesTab({}: {}) {
     const task = React.useRef(new DataRow('tprod_tasks'));
     const baseState = {task: task.current}
 
-    const [currentNodes, setCurrentNodes] = React.useState<Node[]>([FlowParser.inputNode('task', null, baseState)]);
-    const [currentEdges, setCurrentEdges] = React.useState<Edge[]>([]);
+    const nodes = React.useRef<Node[]>([FlowParser.inputNode('task', null, baseState)]);
+    const edges = React.useRef<Edge[]>([]);
 
     React.useEffect(() => {
         const retrieveTasksData = async () => {
@@ -38,8 +38,9 @@ export default function RoutesTab({}: {}) {
    
 
     const handleFlowChange = (currentNodes: Node[], currentEdges: Edge[]) => {   
-        setCurrentNodes(currentNodes);
-        setCurrentEdges(currentEdges);
+        nodes.current = currentNodes;
+        edges.current = currentEdges;
+        
     }
 
     const handleTagSubmit = (row: DataRow) => {
@@ -48,15 +49,15 @@ export default function RoutesTab({}: {}) {
     }
 
     const handleSubmit = async () => {
-        const upsertNodes = currentNodes.map(nd => {
+        const upsertNodes = nodes.current.map(nd => {
             return FlowParser.outputNode(nd);
         });
 
-        const upsertEdges = currentEdges.map(ed => {
+        const upsertEdges = edges.current.map(ed => {
             return FlowParser.outputEdge(ed);
         });
 
-        const routeData = currentNodes.map((node: Node) => {
+        const routeData = nodes.current.map((node: Node) => {
             return { 
                 id_task: node.data.state.task.getField('id').value 
                 , node_uuid: node.id
@@ -93,6 +94,6 @@ export default function RoutesTab({}: {}) {
             <BasicTagInput tableName={'tprod_producttags'} mode={'create'} onSubmit={handleTagSubmit} />
             <Button className="mt-8" onClick={() => handleSubmit()}>Save</Button>
         </div>
-        {<Flow baseState={baseState} nodeObjects={currentNodes} edgeObjects={[]} onChange={handleFlowChange} />}
+        {<Flow baseState={baseState} nodeObjects={nodes.current} edgeObjects={[]} onChange={handleFlowChange} />}
     </>);
 }
